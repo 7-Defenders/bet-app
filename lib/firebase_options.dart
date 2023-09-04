@@ -3,6 +3,7 @@
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 /// Default [FirebaseOptions] for use with your Firebase apps.
 ///
@@ -43,8 +44,8 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyCKTrqmJVqEoD5y1olE7IrBe794cMk3IXE',
+  static FirebaseOptions web = FirebaseOptions(
+    apiKey: dotenv.env['WEB_API_KEY']!,
     appId: '1:1034519381902:web:4e646375a8fe24a8ecc6df',
     messagingSenderId: '1034519381902',
     projectId: 'bet-app-e520a',
@@ -53,16 +54,16 @@ class DefaultFirebaseOptions {
     measurementId: 'G-SL6PELXYYC',
   );
 
-  static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDZbhxIH_9XCagxWlFze4_0EOS1Nca96UY',
+  static FirebaseOptions android = FirebaseOptions(
+    apiKey: dotenv.env['ANDROID_API_KEY']!,
     appId: '1:1034519381902:android:240e1dd8a5f9326becc6df',
     messagingSenderId: '1034519381902',
     projectId: 'bet-app-e520a',
     storageBucket: 'bet-app-e520a.appspot.com',
   );
 
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCQT5vZOlINXVGnzUqudeame3Z69f8txNA',
+  static FirebaseOptions ios = FirebaseOptions(
+    apiKey: dotenv.env['IOS_API_KEY']!,
     appId: '1:1034519381902:ios:cc630790b47f42a3ecc6df',
     messagingSenderId: '1034519381902',
     projectId: 'bet-app-e520a',
@@ -71,8 +72,8 @@ class DefaultFirebaseOptions {
     iosBundleId: 'com.example.app',
   );
 
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyCQT5vZOlINXVGnzUqudeame3Z69f8txNA',
+  static FirebaseOptions macos = FirebaseOptions(
+    apiKey: dotenv.env['MACOS_API_KEY']!,
     appId: '1:1034519381902:ios:ecd6fd6f9b8b5aa1ecc6df',
     messagingSenderId: '1034519381902',
     projectId: 'bet-app-e520a',
