@@ -43,12 +43,4 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-/ios/
-/linux/
-/macos/
-/web/
-/windows/
-/android/
-.metadata
-analysis_options.yaml
-pubspec.lock
+.dotenv
