@@ -25,18 +25,6 @@ class DefaultFirebaseOptions {
         return android;
       case TargetPlatform.iOS:
         return ios;
-      case TargetPlatform.macOS:
-        return macos;
-      case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
-      case TargetPlatform.linux:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for linux - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
       default:
         throw UnsupportedError(
           'DefaultFirebaseOptions are not supported for this platform.',
@@ -70,15 +58,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'bet-app-e520a.appspot.com',
     iosClientId: '1034519381902-lhqkt5r6ktvaj68d3mi3gdolatn6bd2c.apps.googleusercontent.com',
     iosBundleId: 'com.example.app',
-  );
-
-  static FirebaseOptions macos = FirebaseOptions(
-    apiKey: dotenv.env['MACOS_API_KEY']!,
-    appId: '1:1034519381902:ios:ecd6fd6f9b8b5aa1ecc6df',
-    messagingSenderId: '1034519381902',
-    projectId: 'bet-app-e520a',
-    storageBucket: 'bet-app-e520a.appspot.com',
-    iosClientId: '1034519381902-uhsakatsjqj2bk6ts70l9cd5m25ftuth.apps.googleusercontent.com',
-    iosBundleId: 'com.example.app.RunnerTests',
   );
 }
