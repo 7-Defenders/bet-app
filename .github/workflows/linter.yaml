@@ -1,4 +1,4 @@
-name: Lint Code Base
+name: Linter
 
 on: [push, pull_request]
 
@@ -14,5 +14,11 @@ jobs:
         with:
           fetch-depth: 0
       
-      - name: Lint Code Base
+      - name: Run the superlinter
         uses: github/super-linter@v4
+        env:
+          DEFAULT_BRANCH: master
+          IGNORE_GENERATED_FILES: true
+          IGNORE_GITIGNORED_FILES: true
+          VALIDATE_DART_DARTANALYZER: true
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
