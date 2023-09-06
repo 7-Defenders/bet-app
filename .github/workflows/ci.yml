@@ -25,16 +25,23 @@ jobs:
         with:
           flutter-version: '3.13.1'
           channel: 'stable'
-      - run: |
+      - name: Create .env file 
+        run: |
           touch .env
           echo "${{ secrets.ANDROID_API_KEY }}" >> .env
           echo "${{ secrets.WEB_API_KEY }}" >> .env
           echo "${{ secrets.IOS_API_KEY }}" >> .env
           cat .env
-      - run: flutter pub get
-      - run: flutter test
-      - run: flutter build apk
-      - run: flutter build appbundle
+      - name: Install packages
+        run: flutter pub get
+      - name: Linter
+        run: flutter analyze
+      - name: Test
+        run: flutter test
+      - name: Build apk
+        run: flutter build apk
+      - name: Build appbundle
+        run: flutter build appbundle
       
   flutter_ios:
     name: Flutter iOS test
@@ -45,12 +52,18 @@ jobs:
         with:
           flutter-version: '3.13.1'
           channel: 'stable'
-      - run: |
+      - name: Create .env file 
+        run: |
           touch .env
           echo "${{ secrets.ANDROID_API_KEY }}" >> .env
           echo "${{ secrets.WEB_API_KEY }}" >> .env
           echo "${{ secrets.IOS_API_KEY }}" >> .env
           cat .env
-      - run: flutter pub get
-      - run: flutter test
-      - run: flutter build ios --release --no-codesign
+      - name: Install packages
+        run: flutter pub get
+      - name: Linter
+        run: flutter analyze
+      - name: Test
+        run: flutter test
+      - name: Build
+        run: flutter build ios --release --no-codesign
