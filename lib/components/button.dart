@@ -30,7 +30,7 @@ class MyButton extends StatelessWidget {
                 fontSize: 18,
               ),
             ),
-          )),
+          ),),
     );
   }
 }
