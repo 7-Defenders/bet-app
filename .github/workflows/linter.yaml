@@ -15,10 +15,11 @@ jobs:
           fetch-depth: 0
       
       - name: Run the superlinter
-        uses: github/super-linter@v4
+        uses: github/super-linter/slim@v5
         env:
           DEFAULT_BRANCH: master
           IGNORE_GENERATED_FILES: true
           IGNORE_GITIGNORED_FILES: true
-          VALIDATE_DART_DARTANALYZER: true
+          VALIDATE_DART: true
+          VALIDATE_ALL_CODEBASE: false
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
