@@ -1,8 +1,8 @@
+import 'package:app/components/button.dart';
+import 'package:app/components/image_tile.dart';
+import 'package:app/components/text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../components/text_field.dart';
-import '../components/button.dart';
-import '../components/image_tile.dart';
 
 class LogInScreen extends StatelessWidget {
   LogInScreen({super.key});
