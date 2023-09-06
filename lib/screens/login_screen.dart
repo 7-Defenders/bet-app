@@ -1,8 +1,8 @@
+import 'package:app/components/button.dart';
+import 'package:app/components/image_tile.dart';
+import 'package:app/components/text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../components/text_field.dart';
-import '../components/button.dart';
-import '../components/image_tile.dart';
 
 class LogInScreen extends StatelessWidget {
   LogInScreen({super.key});
@@ -25,7 +25,7 @@ class LogInScreen extends StatelessWidget {
                 const SizedBox(height: 20),
                 Text('Welcome back!',
                     style: GoogleFonts.poppins(
-                        fontSize: 25, color: Colors.grey[700])),
+                        fontSize: 25, color: Colors.grey[700],),),
                 const SizedBox(height: 25),
                 MyTextField(
                   controller: usernameController,
@@ -46,7 +46,7 @@ class LogInScreen extends StatelessWidget {
                     children: [
                       Text('Forgot Password?',
                           style: GoogleFonts.poppins(
-                              fontSize: 15, color: Colors.grey[700])),
+                              fontSize: 15, color: Colors.grey[700],),),
                     ],
                   ),
                 ),
@@ -65,7 +65,7 @@ class LogInScreen extends StatelessWidget {
                     ),
                     Text('Or continue with: ',
                         style: GoogleFonts.poppins(
-                            fontSize: 13, color: Colors.grey[700])),
+                            fontSize: 13, color: Colors.grey[700],),),
                     Expanded(
                       child: Divider(
                         color: Colors.grey[700],
@@ -97,17 +97,17 @@ class LogInScreen extends StatelessWidget {
                   children: [
                     Text("Don't have an account? ",
                         style: GoogleFonts.poppins(
-                            fontSize: 15, color: Colors.grey[700])),
+                            fontSize: 15, color: Colors.grey[700],),),
                     Text('Sign up now',
                         style: GoogleFonts.poppins(
                             fontSize: 15,
                             color: Colors.grey[700],
-                            fontWeight: FontWeight.bold)),
+                            fontWeight: FontWeight.bold,),),
                   ],
                 ),
               ],
             ),
           ),
-        ));
+        ),);
   }
 }
