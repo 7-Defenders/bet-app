@@ -41,7 +41,7 @@ class _LogInScreenState extends State<LogInScreen> {
         utils.showSnackbarMessage("E-mail and password do not match.", context);
       }
     }
-    if (mounted) {
+    if (context.mounted) {
       Navigator.pop(context);
     }
   }

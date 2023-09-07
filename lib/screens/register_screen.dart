@@ -32,7 +32,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
       if (passwordController.text.length < 8 ||
           passwordController.text.length > 16) {
         utils.showSnackbarMessage(
-            "Password must be between 8 and 16 characters.", context);
+            "Password must be between 8 and 16 characters.", context,
+        );
         return;
       }
       if (passwordController.text != confirmPasswordController.text) {
@@ -50,7 +51,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         utils.showSnackbarMessage("E-mail and password do not match.", context);
       }
     }
-    if (mounted) {
+    if (context.mounted) {
       Navigator.pop(context);
     }
   }
@@ -66,7 +67,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
               children: [
                 const SizedBox(height: 30),
                 Icon(Icons.app_registration_rounded,
-                    size: 135, color: Colors.grey[800]),
+                    size: 135, color: Colors.grey[800],
+                    ),
                 const SizedBox(height: 20),
                 Text(
                   "Let's get started:",
