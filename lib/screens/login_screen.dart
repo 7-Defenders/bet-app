@@ -1,16 +1,22 @@
 import 'package:app/components/button.dart';
 import 'package:app/components/image_tile.dart';
 import 'package:app/components/text_field.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class LogInScreen extends StatelessWidget {
   LogInScreen({super.key});
 
-  final usernameController = TextEditingController();
+  final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
-  void logInUser() {}
+  Future<void> logInUser() async {
+    await FirebaseAuth.instance.signInWithEmailAndPassword(
+      email: emailController.text,
+      password: passwordController.text,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +34,8 @@ class LogInScreen extends StatelessWidget {
                         fontSize: 25, color: Colors.grey[700],),),
                 const SizedBox(height: 25),
                 MyTextField(
-                  controller: usernameController,
-                  hintText: 'Username',
+                  controller: emailController,
+                  hintText: 'E-mail',
                   obscureText: false,
                 ),
                 const SizedBox(height: 15),
