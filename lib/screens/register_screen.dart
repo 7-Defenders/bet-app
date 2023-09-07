@@ -32,7 +32,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
       if (passwordController.text.length < 8 ||
           passwordController.text.length > 16) {
         utils.showSnackbarMessage(
-            "Password must be between 8 and 16 characters.", context,
+          "Password must be between 8 and 16 characters.",
+          context,
         );
         return;
       }
@@ -46,9 +47,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
       );
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        utils.showSnackbarMessage("No user found for that email.", context);
+        if (context.mounted) {
+          utils.showSnackbarMessage(
+            "No user found for that email.",
+            context,
+          );
+        }
       } else if (e.code == 'wrong-password') {
-        utils.showSnackbarMessage("E-mail and password do not match.", context);
+        if (context.mounted) {
+          utils.showSnackbarMessage(
+            "E-mail and password do not match.",
+            context,
+          );
+        }
       }
     }
     if (context.mounted) {
@@ -66,9 +77,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
             child: Column(
               children: [
                 const SizedBox(height: 30),
-                Icon(Icons.app_registration_rounded,
-                    size: 135, color: Colors.grey[800],
-                    ),
+                Icon(
+                  Icons.app_registration_rounded,
+                  size: 135,
+                  color: Colors.grey[800],
+                ),
                 const SizedBox(height: 20),
                 Text(
                   "Let's get started:",

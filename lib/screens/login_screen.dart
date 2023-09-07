@@ -6,7 +6,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
 class LogInScreen extends StatefulWidget {
   final Function()? toggleScreen;
   const LogInScreen({super.key, required this.toggleScreen});
@@ -36,9 +35,19 @@ class _LogInScreenState extends State<LogInScreen> {
       );
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        utils.showSnackbarMessage("No user found for that email.", context);
+        if (context.mounted) {
+          utils.showSnackbarMessage(
+            "No user found for that email.",
+            context,
+          );
+        }
       } else if (e.code == 'wrong-password') {
-        utils.showSnackbarMessage("E-mail and password do not match.", context);
+        if (context.mounted) {
+          utils.showSnackbarMessage(
+            "E-mail and password do not match.",
+            context,
+          );
+        }
       }
     }
     if (context.mounted) {
