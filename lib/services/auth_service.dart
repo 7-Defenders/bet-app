@@ -4,7 +4,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthService {
   Future<UserCredential> signInWithGoogle() async {
-    
+    // first, clear any existing sessions
+    await GoogleSignIn().signOut();
     // open google sign in popup
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
     // wait for popup to close and get user token

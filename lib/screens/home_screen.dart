@@ -26,7 +26,8 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("Welcome, ${user!.email}!",
+            Text(
+              "Welcome, ${user!.email}!",
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
