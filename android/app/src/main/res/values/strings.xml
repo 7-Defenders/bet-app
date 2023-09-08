@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Bet-app</string>
+    <string name="facebook_app_id">273634098808960</string>
+    <string name="fb_login_protocol_scheme">fb273634098808960</string>
+    <string name="facebook_client_token">7db46a6bccbd5c55a4bf9dc0113eccbc</string>
+</resources>
