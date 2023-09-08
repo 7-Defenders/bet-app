@@ -1,6 +1,7 @@
 import 'package:app/components/button.dart';
 import 'package:app/components/image_tile.dart';
 import 'package:app/components/text_field.dart';
+import 'package:app/services/auth_service.dart';
 import 'package:app/utils.dart' as utils;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -140,15 +141,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ],
                 ),
                 const SizedBox(height: 20),
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ImageTile(
+                      onTap: () => AuthService().signInWithGoogle(),
                       imagePath: 'lib/assets/images/google.png',
                       imageHeight: 30,
                     ),
-                    SizedBox(width: 30),
+                    const SizedBox(width: 30),
                     ImageTile(
+                      onTap: () => AuthService().signInWithFacebook(),
                       imagePath: 'lib/assets/images/facebook.png',
                       imageHeight: 30,
                     ),
