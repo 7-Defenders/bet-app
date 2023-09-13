@@ -151,7 +151,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     const SizedBox(width: 30),
                     ImageTile(
-                      onTap: () => AuthService().signInWithFacebook(),
+                      // onTap: () => AuthService().signInWithFacebook(),
+                      onTap: () {},
                       imagePath: 'lib/assets/images/facebook.png',
                       imageHeight: 30,
                     ),

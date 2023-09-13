@@ -144,7 +144,8 @@ class _LogInScreenState extends State<LogInScreen> {
                     ),
                     const SizedBox(width: 30),
                     ImageTile(
-                      onTap: () => AuthService().signInWithFacebook(),
+                      // onTap: () => AuthService().signInWithFacebook(),
+                      onTap: () {},
                       imagePath: 'lib/assets/images/facebook.png',
                       imageHeight: 30,
                     ),
