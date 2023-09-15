@@ -4,7 +4,7 @@ import 'package:app/components/svg_image_with_action.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-Widget topBar(BuildContext context) {
+Widget topBar(BuildContext context, String pathToSvg, dynamic Function() svgClickAction) {
   const double baseWidth = 380;
   final fem = MediaQuery.of(context).size.width / baseWidth;
   final ffem = fem * 0.97;
@@ -91,12 +91,11 @@ Widget topBar(BuildContext context) {
                   width: 48 * fem,
                   height: 48 * fem,
                   child: svgImageWithAction(
-                    svgPath: 'lib/assets/images/Settings.svg',
+                    svgPath: pathToSvg,
                     width: 48 * fem,
                     height: 48 * fem,
                     action: () {
-                      //TODO: implement taking user to settings screen
-                      notImplementedYetSnackbar(context);
+                      svgClickAction();
                     },
                   ),
                 ),

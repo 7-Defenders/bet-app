@@ -13,7 +13,12 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        topBar(context),
+        topBar(context,
+         'lib/assets/images/Settings.svg',
+         () {
+          //TODO navigate to settings screen
+         },
+        ),
         const Expanded(
           child: Center(
               child: Text(

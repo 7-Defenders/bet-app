@@ -14,7 +14,14 @@ class _EventsScreenState extends State<EventsScreen> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        topBar(context),
+        topBar(
+          context,
+         'lib/assets/images/Settings.svg',
+         () {
+          //TODO navigate to settings screen
+          Navigator.pushNamed(context, '/settings');
+         },
+        ),
         const Expanded(
           child: Center(
               child: Text(
