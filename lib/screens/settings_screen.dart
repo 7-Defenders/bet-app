@@ -1,3 +1,4 @@
+import 'package:app/assets/translations.dart';
 import 'package:app/components/top_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -61,7 +62,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       final prefs = await SharedPreferences.getInstance();
                       prefs.setString(sharedPrefsKeyName, choice);
                     },
-                    child: Text(choice),
+                    child: Text(translate(choice, selectedLanguage)),
                   ),
               ],
             ),
@@ -92,73 +93,73 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-      child: Column(
-        children: [
-          topBar(
-            context,
-            'lib/assets/images/go-back.svg',
-            () {
-              Navigator.pop(context);
-            },
-          ),
-          ListView(
-            shrinkWrap: true,
-            padding: const EdgeInsets.all(16.0),
-            children: <Widget>[
-              ListTile(
-                title: const Text('Language'),
-                subtitle: Text(selectedLanguage),
-                onTap: () {
-                  _showDialog(
-                    "Select language:", // alertTitle
-                    'selectedLanguage', // sharedPrefsKeyName
-                    ['English', 'Polish', 'German', 'Russian'], // choices
-                  );
-                },
-              ),
-              ListTile(
-                title: const Text('Dark Mode'),
-                subtitle: Text(selectedDarkModeEnabled),
-                onTap: () {
-                  _showDialog(
-                    "Dark mode: ",
-                    'selectedDarkModeEnabled',
-                    ['on', 'off'],
-                  );
-                },
-              ),
-              ListTile(
-                title: const Text('Betting Odds Format'),
-                subtitle: Text(selectedOddsFormat),
-                onTap: () {
-                  _showDialog(
-                    "Select odds format:",
-                    'selectedOddsFormat',
-                    ['Decimal', 'Fractional', 'American'],
-                  );
-                },
-              ),
-              ListTile(
-                title: const Text('Notifications'),
-                subtitle: Text(selectedNotificationsOption),
-                onTap: () {
-                  _showDialog(
-                    "Select notification option:",
-                    'selectedNotificationsOption',
-                    [
-                      'EndOfEveryMatch',
-                      'Idk',
-                      'Any',
-                      'Other',
-                      'Never',
-                    ],
-                  );
-                },
-              ),
-            ],
-          ),
-        ],
-      ),
+        child: Column(
+          children: [
+            topBar(
+              context,
+              'lib/assets/images/go-back.svg',
+              () {
+                Navigator.pop(context);
+              },
+            ),
+            ListView(
+              shrinkWrap: true,
+              padding: const EdgeInsets.all(16.0),
+              children: <Widget>[
+                ListTile(
+                  title: Text(translate("Language", selectedLanguage)),
+                  subtitle: Text(translate(selectedLanguage, selectedLanguage)),
+                  onTap: () {
+                    _showDialog(
+                      translate("Select language:", selectedLanguage), // alertTitle
+                      'selectedLanguage', // sharedPrefsKeyName
+                      ['English', 'Polish', 'German', 'Russian'], // choices
+                    );
+                  },
+                ),
+                ListTile(
+                  title: Text(translate("Dark Mode", selectedLanguage)),
+                  subtitle: Text(translate(selectedDarkModeEnabled, selectedLanguage)),
+                  onTap: () {
+                    _showDialog(
+                      translate("Dark mode:", selectedLanguage),
+                      'selectedDarkModeEnabled',
+                      ['on', 'off'],
+                    );
+                  },
+                ),
+                ListTile(
+                  title: Text(translate('Betting Odds Format', selectedLanguage)),
+                  subtitle: Text(translate(selectedOddsFormat, selectedLanguage)),
+                  onTap: () {
+                    _showDialog(
+                      translate("Select odds format:", selectedLanguage),
+                      'selectedOddsFormat',
+                      ['Decimal', 'Fractional', 'American'],
+                    );
+                  },
+                ),
+                ListTile(
+                  title: Text(translate('Notifications', selectedLanguage)),
+                  subtitle: Text(translate(selectedNotificationsOption, selectedLanguage)),
+                  onTap: () {
+                    _showDialog(
+                      "Select notification option:",
+                      'selectedNotificationsOption',
+                      [
+                        'EndOfEveryMatch',
+                        'Idk',
+                        'Any',
+                        'Other',
+                        'Never',
+                      ],
+                    );
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
