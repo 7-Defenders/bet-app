@@ -1,10 +1,10 @@
-import 'package:app/components/not_implemented_yet_snackbar.dart';
-import 'package:app/components/profile_button.dart';
-import 'package:app/components/profile_change_button.dart';
-import 'package:app/components/profile_social_media_button.dart';
+import 'package:app/assets/translations.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -13,179 +13,124 @@ class ProfileScreen extends StatefulWidget {
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
 
+class _ProfileScreenState extends State<ProfileScreen> {
+  String selectedLanguage = 'English';
   final user = FirebaseAuth.instance.currentUser;
 
   @override
+  void initState() {
+    super.initState();
+    getSelectedLanguage().then((language) {
+      setState(() {
+        selectedLanguage = language;
+      });
+    });
+  }
+
+  Future<String> getSelectedLanguage() async {
+    final prefs = await SharedPreferences.getInstance();
+    final selectedLanguage = prefs.getString('selectedLanguage') ?? 'English';
+    print(selectedLanguage);
+    return selectedLanguage;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    const double baseWidth = 380;
-    final fem = MediaQuery.of(context).size.width / baseWidth;
-    final ffem = fem * 0.97;
 
-    return Container(
-      // profilezMd (3:11)
-      width: double.infinity,
-      decoration: const BoxDecoration(
-        color: Color(0xffffffff),
-      ),
-      child: Column(
-        children: [
-          Container(
-            // profileheaderfyZ (12:182)
-            margin: EdgeInsets.fromLTRB(0 * fem, 0 * fem, 0 * fem, 15 * fem),
-            width: double.infinity,
-            height: 210 * fem,
-            child: Stack(
-              children: [
-                Positioned(
-                  // rectangle459Nw (3:65)
-                  left: 0 * fem,
-                  top: 0 * fem,
-                  child: Align(
-                    child: SizedBox(
-                      width: 500 * fem,
-                      height: 140 * fem,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: const Color(0xffe95800),
-                          boxShadow: [
-                            BoxShadow(
-                              color: const Color(0x3f000000),
-                              offset: Offset(0 * fem, 4 * fem),
-                              blurRadius: 2 * fem,
+    final double vh = MediaQuery.of(context).size.height/100;
+    final double vw = MediaQuery.of(context).size.width/100;
+
+    Future<void> logOutUser() async {
+      await FirebaseAuth.instance.signOut();
+    }
+
+    return Stack(
+      children: [
+        Container(
+          decoration: const BoxDecoration(
+            // color: Color.fromARGB(255, 93, 183, 172),
+            color: Color.fromARGB(255, 93, 100, 255),
+          ),
+        ),
+        Positioned(
+          top: 26*vh, // Adjust the value as needed
+          left: 0,
+          right: 0,
+          bottom: 0,
+          child: ClipRRect(
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(35)),
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Color.fromARGB(255, 250,250,250),
+              ),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Container(
+                      padding: EdgeInsets.fromLTRB(0,15*vh, 0, 0),
+                      child: Column(
+                        children: [
+                          GestureDetector(
+                            onTap: logOutUser,
+                            child: Container(
+                              width: 70*vw,
+                              height: 8*vh,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                color: const Color.fromARGB(255, 254,255,254),
+                              ),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.fromLTRB(5*vw, 0, 5*vw, 0),
+                                    child: const Icon(Icons.logout, color: Color.fromARGB(255, 93, 100, 255)),
+                                  ),
+                                  Text(
+                                    translate('Log Out', selectedLanguage),
+                                    style: GoogleFonts.roboto(
+                                      textStyle: const TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        //grayish black
+                                        color: Color.fromARGB(240, 40, 40, 40),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  // group71Scw (12:136)
-                  left: 130 * fem,
-                  top: 80 * fem,
-                  child: Container(
-                    padding: EdgeInsets.fromLTRB(
-                        5 * fem, 5 * fem, 5 * fem, 5 * fem,),
-                    width: 120 * fem,
-                    height: 120 * fem,
-                    decoration: BoxDecoration(
-                      color: const Color(0xffffffff),
-                      borderRadius: BorderRadius.circular(90 * fem),
-                    ),
-                    child: Center(
-                      // dsc025941wJo (3:139)
-                      child: SizedBox(
-                        width: 110 * fem,
-                        height: 110 * fem,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(90 * fem),
-                          child: Image(
-                            image: const AssetImage(
-                                'lib/assets/images/cat.jpg',),
-                            width: 110 * fem,
-                            height: 110 * fem,
-                            fit: BoxFit.cover,
                           ),
-                        ),
-                        
+                        ],
                       ),
                     ),
                   ),
-                ),
-                Positioned(
-                  left: 0,
-                  right: 0,
-                  top: 40 * fem,
-                  child: Center(
-                    child: SizedBox(
-                      height: 27 * fem,
-                      child: Text(
-                        user!.email!,
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.tiltNeon(
-                          fontSize: 20 * ffem,
-                          fontWeight: FontWeight.w400,
-                          height: 0.7 * ffem / fem,
-                          letterSpacing: 0.5 * fem,
-                          color: const Color(0xffffffff),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-
-          profileChangeButton(fem, ffem, context, 'Change username', () {
-            notImplementedYetSnackbar(context);
-          }), //TODO: implement taking user to change username screen
-          profileChangeButton(fem, ffem, context, 'Change profile picture',
-              () {
-            notImplementedYetSnackbar(context);
-          }), //TODO: implement taking user to change pfp screen
-          profileChangeButton(fem, ffem, context, 'Change password', () {
-            notImplementedYetSnackbar(context);
-          }), //TODO: implement taking user to change password screen
-
-          SizedBox(height: 30 * fem,),
-
-          profileButton(context, fem, ffem, 'Statistics', () {
-            notImplementedYetSnackbar(context);
-          }, const Color(0xffffb303),), //TODO: implement taking user to statistics screen
-          profileButton(context, fem, ffem, 'Achievements',
-          () {
-            notImplementedYetSnackbar(context);
-          }, const Color(0xffffb303),), //TODO: implement taking user to achievements screen
-
-          SizedBox(height: 30 * fem,),
-
-          Container(
-            // connectwithsocialsiw9 (12:149)
-            margin:
-                EdgeInsets.fromLTRB(62 * fem, 0 * fem, 56 * fem, 30 * fem),
-            width: double.infinity,
-            child: Row(
-              children: [
-                SizedBox(
-                  width: 0 * fem,
+        ),
+        Positioned(
+          top: 17*vh, // Adjust the value as needed
+          left: 0,
+          right: 0,
+          child: Center(
+            child: Container(
+              width: 19*vh,
+              height: 19*vh,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(40),
+                border: Border.all(width: 10, color: const Color.fromARGB(255, 254,255,254)),
+                // border: Border.all(width: 5, color: Colors.white),
+                image: const DecorationImage(
+                  fit: BoxFit.fill,
+                  image: AssetImage('lib/assets/images/cat.jpg'),
                 ),
-                profileSocialMediaImage(
-                    'lib/assets/images/icons8-facebook.svg',
-                    fem,
-                    ffem,
-                    context, () {
-                  notImplementedYetSnackbar(context);
-                }),
-                SizedBox(
-                  width: 46 * fem,
-                ),
-                profileSocialMediaImage(
-                    'lib/assets/images/icons8-google.svg', fem, ffem, context,
-                    () {
-                  notImplementedYetSnackbar(context);
-                }),
-                SizedBox(
-                  width: 46 * fem,
-                ),
-                profileSocialMediaImage(
-                    'lib/assets/images/icons8-twitter.svg',
-                    fem,
-                    ffem,
-                    context, () {
-                  notImplementedYetSnackbar(context);
-                }),
-              ],
+              ),
             ),
           ),
-          SizedBox(height: 40 * fem,),
-          profileButton(context, fem, ffem, 'Logout', () {
-            FirebaseAuth.instance.signOut();
-          }, const Color(0xffe95800),),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

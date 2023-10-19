@@ -22,7 +22,7 @@ class _EventsScreenState extends State<EventsScreen> {
               Navigator.pushNamed(context, '/settings');
             },
           ),
-          const BetSelector(),
+          // const BetSelector(),
         ],
       ),
     );
