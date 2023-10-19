@@ -1,6 +1,6 @@
 import 'package:app/assets/translations.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,6 +17,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   String selectedLanguage = 'English';
   final user = FirebaseAuth.instance.currentUser;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   @override
   void initState() {
@@ -31,7 +32,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<String> getSelectedLanguage() async {
     final prefs = await SharedPreferences.getInstance();
     final selectedLanguage = prefs.getString('selectedLanguage') ?? 'English';
-    print(selectedLanguage);
     return selectedLanguage;
   }
 
@@ -40,6 +40,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     final double vh = MediaQuery.of(context).size.height/100;
     final double vw = MediaQuery.of(context).size.width/100;
+
+    Future<String> getUsername(String uid) async {
+      final DocumentSnapshot documentSnapshot = await firestore.collection('Users').doc(uid).get();
+
+      final data = documentSnapshot.data()! as Map<String, dynamic>;
+      return data['displayName'] as String;
+    }
+
+    Future<String> getUserEmail(String uid) async {
+      final DocumentSnapshot documentSnapshot = await firestore.collection('Users').doc(uid).get();
+
+      final data = documentSnapshot.data()! as Map<String, dynamic>;
+      return data['mail'] as String;
+    }
 
     Future<void> logOutUser() async {
       await FirebaseAuth.instance.signOut();
@@ -54,7 +68,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
         Positioned(
-          top: 26*vh, // Adjust the value as needed
+          top: 26*vh,
           left: 0,
           right: 0,
           bottom: 0,
@@ -68,13 +82,51 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 children: [
                   Expanded(
                     child: Container(
-                      padding: EdgeInsets.fromLTRB(0,15*vh, 0, 0),
+                      padding: EdgeInsets.fromLTRB(0,12*vh, 0, 0),
                       child: Column(
-                        children: [
+                        children: [ //TODO: there are 2 containers with futurebuilders - create a widget for them in assets for clean codes sake
+                          Container(
+                            padding: EdgeInsets.fromLTRB(0, 0, 0, 1 * vh),
+                            child: FutureBuilder<String>(
+                              future: getUsername(user!.uid),
+                              builder: (context, snapshot) {
+                                return Text(
+                                  snapshot.hasData ? snapshot.data! : 'Loading...',
+                                  style: GoogleFonts.nunito(
+                                    textStyle: const TextStyle(
+                                      fontSize: 50,
+                                      fontWeight: FontWeight.bold,
+                                      //grayish black
+                                      color: Color.fromARGB(240, 40, 40, 40),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                          Container(
+                            padding: EdgeInsets.fromLTRB(0, 0, 0, 5*vh),
+                            child: FutureBuilder<String>(
+                              future: getUserEmail(user!.uid),
+                              builder: (context, snapshot) {
+                                return Text(
+                                  snapshot.hasData ? snapshot.data! : 'Loading...',
+                                  style: GoogleFonts.nunito(
+                                    textStyle: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      //grayish black
+                                      color: Colors.grey[600],
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
                           GestureDetector(
                             onTap: logOutUser,
                             child: Container(
-                              width: 70*vw,
+                              width: 85*vw,
                               height: 8*vh,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(15),
@@ -88,13 +140,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   ),
                                   Text(
                                     translate('Log Out', selectedLanguage),
-                                    style: GoogleFonts.roboto(
-                                      textStyle: const TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                        //grayish black
-                                        color: Color.fromARGB(240, 40, 40, 40),
-                                      ),
+                                    style: GoogleFonts.nunito(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: const Color.fromARGB(240, 40, 40, 40),
                                     ),
                                   ),
                                 ],
@@ -111,7 +160,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
         Positioned(
-          top: 17*vh, // Adjust the value as needed
+          top: 17*vh,
           left: 0,
           right: 0,
           child: Center(

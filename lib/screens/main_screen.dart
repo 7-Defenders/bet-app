@@ -53,13 +53,15 @@ class _MainScreenState extends State<MainScreen> {
         padding: const EdgeInsets.all(12),
         width: MediaQuery.of(context).size.width / 4,
         decoration: BoxDecoration(
+          color: Colors.white,
           border: Border(
             top: BorderSide(
               color: isSelected
                   // ? const Color.fromARGB(255, 93, 183, 172)
                   ? const Color.fromARGB(255, 93, 100, 255)
                   : Colors.transparent,
-              width: 2,
+                  // : Colors.grey[600]!,
+              width: isSelected ? 2 : 0,
             ),
           ),
         ),
