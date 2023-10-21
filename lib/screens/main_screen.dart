@@ -30,17 +30,47 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: pages[currentIndex],
-      bottomNavigationBar: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          buildNavBarItem(FontAwesomeIcons.user, 0, 'Profile'),
-          buildNavBarItem(FontAwesomeIcons.futbol, 1, 'Events'),
-          buildNavBarItem(FontAwesomeIcons.trophy, 2, 'Leagues'),
-          buildNavBarItem(FontAwesomeIcons.cartShopping, 3, 'Shop'),
-        ],
-      ),
+    // return Scaffold(
+    //   body: pages[currentIndex],
+    //   bottomNavigationBar: Row(
+    //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    //     children: [
+    //       buildNavBarItem(FontAwesomeIcons.user, 0, 'Profile'),
+    //       buildNavBarItem(FontAwesomeIcons.futbol, 1, 'Events'),
+    //       buildNavBarItem(FontAwesomeIcons.trophy, 2, 'Leagues'),
+    //       buildNavBarItem(FontAwesomeIcons.cartShopping, 3, 'Shop'),
+    //     ],
+    //   ),
+    // );
+    return Column(
+      children: [
+        Expanded(
+          child: pages[currentIndex],
+        ),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Container(
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 5,
+                ),
+              ],
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                buildNavBarItem(FontAwesomeIcons.user, 0, 'Profile'),
+                buildNavBarItem(FontAwesomeIcons.futbol, 1, 'Events'),
+                buildNavBarItem(FontAwesomeIcons.trophy, 2, 'Leagues'),
+                buildNavBarItem(FontAwesomeIcons.cartShopping, 3, 'Shop'),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 
