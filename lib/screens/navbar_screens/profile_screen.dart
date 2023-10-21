@@ -1,13 +1,15 @@
 import 'dart:io';
 
 import 'package:app/assets/translations.dart';
-import 'package:app/components/text_input_dialog.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:app/components/constants.dart' as constants;
+import 'package:app/components/nunito_text.dart';
+import 'package:app/components/profile_screen/gesture_detector_button.dart';
+import 'package:app/components/profile_screen/profile_pic.dart';
+import 'package:app/components/profile_screen/text_input_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -24,7 +26,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   String selectedLanguage = 'English';
   final user = FirebaseAuth.instance.currentUser;
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final FirebaseStorage storage = FirebaseStorage.instance;
 
   String? displayName;
@@ -41,16 +42,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         selectedLanguage = language;
       });
     });
-    getUserData();
-  }
-
-  Future<void> getUserData() async {
-    displayName = user?.displayName;
-    email = user?.email;
-    photoURL = user?.photoURL;
-    emailVerified = user?.emailVerified;
-    uid = user?.uid;
-    print('User Data: $displayName, $email, $photoURL, $emailVerified, $uid');
+    email = user!.email;
+    displayName = user!.displayName;
+    photoURL = user!.photoURL;
   }
 
   Future<String> getSelectedLanguage() async {
@@ -69,20 +63,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
       source: ImageSource.gallery,
       imageQuality: 75,
     );
-
     if (image == null) return;
-
     // upload to firebase storage
     final ref = storage.ref().child('profile_pictures/${user!.uid}');
     final uploadTask = ref.putFile(
       File(image.path),
     );
     final snapshot = await uploadTask.whenComplete(() => null);
-
-    // get download url and update user profile
+    // wait for download url, set photoURL and setState()
     final downloadURL = await snapshot.ref.getDownloadURL();
     await user!.updatePhotoURL(downloadURL);
-
+    photoURL = downloadURL;
     setState(() {});
   }
 
@@ -101,16 +92,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
           }
           return null;
         },
+        // TODO: add a check to see if username is already taken
         onSaved: (value) async {
-          print(value);
           await user!.updateDisplayName(value);
-          getUserData();
+          displayName = value;
+          setState(() {});
         },
       ),
     );
-    getUserData();
-    setState(() {});
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -120,12 +111,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     return Stack(
       children: [
+        // background primary color
         Container(
           decoration: const BoxDecoration(
-            // color: Color.fromARGB(255, 93, 183, 172),
-            color: Color.fromARGB(255, 93, 100, 255),
+            color: constants.primaryColor,
           ),
         ),
+        // white background
         Positioned(
           top: 26*vh,
           left: 0,
@@ -135,7 +127,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             borderRadius: const BorderRadius.vertical(top: Radius.circular(35)),
             child: Container(
               decoration: const BoxDecoration(
-                color: Color.fromARGB(255, 250,250,250),
+                color: constants.bgColor,
               ),
               child: Column(
                 children: [
@@ -143,94 +135,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     child: Container(
                       padding: EdgeInsets.fromLTRB(0,12*vh, 0, 0),
                       child: Column(
-                        children: [ //TODO: there are 2 containers with futurebuilders - create a widget for them in assets for clean codes sake
+                        children: [
+                          // displayName
                           Container(
                             padding: EdgeInsets.fromLTRB(0, 0, 0, 1 * vh),
-                            child: Text(
-                              displayName!,
-                              style: GoogleFonts.nunito(
-                                textStyle: const TextStyle(
-                                  fontSize: 50,
-                                  fontWeight: FontWeight.bold,
-                                  //grayish black
-                                  color: Color.fromARGB(240, 40, 40, 40),
-                                ),
-                              ),
-                            ),
+                            child: nunitoText(displayName!, 50, FontWeight.bold, constants.tertiaryColor),
                           ),
+                          // email
                           Container(
                             padding: EdgeInsets.fromLTRB(0, 0, 0, 5*vh),
-                            child: Text(
-                              email!,
-                              style: GoogleFonts.nunito(
-                                textStyle: const TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  //grayish black
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ),
+                            child: nunitoText(email!, 20, FontWeight.bold, constants.senaryColor),
                           ),
+                          //change username
                           Container(
                             padding: EdgeInsets.fromLTRB(0, 0, 0, 2*vh),
-                            child: GestureDetector(
-                              onTap: logOutUser,
-                              child: Container(
-                                width: 85*vw,
-                                height: 8*vh,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                  color: const Color.fromARGB(255, 254,255,254),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      padding: EdgeInsets.fromLTRB(5*vw, 0, 5*vw, 0),
-                                      child: const Icon(Icons.logout, color: Color.fromARGB(255, 93, 100, 255)),
-                                    ),
-                                    Text(
-                                      translate('Log Out', selectedLanguage),
-                                      style: GoogleFonts.nunito(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                        color: const Color.fromARGB(240, 40, 40, 40),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
+                            child: gestureDetectorButton(FontAwesomeIcons.penToSquare, translate("Change username", selectedLanguage), changeDisplayName, vw, vh),
                           ),
+                          // log out
                           Container(
                             padding: EdgeInsets.fromLTRB(0, 0, 0, 2*vh),
-                            child: GestureDetector(
-                              onTap: changeDisplayName,
-                              child: Container(
-                                width: 85*vw,
-                                height: 8*vh,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                  color: const Color.fromARGB(255, 254,255,254),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      padding: EdgeInsets.fromLTRB(5*vw, 0, 5*vw, 0),
-                                      child: const Icon(FontAwesomeIcons.penToSquare, color: Color.fromARGB(255, 93, 100, 255)),
-                                    ),
-                                    Text(
-                                      translate('Change username', selectedLanguage),
-                                      style: GoogleFonts.nunito(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                        color: const Color.fromARGB(240, 40, 40, 40),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
+                            child: gestureDetectorButton(Icons.logout, translate("Log Out", selectedLanguage), logOutUser, vw, vh),
                           ),
                         ],
                       ),
@@ -246,44 +170,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
           left: 0,
           right: 0,
           child: Center(
-            child: Container(
-              width: 19*vh,
-              height: 19*vh,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(40),
-                border: Border.all(width: 10, color: const Color.fromARGB(255, 254,255,254)),
-                // border: Border.all(width: 5, color: Colors.white),
-                image: DecorationImage(
-                  fit: BoxFit.fill,
-                  image: photoURL != ""
-                      ? Image.network(photoURL!).image
-                      : Image.asset('lib/assets/images/default_profile_picture.png').image,
-                ),
-              ),
-            ),
+            child: pictureWithBorder(photoURL, vh),
           ),
         ),
         Positioned(
           top: 31*vh,
           left: 31*vw,
           right: 0,
-          child: Center(
-            child: GestureDetector(
-              onTap: changeProfilePicture,
-              child: Container(
-                width: 6*vh,
-                height: 5.5*vh,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: const Color.fromARGB(255, 254,255,254),
-                ),
-                child: const Icon(
-                  Icons.camera_alt_outlined,
-                  color: Color.fromARGB(255, 93, 100, 255),
-                ),
-              ),
-            ),
-          ),
+          child: smallButton(changeProfilePicture, vw, vh, Icons.camera_alt_outlined),
         ),
       ],
     );
