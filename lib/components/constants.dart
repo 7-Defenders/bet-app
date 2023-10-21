@@ -11,3 +11,4 @@ const Color senaryColor = Colors.grey;
 //background color:
 const Color bgColor = Color.fromARGB(255, 250, 250, 250);
 Color? navbarIconColor = Colors.grey[600];
+Color? dialogWindowTextColor = Colors.grey[700];

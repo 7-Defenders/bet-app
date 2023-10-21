@@ -1,5 +1,7 @@
+import 'package:app/components/constants.dart' as constants;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:app/components/nunito_text.dart';
 
 class TextInputDialog extends StatefulWidget {
   final double vw;
@@ -49,13 +51,14 @@ class _TextInputDialogState extends State<TextInputDialog> {
       backgroundColor: Colors.transparent,
       child: SafeArea(
         child: Container(
-          height: 33*widget.vh, // TODO: make this dynamic
+          height: 33*widget.vh,
           width: 85*widget.vw,
           decoration: BoxDecoration(
-            color: const Color.fromARGB(255, 250,250,250),
+            color: constants.bgColor,
             borderRadius: BorderRadius.circular(16),
             boxShadow: const [
               BoxShadow(
+                // shadow color, no need to be in constants
                 color: Colors.black26,
                 blurRadius: 10,
               ),
@@ -74,7 +77,7 @@ class _TextInputDialogState extends State<TextInputDialog> {
                       style: GoogleFonts.nunito(
                         fontSize: 30,
                         fontWeight: FontWeight.bold,
-                        color: const Color.fromARGB(240, 40, 40, 40),
+                        color: constants.tertiaryColor,
                       ),
                     ),
                   ),
@@ -86,7 +89,7 @@ class _TextInputDialogState extends State<TextInputDialog> {
                     widget.subtext,
                     style: const TextStyle(
                       fontSize: 13,
-                      color: Colors.grey,
+                      color: constants.senaryColor,
                     ),
                   ),
                 ),
@@ -98,9 +101,9 @@ class _TextInputDialogState extends State<TextInputDialog> {
                       hintText: widget.hintText,
                       hintStyle: GoogleFonts.nunito(
                         fontSize: 15,
-                        color: Colors.grey[700],
+                        color: constants.dialogWindowTextColor,
                       ),
-                      fillColor: const Color.fromARGB(255, 254,255,254),
+                      fillColor: constants.secondaryColor,
                     ),
                     controller: textController,
                     focusNode: focusNode,
@@ -124,14 +127,7 @@ class _TextInputDialogState extends State<TextInputDialog> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Center(
-                              child: Text(
-                                'Cancel',
-                                style: GoogleFonts.nunito(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
-                                  color: const Color.fromARGB(255, 254, 255, 254),
-                                ),
-                              ),
+                              child: nunitoText('Cancel', 15, FontWeight.bold, const Color.fromARGB(255, 254, 255, 254)),
                             ),
                           ),
                         ),
@@ -145,10 +141,8 @@ class _TextInputDialogState extends State<TextInputDialog> {
                             formKey.currentState!.validate(),
                             if (formKey.currentState!.validate()) {
                               formKey.currentState?.save(),
-                              print("valid"),
                               Navigator.pop(context),
                             } else {
-                              print("invalid"),
                             },
                           },
                           child: Container(
@@ -158,14 +152,8 @@ class _TextInputDialogState extends State<TextInputDialog> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Center(
-                              child: Text(
-                                'Save',
-                                style: GoogleFonts.nunito(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
-                                  color: const Color.fromARGB(255, 254, 255, 254),
-                                ),
-                              ),
+                              // don't use constants color, since the button will always be green so text should be white
+                              child: nunitoText('Save', 15, FontWeight.bold, const Color.fromARGB(255, 254, 255, 254)),
                             ),
                           ),
                         ),
