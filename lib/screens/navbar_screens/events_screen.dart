@@ -1,3 +1,4 @@
+import 'package:app/components/bet_preview.dart';
 import 'package:app/components/bet_selector.dart';
 import 'package:app/components/top_bar.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,7 @@ class _EventsScreenState extends State<EventsScreen> {
             },
           ),
           const BetSelector(),
+          const BetPreviewWidget(eventName: 'Arsenal - Chelsea', eventDetails: 'Premier League', bets: {'1':1.91, 'X': 3.24, '2':2.06},),
         ],
       ),
     );
