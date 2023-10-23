@@ -70,7 +70,7 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
                       child: ElevatedButton(
                         onPressed: () {
                           setState(() {
-                            _selectedOption = entry.key;
+                            _selectedOption = _selectedOption == entry.key ? null : entry.key;
                           });
                         },
                         style: ElevatedButton.styleFrom(
