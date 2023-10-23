@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class BetPreviewWidget extends StatefulWidget {
   final String eventName;
@@ -16,46 +17,82 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: Colors.grey,
-          width: 2.0,
-        ),
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      child: Wrap(
-        spacing: 8.0,
-        children: [
-          Column(
-          children: [...[
-            Text(widget.eventName),
-            Text(widget.eventDetails),
-            ],
-            Row(
-              children: widget.bets.entries.map((entry) {
-              return ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    _selectedOption = entry.key;
-                  });
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      _selectedOption == entry.key ? Colors.blue : Colors.amber,
-                ),
-                child:
-                    Column(
-                  children: [
-                    Text(entry.key),
-                    Text(entry.value.toString()),
-                    ],
-                  ),
-              ); 
-              }).toList(),),
-            ],),],
-            ),
+    final double containterWidth = MediaQuery.of(context).size.width * 0.9;
+    const double padding = 8.0;
+    const SizedBox paddingBox = SizedBox(height: padding, width: padding);
 
-      );
+    return Card(
+      elevation: 20,
+      child: Container(
+        width: containterWidth,
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 255, 136, 0),
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        child: Wrap(
+          spacing: 8.0,
+          children: [
+            Column(
+              children: [
+                Row(
+                  children: [
+                    paddingBox,
+                    SizedBox(
+                      width: 30,
+                      height: 30,
+                      child: SvgPicture.asset('lib/assets/images/futbol-regular.svg'),
+                    ),
+                    paddingBox,
+                    Column(
+                      children: [
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            widget.eventName,
+                            style: const TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(widget.eventDetails),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Wrap(
+                  children: widget.bets.entries.map((entry) {
+                    return SizedBox(
+                      width: containterWidth / widget.bets.length,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            _selectedOption = entry.key;
+                          });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              _selectedOption == entry.key ? Colors.blue : Colors.amber,
+                        ),
+                        child:
+                            Column(
+                          children: [
+                            Text(entry.key),
+                            Text(entry.value.toString()),
+                            ],
+                          ),
+                      ),
+                    ); 
+                  }).toList(),
+                ),
+              ],
+            ),
+          ],
+        ),
+      )
+    );
   }
 }
