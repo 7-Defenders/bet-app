@@ -89,7 +89,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             fit: BoxFit.cover,
                           ),
                         ),
-                        
                       ),
                     ),
                   ),

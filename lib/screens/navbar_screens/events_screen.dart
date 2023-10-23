@@ -24,7 +24,7 @@ class _EventsScreenState extends State<EventsScreen> {
             },
           ),
           const BetSelector(),
-          const BetPreviewWidget(eventName: 'Arsenal - Chelsea', eventDetails: 'Premier League', bets: {'1':1.91, 'X': 3.24, '2':2.06},),
+          const BetPreviewWidget(eventName: 'Arsenal - Chelsea', eventDetails: 'Premier League', bets: {'1':1.91, '1X':1.37, 'X': 3.24, 'X2':1.73, '2':2.06},),
         ],
       ),
     );
