@@ -30,10 +30,10 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
           borderRadius: BorderRadius.circular(8.0),
         ),
         child: Wrap(
-          spacing: 8.0,
           children: [
             Column(
               children: [
+                paddingBox,
                 Row(
                   children: [
                     paddingBox,
@@ -63,10 +63,13 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
                     ),
                   ],
                 ),
-                Wrap(
+                paddingBox,
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: widget.bets.entries.map((entry) {
                     return SizedBox(
                       width: containterWidth / widget.bets.length,
+                      height:40.0,
                       child: ElevatedButton(
                         onPressed: () {
                           setState(() {
@@ -78,11 +81,13 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
                               _selectedOption == entry.key ? Colors.blue : Colors.amber,
                         ),
                         child:
-                            Column(
-                          children: [
-                            Text(entry.key),
-                            Text(entry.value.toString()),
-                            ],
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: 
+                              [
+                                Text(entry.key),
+                                Text(entry.value.toString()),
+                              ],
                           ),
                       ),
                     ); 
@@ -92,7 +97,7 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
             ),
           ],
         ),
-      )
+      ),
     );
   }
 }
