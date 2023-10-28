@@ -1,17 +1,17 @@
-import 'package:app/utils/constants.dart' as constants;
 import 'package:flutter/material.dart';
 
 // profile picture with border
 Widget pictureWithBorder (
-  String? photoURL,
-  double vh,
+    String? photoURL,
+    double vh,
+    BuildContext context,
 ) {
   return Container(
     width: 19*vh,
     height: 19*vh,
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(40),
-      border: Border.all(width: 10, color: constants.secondaryColor),
+      border: Border.all(width: 10, color: Theme.of(context).colorScheme.background),
       image: DecorationImage(
         fit: BoxFit.fill,
         image: photoURL != ""
@@ -28,6 +28,7 @@ Widget smallButton(
     double vw,
     double vh,
     IconData? icon,
+    BuildContext context,
 ) {
   return Center(
     child: GestureDetector(
@@ -37,11 +38,11 @@ Widget smallButton(
         height: 5.5*vh,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          color: constants.secondaryColor,
+          color: Theme.of(context).colorScheme.background,
         ),
         child: Icon(
           icon,
-          color: constants.primaryColor,
+          color: Theme.of(context).colorScheme.primary,
         ),
       ),
     ),

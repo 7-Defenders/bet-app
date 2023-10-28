@@ -2,7 +2,6 @@ import 'package:app/screens/navbar_screens/events_screen.dart';
 import 'package:app/screens/navbar_screens/leagues_screen.dart';
 import 'package:app/screens/navbar_screens/profile_screen.dart';
 import 'package:app/screens/navbar_screens/shop_screen.dart';
-import 'package:app/utils/constants.dart' as constants;
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -61,11 +60,11 @@ class _MainScreenState extends State<MainScreen> {
         padding: const EdgeInsets.all(12),
         width: MediaQuery.of(context).size.width / 4,
         decoration: BoxDecoration(
-          color: constants.quaternaryColor,
+          color: Theme.of(context).colorScheme.onTertiary,
           border: Border(
             top: BorderSide(
               color: isSelected
-                  ? constants.primaryColor
+                  ? Theme.of(context).colorScheme.primary
                   : Colors.transparent,
               width: isSelected ? 2 : 0,
             ),
@@ -74,8 +73,8 @@ class _MainScreenState extends State<MainScreen> {
         child: Icon(
           iconData,
           color: isSelected
-              ? constants.primaryColor
-              : constants.navbarIconColor,
+              ? Theme.of(context).colorScheme.primary
+              : Theme.of(context).colorScheme.tertiary,
           size: iconSize,
         ),
       ),

@@ -13,7 +13,7 @@ Color? dialogWindowTextColor = Colors.grey[700];
 
 // Colors for dark mode
 const Color darkSecondaryColor = Color.fromARGB(255, 100, 100, 100);
-const Color darkTertiaryColor = Color.fromARGB(255, 255, 255, 255);
+const Color darkTertiaryColor = Color.fromARGB(255, 208, 208, 208);
 const Color darkQuaternaryColor = Color.fromARGB(255, 0, 0, 0);
 const Color darkQuinaryColor = Color.fromARGB(255, 255, 255, 255);
 const Color darkBgColor = Color.fromARGB(255, 40, 40, 40);
@@ -22,6 +22,10 @@ Color? darkSenaryColor = Colors.grey[800];
 
 Color getSecondaryColor(bool isDarkMode) {
   return isDarkMode ? darkSecondaryColor : secondaryColor;
+}
+
+Color getTeritaryColor(bool isDarkMode) {
+  return isDarkMode ? darkTertiaryColor : tertiaryColor;
 }
 
 Color getBgColor(bool isDarkMode) {

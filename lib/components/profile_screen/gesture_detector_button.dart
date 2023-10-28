@@ -1,5 +1,4 @@
 import 'package:app/components/other/nunito_text.dart';
-import 'package:app/utils/constants.dart' as constants;
 import 'package:flutter/material.dart';
 
 Widget gestureDetectorButton(
@@ -8,7 +7,7 @@ Widget gestureDetectorButton(
     void Function()? onTap,
     double vw,
     double vh,
-    bool isDarkMode,
+    BuildContext context,
 ) {
   return GestureDetector(
     onTap: onTap,
@@ -17,15 +16,15 @@ Widget gestureDetectorButton(
       height: 8*vh,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
-        color: constants.getSecondaryColor(isDarkMode),
+        color: Theme.of(context).colorScheme.onTertiary,
       ),
       child: Row(
         children: [
           Container(
             padding: EdgeInsets.fromLTRB(5*vw, 0, 5*vw, 0),
-            child: Icon(icon, color: constants.primaryColor),
+            child: Icon(icon, color: Theme.of(context).colorScheme.primary),
           ),
-          nunitoText(text, 20, FontWeight.bold, constants.tertiaryColor),
+          nunitoText(text, 20, FontWeight.bold, Theme.of(context).colorScheme.onBackground),
         ],
       ),
     ),

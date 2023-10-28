@@ -5,13 +5,14 @@ import 'package:app/components/other/nunito_text.dart';
 import 'package:app/components/profile_screen/gesture_detector_button.dart';
 import 'package:app/components/profile_screen/profile_pic.dart';
 import 'package:app/components/profile_screen/text_input_dialog.dart';
-import 'package:app/utils/constants.dart' as constants;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../components/profile_screen/settings_popup.dart';
 
 
 class ProfileScreen extends StatefulWidget {
@@ -33,7 +34,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? photoURL;
   bool? emailVerified;
   String? uid;
-  bool isDarkMode = false;
 
   @override
   void initState() {
@@ -41,11 +41,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     getSelectedLanguage().then((language) {
       setState(() {
         selectedLanguage = language;
-      });
-    });
-    getDarkModePreference().then((value) {
-      setState(() {
-        isDarkMode = value;
       });
     });
     email = user!.email;
@@ -57,21 +52,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final prefs = await SharedPreferences.getInstance();
     final selectedLanguage = prefs.getString('selectedLanguage') ?? 'English';
     return selectedLanguage;
-  }
-
-  Future<bool> getDarkModePreference() async {
-    final prefs = await SharedPreferences.getInstance();
-    final darkModePreference = prefs.getString('selectedDarkModeEnabled') ?? 'off';
-    return darkModePreference == 'on';
-  }
-
-  Future<void> toggleDarkMode() async {
-    setState(() {
-      isDarkMode = !isDarkMode;
-    });
-    // Update the shared preference based on the new value
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('selectedDarkModeEnabled', isDarkMode ? 'on' : 'off');
   }
 
   Future<void> logOutUser() async {
@@ -123,6 +103,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  Future<void> popupSettings() async {
+    await showDialog(
+        context: context,
+        builder: (context) => SettingsPopup(
+          vw: MediaQuery.of(context).size.width / 100,
+          vh: MediaQuery.of(context).size.height / 100,
+          title: translate('Settings', selectedLanguage),
+        ),
+    );
+    selectedLanguage = await getSelectedLanguage();
+    setState(() {
+      selectedLanguage = selectedLanguage;
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -134,8 +129,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       children: [
         // background primary color
         Container(
-          decoration: const BoxDecoration(
-            color: constants.primaryColor,
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.primary,
           ),
         ),
         // white background
@@ -148,7 +143,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             borderRadius: const BorderRadius.vertical(top: Radius.circular(35)),
             child: Container(
               decoration: BoxDecoration(
-                color: constants.getBgColor(isDarkMode),
+                color: Theme.of(context).colorScheme.background,
               ),
               child: Column(
                 children: [
@@ -160,26 +155,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           // displayName
                           Container(
                             padding: EdgeInsets.fromLTRB(0, 0, 0, 1 * vh),
-                            child: nunitoText(displayName!, 50, FontWeight.bold, constants.tertiaryColor),
+                            child: nunitoText(displayName!, 50, FontWeight.bold, Theme.of(context).colorScheme.onBackground),
                           ),
                           // email
                           Container(
                             padding: EdgeInsets.fromLTRB(0, 0, 0, 5*vh),
-                            child: nunitoText(email!, 20, FontWeight.bold, constants.senaryColor),
+                            child: nunitoText(email!, 20, FontWeight.bold, Theme.of(context).colorScheme.tertiary),
                           ),
                           //change username
                           Container(
                             padding: EdgeInsets.fromLTRB(0, 0, 0, 2*vh),
-                            child: gestureDetectorButton(FontAwesomeIcons.penToSquare, translate("Change username", selectedLanguage), changeDisplayName, vw, vh, isDarkMode),
+                            child: gestureDetectorButton(FontAwesomeIcons.penToSquare, translate("Change username", selectedLanguage), changeDisplayName, vw, vh, context),
                           ),
-                          // log out
+                          // navigate to settings
                           Container(
                             padding: EdgeInsets.fromLTRB(0, 0, 0, 2*vh),
-                            child: gestureDetectorButton(Icons.logout, translate("Log Out", selectedLanguage), logOutUser, vw, vh, isDarkMode),
-                          ),
-                          Container(
-                            padding: EdgeInsets.fromLTRB(0, 0, 0, 2*vh),
-                            child: gestureDetectorButton(isDarkMode ? Icons.light_mode_outlined : Icons.dark_mode_outlined, isDarkMode ? translate("Light mode", selectedLanguage) : translate("Dark mode", selectedLanguage), toggleDarkMode, vw, vh, isDarkMode),
+                            child: gestureDetectorButton(Icons.settings_outlined, translate("Settings", selectedLanguage), popupSettings, vw, vh, context,),
                           ),
                         ],
                       ),
@@ -190,19 +181,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ),
         ),
+        // log out
+        Container(
+          padding: EdgeInsets.fromLTRB(0, 0, 0, 5*vh),
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              child: gestureDetectorButton(Icons.logout, translate("Log Out", selectedLanguage), logOutUser, vw, vh, context),
+            ),
+          ),
+        ),
         Positioned(
           top: 17*vh,
           left: 0,
           right: 0,
           child: Center(
-            child: pictureWithBorder(photoURL, vh),
+            child: pictureWithBorder(photoURL, vh, context),
           ),
         ),
         Positioned(
           top: 31*vh,
           left: 31*vw,
           right: 0,
-          child: smallButton(changeProfilePicture, vw, vh, Icons.camera_alt_outlined),
+          child: smallButton(changeProfilePicture, vw, vh, Icons.camera_alt_outlined, context),
         ),
       ],
     );

@@ -1,20 +1,28 @@
 import 'package:app/assets/translations.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({super.key});
+class SettingsPopup extends StatefulWidget {
+  final double vw;
+  final double vh;
+  final String title;
+
+  const SettingsPopup({
+    super.key,
+    required this.vw,
+    required this.vh,
+    required this.title,
+  });
 
   @override
-  State<SettingsScreen> createState() => _SettingsScreenState();
+  State<SettingsPopup> createState() => _SettingsPopupState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
+class _SettingsPopupState extends State<SettingsPopup> {
   String selectedLanguage = 'English';
   String selectedOddsFormat = 'Decimal';
   String selectedNotificationsOption = 'EndOfEveryMatch';
-  String selectedDarkModeEnabled =
-      "off"; //made this a string instead of boolean for less hassle
 
   bool loading = true;
 
@@ -29,7 +37,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final selectedLanguageValue = prefs.getString('selectedLanguage');
     final selectedOddsFormatValue = prefs.getString('selectedOddsFormat');
     final selectedNotificationsOptionValue = prefs.getString('selectedNotificationsOption');
-    final selectedDarkModeEnabledValue = prefs.getString('selectedDarkModeEnabled');
 
     if (selectedLanguageValue != null) {
       setState(() {
@@ -49,23 +56,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
       });
     }
 
-    if (selectedDarkModeEnabledValue != null) {
-      setState(() {
-        selectedDarkModeEnabled = selectedDarkModeEnabledValue;
-      });
-    }
-
     setState(() {
       loading = false;
     });
   }
 
-
   Future<void> _showDialog(
-    String alertTitle,
-    String sharedPrefsKeyName,
-    List<String> choices,
-  ) async {
+      String alertTitle,
+      String sharedPrefsKeyName,
+      List<String> choices,
+      ) async {
     final selectedValue = await showDialog<String>(
       context: context,
       builder: (BuildContext context) {
@@ -89,7 +89,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
         );
       },
     );
-
     if (selectedValue != null) {
       setState(() {
         switch (sharedPrefsKeyName) {
@@ -99,8 +98,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
             selectedOddsFormat = selectedValue;
           case 'selectedNotificationsOption':
             selectedNotificationsOption = selectedValue;
-          case 'selectedDarkModeEnabled':
-            selectedDarkModeEnabled = selectedValue;
           default:
             break;
         }
@@ -110,28 +107,57 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            // topBar(
-            //   context,
-            //   'lib/assets/images/go-back.svg',
-            //   () {
-            //     Navigator.pop(context);
-            //   },
-            // ),
-            FutureBuilder<void>(
-              future: Future.delayed(Duration.zero).then((value) => loading),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  return buildSettingsList();
-                } else {
-                  return const CircularProgressIndicator();
-                }
-              },
-            ),
-          ],
+
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      elevation: 0,
+      backgroundColor: Colors.transparent,
+      child: SafeArea(
+        child: Container(
+          height: 55*widget.vh,
+          width: 85*widget.vw,
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.background,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: const [
+              BoxShadow(
+                // shadow color, no need to be in constants
+                color: Colors.black26,
+                blurRadius: 10,
+              ),
+            ],
+          ),
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(top: 2*widget.vh),
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: Text(
+                    widget.title,
+                    style: GoogleFonts.nunito(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.tertiary,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              FutureBuilder<void>(
+                future: Future.delayed(Duration.zero).then((value) => loading),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return buildSettingsList();
+                  } else {
+                    return const CircularProgressIndicator();
+                  }
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -140,7 +166,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget buildSettingsList() {
     return ListView(
       shrinkWrap: true,
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(12.0),
       children: <Widget>[
         ListTile(
           title: Text(translate("Language", selectedLanguage)),
@@ -150,17 +176,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
               translate("Select language:", selectedLanguage), // alertTitle
               'selectedLanguage', // sharedPrefsKeyName
               ['English', 'Polish', 'German', 'Russian'], // choices
-            );
-          },
-        ),
-        ListTile(
-          title: Text(translate("Dark Mode", selectedLanguage)),
-          subtitle: Text(translate(selectedDarkModeEnabled, selectedLanguage)),
-          onTap: () {
-            _showDialog(
-              translate("Dark mode:", selectedLanguage),
-              'selectedDarkModeEnabled',
-              ['on', 'off'],
             );
           },
         ),

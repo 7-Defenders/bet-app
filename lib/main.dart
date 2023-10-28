@@ -1,6 +1,7 @@
 import 'package:app/firebase_options.dart';
 import 'package:app/screens/auth_screens/auth_screen.dart';
-import 'package:app/screens/settings_screen.dart';
+import 'package:app/themes/dark_theme.dart';
+import 'package:app/themes/light_theme.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -28,11 +29,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      // theme: ThemeData.dark(),
+      theme: lightTheme,
+      darkTheme: darkTheme,
       home: const AuthScreen(),
-      routes: {
-        '/settings': (context) => const SettingsScreen(),
-      },
     );
   }
 }
