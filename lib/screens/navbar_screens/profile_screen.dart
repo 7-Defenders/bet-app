@@ -1,11 +1,11 @@
 import 'dart:io';
 
 import 'package:app/assets/translations.dart';
-import 'package:app/components/constants.dart' as constants;
-import 'package:app/components/nunito_text.dart';
+import 'package:app/components/other/nunito_text.dart';
 import 'package:app/components/profile_screen/gesture_detector_button.dart';
 import 'package:app/components/profile_screen/profile_pic.dart';
 import 'package:app/components/profile_screen/text_input_dialog.dart';
+import 'package:app/utils/constants.dart' as constants;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';

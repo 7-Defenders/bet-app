@@ -1,5 +1,5 @@
 import 'package:app/firebase_options.dart';
-import 'package:app/screens/auth_screen.dart';
+import 'package:app/screens/auth_screens/auth_screen.dart';
 import 'package:app/screens/settings_screen.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';

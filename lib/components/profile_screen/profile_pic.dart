@@ -1,4 +1,4 @@
-import 'package:app/components/constants.dart' as constants;
+import 'package:app/utils/constants.dart' as constants;
 import 'package:flutter/material.dart';
 
 // profile picture with border

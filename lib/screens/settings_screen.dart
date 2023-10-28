@@ -1,5 +1,4 @@
 import 'package:app/assets/translations.dart';
-import 'package:app/components/top_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -115,20 +114,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            topBar(
-              context,
-              'lib/assets/images/go-back.svg',
-              () {
-                Navigator.pop(context);
-              },
-            ),
+            // topBar(
+            //   context,
+            //   'lib/assets/images/go-back.svg',
+            //   () {
+            //     Navigator.pop(context);
+            //   },
+            // ),
             FutureBuilder<void>(
               future: Future.delayed(Duration.zero).then((value) => loading),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
                   return buildSettingsList();
                 } else {
-                  return const CircularProgressIndicator(); // Or another loading indicator
+                  return const CircularProgressIndicator();
                 }
               },
             ),

@@ -1,8 +1,8 @@
-import 'package:app/components/button.dart';
-import 'package:app/components/image_tile.dart';
-import 'package:app/components/text_field.dart';
+import 'package:app/components/auth_screens/button.dart';
+import 'package:app/components/auth_screens/image_tile.dart';
+import 'package:app/components/auth_screens/text_field.dart';
 import 'package:app/services/auth_service.dart';
-import 'package:app/utils.dart' as utils;
+import 'package:app/utils/functions.dart' as utils;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -92,19 +92,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                 ),
                 const SizedBox(height: 25),
-                MyTextField(
+                AuthTextField(
                   controller: emailController,
                   hintText: 'E-mail',
                   obscureText: false,
                 ),
                 const SizedBox(height: 15),
-                MyTextField(
+                AuthTextField(
                   controller: passwordController,
                   hintText: 'Password',
                   obscureText: true,
                 ),
                 const SizedBox(height: 15),
-                MyTextField(
+                AuthTextField(
                   controller: confirmPasswordController,
                   hintText: 'Confirm password',
                   obscureText: true,

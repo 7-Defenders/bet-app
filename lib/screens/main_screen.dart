@@ -1,8 +1,8 @@
-import 'package:app/components/constants.dart' as constants;
 import 'package:app/screens/navbar_screens/events_screen.dart';
 import 'package:app/screens/navbar_screens/leagues_screen.dart';
 import 'package:app/screens/navbar_screens/profile_screen.dart';
 import 'package:app/screens/navbar_screens/shop_screen.dart';
+import 'package:app/utils/constants.dart' as constants;
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
