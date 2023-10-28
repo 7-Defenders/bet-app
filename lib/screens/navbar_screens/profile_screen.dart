@@ -33,6 +33,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? photoURL;
   bool? emailVerified;
   String? uid;
+  bool isDarkMode = false;
 
   @override
   void initState() {
@@ -40,6 +41,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     getSelectedLanguage().then((language) {
       setState(() {
         selectedLanguage = language;
+      });
+    });
+    getDarkModePreference().then((value) {
+      setState(() {
+        isDarkMode = value;
       });
     });
     email = user!.email;
@@ -51,6 +57,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final prefs = await SharedPreferences.getInstance();
     final selectedLanguage = prefs.getString('selectedLanguage') ?? 'English';
     return selectedLanguage;
+  }
+
+  Future<bool> getDarkModePreference() async {
+    final prefs = await SharedPreferences.getInstance();
+    final darkModePreference = prefs.getString('selectedDarkModeEnabled') ?? 'off';
+    return darkModePreference == 'on';
+  }
+
+  Future<void> toggleDarkMode() async {
+    setState(() {
+      isDarkMode = !isDarkMode;
+    });
+    // Update the shared preference based on the new value
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('selectedDarkModeEnabled', isDarkMode ? 'on' : 'off');
   }
 
   Future<void> logOutUser() async {
@@ -126,8 +147,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: ClipRRect(
             borderRadius: const BorderRadius.vertical(top: Radius.circular(35)),
             child: Container(
-              decoration: const BoxDecoration(
-                color: constants.bgColor,
+              decoration: BoxDecoration(
+                color: constants.getBgColor(isDarkMode),
               ),
               child: Column(
                 children: [
@@ -149,12 +170,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           //change username
                           Container(
                             padding: EdgeInsets.fromLTRB(0, 0, 0, 2*vh),
-                            child: gestureDetectorButton(FontAwesomeIcons.penToSquare, translate("Change username", selectedLanguage), changeDisplayName, vw, vh),
+                            child: gestureDetectorButton(FontAwesomeIcons.penToSquare, translate("Change username", selectedLanguage), changeDisplayName, vw, vh, isDarkMode),
                           ),
                           // log out
                           Container(
                             padding: EdgeInsets.fromLTRB(0, 0, 0, 2*vh),
-                            child: gestureDetectorButton(Icons.logout, translate("Log Out", selectedLanguage), logOutUser, vw, vh),
+                            child: gestureDetectorButton(Icons.logout, translate("Log Out", selectedLanguage), logOutUser, vw, vh, isDarkMode),
+                          ),
+                          Container(
+                            padding: EdgeInsets.fromLTRB(0, 0, 0, 2*vh),
+                            child: gestureDetectorButton(isDarkMode ? Icons.light_mode_outlined : Icons.dark_mode_outlined, isDarkMode ? translate("Light mode", selectedLanguage) : translate("Dark mode", selectedLanguage), toggleDarkMode, vw, vh, isDarkMode),
                           ),
                         ],
                       ),

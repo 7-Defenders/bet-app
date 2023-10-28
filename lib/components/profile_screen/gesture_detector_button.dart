@@ -8,6 +8,7 @@ Widget gestureDetectorButton(
     void Function()? onTap,
     double vw,
     double vh,
+    bool isDarkMode,
 ) {
   return GestureDetector(
     onTap: onTap,
@@ -16,7 +17,7 @@ Widget gestureDetectorButton(
       height: 8*vh,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
-        color: constants.secondaryColor,
+        color: constants.getSecondaryColor(isDarkMode),
       ),
       child: Row(
         children: [
