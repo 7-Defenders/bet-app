@@ -1,5 +1,5 @@
-import 'package:app/components/constants.dart' as constants;
-import 'package:app/components/nunito_text.dart';
+import 'package:app/utils/constants.dart' as constants;
+import 'package:app/components/other/nunito_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
