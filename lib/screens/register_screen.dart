@@ -29,7 +29,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
         );
       },
     );
-    print("here1");
     try {
       if (passwordController.text.length < 8 ||
           passwordController.text.length > 16) {
@@ -43,12 +42,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
         utils.showSnackbarMessage("Passwords do not match.", context);
         return;
       }
-      print("here2");
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: emailController.text,
         password: passwordController.text,
       ).then((result) => result.user!.updateDisplayName(emailController.text));
-      print("here3");
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         if (context.mounted) {

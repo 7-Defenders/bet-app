@@ -1,4 +1,3 @@
-import 'package:app/components/bet_selector.dart';
 import 'package:app/components/top_bar.dart';
 import 'package:flutter/material.dart';
 

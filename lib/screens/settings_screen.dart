@@ -75,7 +75,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                for (String choice in choices)
+                for (final String choice in choices)
                   GestureDetector(
                     onTap: () async {
                       Navigator.of(context).pop(choice);
