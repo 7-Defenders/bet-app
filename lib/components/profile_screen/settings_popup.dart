@@ -1,6 +1,6 @@
 import 'package:app/assets/translations.dart';
+import 'package:app/components/other/nunito_text.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsPopup extends StatefulWidget {
@@ -116,7 +116,7 @@ class _SettingsPopupState extends State<SettingsPopup> {
       backgroundColor: Colors.transparent,
       child: SafeArea(
         child: Container(
-          height: 55*widget.vh,
+          height: 40*widget.vh,
           width: 85*widget.vw,
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.background,
@@ -135,13 +135,11 @@ class _SettingsPopupState extends State<SettingsPopup> {
                 padding: EdgeInsets.only(top: 2*widget.vh),
                 child: Align(
                   alignment: Alignment.topCenter,
-                  child: Text(
+                  child: nunitoText(
                     widget.title,
-                    style: GoogleFonts.nunito(
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.tertiary,
-                    ),
+                    30,
+                    FontWeight.bold,
+                    Theme.of(context).colorScheme.onBackground,
                   ),
                 ),
               ),

@@ -1,5 +1,4 @@
 import 'package:app/components/other/nunito_text.dart';
-import 'package:app/utils/constants.dart' as constants;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -51,14 +50,13 @@ class _TextInputDialogState extends State<TextInputDialog> {
       backgroundColor: Colors.transparent,
       child: SafeArea(
         child: Container(
-          height: 33*widget.vh,
+          height: 40*widget.vh,
           width: 85*widget.vw,
           decoration: BoxDecoration(
-            color: constants.bgColor,
+            color: Theme.of(context).colorScheme.background,
             borderRadius: BorderRadius.circular(16),
             boxShadow: const [
               BoxShadow(
-                // shadow color, no need to be in constants
                 color: Colors.black26,
                 blurRadius: 10,
               ),
@@ -77,23 +75,21 @@ class _TextInputDialogState extends State<TextInputDialog> {
                       style: GoogleFonts.nunito(
                         fontSize: 30,
                         fontWeight: FontWeight.bold,
-                        color: constants.tertiaryColor,
+                        color: Theme.of(context).colorScheme.onBackground,
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 10),
                 Padding(
-                  padding: EdgeInsets.fromLTRB(8*widget.vw, 1*widget.vh, 8*widget.vw, 1*widget.vh),
+                  padding: EdgeInsets.fromLTRB(8*widget.vw, 2*widget.vh, 8*widget.vw, 4*widget.vh),
                   child: Text(
                     widget.subtext,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
-                      color: constants.senaryColor,
+                      color: Theme.of(context).colorScheme.onBackground,
                     ),
                   ),
                 ),
-                const SizedBox(height: 10),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8*widget.vw),
                   child: TextFormField(
@@ -101,9 +97,9 @@ class _TextInputDialogState extends State<TextInputDialog> {
                       hintText: widget.hintText,
                       hintStyle: GoogleFonts.nunito(
                         fontSize: 15,
-                        color: constants.dialogWindowTextColor,
+                        color: Theme.of(context).colorScheme.tertiary,
                       ),
-                      fillColor: constants.secondaryColor,
+                      fillColor: Theme.of(context).colorScheme.onTertiary,
                     ),
                     controller: textController,
                     focusNode: focusNode,
@@ -111,55 +107,58 @@ class _TextInputDialogState extends State<TextInputDialog> {
                     onSaved: widget.onSaved,
                   ),
                 ),
-                SizedBox(height: 2*widget.vh),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.fromLTRB(5*widget.vw, 1*widget.vh, 2*widget.vw, 1*widget.vh),
-                        child: GestureDetector(
-                          onTap: () => Navigator.pop(context),
-                          child: Container(
-                            height: 6*widget.vh,
-                            decoration: BoxDecoration(
-                              color: const Color.fromARGB(240, 196, 30, 58),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Center(
-                              child: nunitoText('Cancel', 15, FontWeight.bold, const Color.fromARGB(255, 254, 255, 254)),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.fromLTRB(2*widget.vw, 1*widget.vh, 5*widget.vw, 1*widget.vh),
-                        child: GestureDetector(
-                          onTap: () => {
-                            formKey.currentState!.validate(),
-                            if (formKey.currentState!.validate()) {
-                              formKey.currentState?.save(),
-                              Navigator.pop(context),
-                            } else {
-                            },
-                          },
-                          child: Container(
-                            height: 6*widget.vh,
-                            decoration: BoxDecoration(
-                              color: const Color.fromARGB(255, 9, 121, 105),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Center(
-                              // don't use constants color, since the button will always be green so text should be white
-                              child: nunitoText('Save', 15, FontWeight.bold, const Color.fromARGB(255, 254, 255, 254)),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.fromLTRB(5*widget.vw, 1*widget.vh, 2*widget.vw, 2*widget.vh),
+                            child: GestureDetector(
+                              onTap: () => Navigator.pop(context),
+                              child: Container(
+                                height: 6*widget.vh,
+                                decoration: BoxDecoration(
+                                  color: const Color.fromARGB(240, 196, 30, 58),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Center(
+                                  child: nunitoText('Cancel', 15, FontWeight.bold, const Color.fromARGB(255, 254, 255, 254)),
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.fromLTRB(2*widget.vw, 1*widget.vh, 5*widget.vw, 2*widget.vh),
+                            child: GestureDetector(
+                              onTap: () {
+                                formKey.currentState!.validate();
+                                if (formKey.currentState!.validate()) {
+                                  formKey.currentState?.save();
+                                  Navigator.pop(context);
+                                } else {
+                                }
+                              },
+                              child: Container(
+                                height: 6*widget.vh,
+                                decoration: BoxDecoration(
+                                  color: const Color.fromARGB(255, 9, 121, 105),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Center(
+                                  child: nunitoText('Save', 15, FontWeight.bold, const Color.fromARGB(255, 254, 255, 254)),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ],
             ),
@@ -167,5 +166,6 @@ class _TextInputDialogState extends State<TextInputDialog> {
         ),
       ),
     );
+
   }
 }

@@ -89,7 +89,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         hintText: translate('Enter new username', selectedLanguage),
         validator: (value) {
           if (value == null || value.length < 3) {
-            return translate('Username must be minimum 3 characters long', selectedLanguage);
+            return translate('Username must be at least 3 characters long', selectedLanguage);
           }
           return null;
         },
