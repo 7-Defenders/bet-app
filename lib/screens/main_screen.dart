@@ -1,9 +1,11 @@
+import 'package:app/screens/drawer.dart';
 import 'package:app/screens/navbar_screens/events_screen.dart';
 import 'package:app/screens/navbar_screens/leagues_screen.dart';
 import 'package:app/screens/navbar_screens/profile_screen.dart';
 import 'package:app/screens/navbar_screens/shop_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -13,7 +15,23 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  final List<Widget> pages = const [
+
+  void Function(String)? onLanguageChange;
+  String selectedLanguage = 'English';
+  String? displayName;
+
+  @override
+  void initState() {
+    getSelectedLanguage().then((language) {
+      setState(() {
+        selectedLanguage = language;
+      });
+    });
+    onLanguageChange = setSelectedLanguage;
+    super.initState();
+  }
+
+  final List<Widget> pages = [
     ProfileScreen(),
     EventsScreen(),
     LeaguesScreen(),
@@ -28,26 +46,45 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
+  Future<String> getSelectedLanguage() async {
+    final prefs = await SharedPreferences.getInstance();
+    final selectedLanguage = prefs.getString('selectedLanguage') ?? 'English';
+    return selectedLanguage;
+  }
+
+  void setSelectedLanguage(String newLanguage) {
+    setState(() {
+      selectedLanguage = newLanguage;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: pages[currentIndex],
-        ),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              buildNavBarItem(FontAwesomeIcons.user, 0, 'Profile'),
-              buildNavBarItem(FontAwesomeIcons.futbol, 1, 'Events'),
-              buildNavBarItem(FontAwesomeIcons.trophy, 2, 'Leagues'),
-              buildNavBarItem(FontAwesomeIcons.cartShopping, 3, 'Shop'),
-            ],
+
+    final double vh = MediaQuery.of(context).size.height/100;
+    final double vw = MediaQuery.of(context).size.width/100;
+
+    return Scaffold(
+      drawer: drawer(context, vw, vh, selectedLanguage, setSelectedLanguage),
+      body: Column(
+        children: [
+          Expanded(
+            child: pages[currentIndex],
           ),
-        ),
-      ],
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                buildNavBarItem(FontAwesomeIcons.user, 0, 'Profile'),
+                buildNavBarItem(FontAwesomeIcons.futbol, 1, 'Events'),
+                buildNavBarItem(FontAwesomeIcons.trophy, 2, 'Leagues'),
+                buildNavBarItem(FontAwesomeIcons.cartShopping, 3, 'Shop'),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 

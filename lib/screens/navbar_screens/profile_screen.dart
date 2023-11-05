@@ -4,15 +4,15 @@ import 'package:app/assets/translations.dart';
 import 'package:app/components/other/nunito_text.dart';
 import 'package:app/components/profile_screen/gesture_detector_button.dart';
 import 'package:app/components/profile_screen/profile_pic.dart';
+import 'package:app/components/profile_screen/settings_widget.dart';
 import 'package:app/components/profile_screen/text_input_dialog.dart';
+import 'package:app/utils/functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../components/profile_screen/settings_popup.dart';
 
 
 class ProfileScreen extends StatefulWidget {
@@ -65,12 +65,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
       imageQuality: 75,
     );
     if (image == null) return;
+    final file = File(image.path);
+
+    // if image size is over 5MB, show error message
+    if (mounted == false) return;
+    if (file.lengthSync() > 5 * 1024 * 1024) {
+      if (mounted) {
+        showSnackbarMessage(
+            translate('Image size must be under 5MB', selectedLanguage),
+            context,);
+      }
+      return;
+    }
+
     // upload to firebase storage
     final ref = storage.ref().child('profile_pictures/${user!.uid}');
-    final uploadTask = ref.putFile(
-      File(image.path),
-    );
+    final uploadTask = ref.putFile(file);
     final snapshot = await uploadTask.whenComplete(() => null);
+
     // wait for download url, set photoURL and setState()
     final downloadURL = await snapshot.ref.getDownloadURL();
     await user!.updatePhotoURL(downloadURL);
@@ -103,21 +115,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Future<void> popupSettings() async {
-    await showDialog(
-        context: context,
-        builder: (context) => SettingsPopup(
-          vw: MediaQuery.of(context).size.width / 100,
-          vh: MediaQuery.of(context).size.height / 100,
-          title: translate('Settings', selectedLanguage),
-        ),
-    );
-    selectedLanguage = await getSelectedLanguage();
-    setState(() {
-      selectedLanguage = selectedLanguage;
-    });
-  }
-
+  // Future<void> popupSettings() async {
+  //   await showDialog(
+  //       context: context,
+  //       builder: (context) => SettingsExpansionButton(
+  //         vw: MediaQuery.of(context).size.width / 100,
+  //         vh: MediaQuery.of(context).size.height / 100,
+  //         title: translate('Settings', selectedLanguage),
+  //       ),
+  //   );
+  //   selectedLanguage = await getSelectedLanguage();
+  //   setState(() {
+  //     selectedLanguage = selectedLanguage;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -127,56 +138,66 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     return Stack(
       children: [
-        // background primary color
         Container(
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.primary,
           ),
+          child: SafeArea(
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(1*vw, 1*vw, 0, 0),
+                child: IconButton(
+                  icon: Icon(Icons.menu, color: Theme.of(context).colorScheme.background),
+                  onPressed: () {
+                    if (mounted) {
+                      Scaffold.of(context).openDrawer();
+                    }
+                  },
+                ),
+              ),
+            ),
+          ),
         ),
         // white background
-        Positioned(
-          top: 26*vh,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          child: ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(35)),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.background,
-              ),
-              child: Column(
-                children: [
-                  Expanded(
-                    child: Container(
-                      padding: EdgeInsets.fromLTRB(0,12*vh, 0, 0),
-                      child: Column(
-                        children: [
-                          // displayName
-                          Container(
-                            padding: EdgeInsets.fromLTRB(0, 0, 0, 1 * vh),
-                            child: nunitoText(displayName!, 50, FontWeight.bold, Theme.of(context).colorScheme.onBackground),
-                          ),
-                          // email
-                          Container(
-                            padding: EdgeInsets.fromLTRB(0, 0, 0, 5*vh),
-                            child: nunitoText(email!, 20, FontWeight.bold, Theme.of(context).colorScheme.tertiary),
-                          ),
-                          //change username
-                          Container(
-                            padding: EdgeInsets.fromLTRB(0, 0, 0, 2*vh),
-                            child: gestureDetectorButton(FontAwesomeIcons.penToSquare, translate("Change username", selectedLanguage), changeDisplayName, vw, vh, context),
-                          ),
-                          // navigate to settings
-                          Container(
-                            padding: EdgeInsets.fromLTRB(0, 0, 0, 2*vh),
-                            child: gestureDetectorButton(Icons.settings_outlined, translate("Settings", selectedLanguage), popupSettings, vw, vh, context,),
-                          ),
-                        ],
+        Padding(
+          padding: EdgeInsets.fromLTRB(0, 25*vh, 0, 0),
+          child: SizedBox(
+            width: 100*vw,
+            child: ClipRRect(
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(35)),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.background,
+                ),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.fromLTRB(0,12*vh, 0, 0),
+                        child: Column(
+                          children: [
+                            // displayName
+                            Container(
+                              padding: EdgeInsets.fromLTRB(0, 0, 0, 1 * vh),
+                              child: nunitoText(displayName!, 50, FontWeight.bold, Theme.of(context).colorScheme.onBackground),
+                            ),
+                            // email
+                            Container(
+                              padding: EdgeInsets.fromLTRB(0, 0, 0, 5*vh),
+                              child: nunitoText(email!, 20, FontWeight.bold, Theme.of(context).colorScheme.tertiary),
+                            ),
+                            //change username
+                            Container(
+                              padding: EdgeInsets.fromLTRB(0, 0, 0, 2*vh),
+                              child: gestureDetectorButton(FontAwesomeIcons.penToSquare, translate("Change username", selectedLanguage), changeDisplayName, vw, vh, context),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

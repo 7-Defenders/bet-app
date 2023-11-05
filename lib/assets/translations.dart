@@ -20,6 +20,7 @@ Map<String, Map<String, String>> translations = {
     'German': 'Niemiecki',
     'Russian': 'Rosyjski',
     'Log Out': 'Wyloguj się',
+    'Settings': 'Ustawienia',
   },
   'German': {
     'Language': 'Sprache',
@@ -42,6 +43,7 @@ Map<String, Map<String, String>> translations = {
     'German': 'Deutsch',
     'Russian': 'Russisch',
     'Log Out': 'Ausloggen',
+    'Settings': 'Einstellungen',
   },
   'Russian': {
     'Language': 'Язык',
@@ -64,6 +66,7 @@ Map<String, Map<String, String>> translations = {
     'German': 'Немецкий',
     'Russian': 'Русский',
     'Log Out': 'Выйти',
+    'Settings': 'Настройки',
   },
 };
 

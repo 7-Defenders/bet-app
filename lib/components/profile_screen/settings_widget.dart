@@ -3,28 +3,31 @@ import 'package:app/components/other/nunito_text.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SettingsPopup extends StatefulWidget {
+class SettingsExpansionButton extends StatefulWidget {
   final double vw;
   final double vh;
   final String title;
+  final Function(String) onLanguageChange;
 
-  const SettingsPopup({
+  const SettingsExpansionButton({
     super.key,
     required this.vw,
     required this.vh,
     required this.title,
+    required this.onLanguageChange,
   });
 
   @override
-  State<SettingsPopup> createState() => _SettingsPopupState();
+  State<SettingsExpansionButton> createState() => _SettingsExpansionButtonState();
 }
 
-class _SettingsPopupState extends State<SettingsPopup> {
+class _SettingsExpansionButtonState extends State<SettingsExpansionButton> {
   String selectedLanguage = 'English';
   String selectedOddsFormat = 'Decimal';
   String selectedNotificationsOption = 'EndOfEveryMatch';
 
   bool loading = true;
+  bool isExpanded = false;
 
   @override
   void initState() {
@@ -80,6 +83,9 @@ class _SettingsPopupState extends State<SettingsPopup> {
                       Navigator.of(context).pop(choice);
                       final prefs = await SharedPreferences.getInstance();
                       prefs.setString(sharedPrefsKeyName, choice);
+
+                      //callback to notify drawer to rebuild
+                      widget.onLanguageChange(choice);
                     },
                     child: Text(translate(choice, selectedLanguage)),
                   ),
@@ -108,43 +114,19 @@ class _SettingsPopupState extends State<SettingsPopup> {
   @override
   Widget build(BuildContext context) {
 
-    return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
-      elevation: 0,
-      backgroundColor: Colors.transparent,
-      child: SafeArea(
-        child: Container(
-          height: 40*widget.vh,
-          width: 85*widget.vw,
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.background,
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: const [
-              BoxShadow(
-                // shadow color, no need to be in constants
-                color: Colors.black26,
-                blurRadius: 10,
-              ),
-            ],
+    return Column(
+      children: [
+        ExpansionTile(
+          title: nunitoText(
+            widget.title,
+            3*widget.vh,
+            FontWeight.bold,
+            Theme.of(context).colorScheme.primary,
           ),
-          child: Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.only(top: 2*widget.vh),
-                child: Align(
-                  alignment: Alignment.topCenter,
-                  child: nunitoText(
-                    widget.title,
-                    30,
-                    FontWeight.bold,
-                    Theme.of(context).colorScheme.onBackground,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              FutureBuilder<void>(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: FutureBuilder<void>(
                 future: Future.delayed(Duration.zero).then((value) => loading),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
@@ -154,10 +136,10 @@ class _SettingsPopupState extends State<SettingsPopup> {
                   }
                 },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-      ),
+      ],
     );
   }
 

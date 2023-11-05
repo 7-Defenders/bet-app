@@ -1,5 +1,7 @@
+import 'package:app/components/profile_screen/settings_widget.dart';
 import 'package:app/firebase_options.dart';
 import 'package:app/screens/auth_screens/auth_screen.dart';
+import 'package:app/screens/settings_screen.dart';
 import 'package:app/themes/dark_theme.dart';
 import 'package:app/themes/light_theme.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
@@ -31,6 +33,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: lightTheme,
       darkTheme: darkTheme,
+      routes: {
+        '/settings': (context) => SettingsScreen(vw: MediaQuery.of(context).size.width / 100, vh: MediaQuery.of(context).size.height / 100, title: "Settings"),
+      },
       home: const AuthScreen(),
     );
   }
