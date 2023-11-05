@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class EventsScreen extends StatefulWidget {
   const EventsScreen({super.key});
@@ -10,24 +11,11 @@ class EventsScreen extends StatefulWidget {
 class _EventsScreenState extends State<EventsScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       children: [
-        // topBar(context,
-        //  'lib/assets/images/Settings.svg',
-        //  () {
-        //   //TODO navigate to settings screen
-        //  },
-        // ),
         Expanded(
           child: Center(
-            child: Text(
-              'Events go here',
-              style: TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
-            ),
+            child: Text(AppLocalizations.of(context)!.helloWorld),
           ),
         ),
       ],

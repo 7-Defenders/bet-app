@@ -1,4 +1,3 @@
-import 'package:app/assets/translations.dart';
 import 'package:app/components/other/nunito_text.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -7,14 +6,12 @@ class SettingsExpansionButton extends StatefulWidget {
   final double vw;
   final double vh;
   final String title;
-  final Function(String) onLanguageChange;
 
   const SettingsExpansionButton({
     super.key,
     required this.vw,
     required this.vh,
     required this.title,
-    required this.onLanguageChange,
   });
 
   @override
@@ -83,11 +80,8 @@ class _SettingsExpansionButtonState extends State<SettingsExpansionButton> {
                       Navigator.of(context).pop(choice);
                       final prefs = await SharedPreferences.getInstance();
                       prefs.setString(sharedPrefsKeyName, choice);
-
-                      //callback to notify drawer to rebuild
-                      widget.onLanguageChange(choice);
                     },
-                    child: Text(translate(choice, selectedLanguage)),
+                    child: Text(choice),
                   ),
               ],
             ),
@@ -121,7 +115,7 @@ class _SettingsExpansionButtonState extends State<SettingsExpansionButton> {
             widget.title,
             3*widget.vh,
             FontWeight.bold,
-            Theme.of(context).colorScheme.primary,
+            Theme.of(context).colorScheme.onBackground,
           ),
           children: <Widget>[
             Padding(
@@ -149,30 +143,19 @@ class _SettingsExpansionButtonState extends State<SettingsExpansionButton> {
       padding: const EdgeInsets.all(12.0),
       children: <Widget>[
         ListTile(
-          title: Text(translate("Language", selectedLanguage)),
-          subtitle: Text(translate(selectedLanguage, selectedLanguage)),
+          title: Text('Betting Odds Format'),
+          subtitle: Text(selectedOddsFormat),
           onTap: () {
             _showDialog(
-              translate("Select language:", selectedLanguage), // alertTitle
-              'selectedLanguage', // sharedPrefsKeyName
-              ['English', 'Polish', 'German', 'Russian'], // choices
-            );
-          },
-        ),
-        ListTile(
-          title: Text(translate('Betting Odds Format', selectedLanguage)),
-          subtitle: Text(translate(selectedOddsFormat, selectedLanguage)),
-          onTap: () {
-            _showDialog(
-              translate("Select odds format:", selectedLanguage),
+              ("Select odds format:"),
               'selectedOddsFormat',
               ['Decimal', 'Fractional', 'American'],
             );
           },
         ),
         ListTile(
-          title: Text(translate('Notifications', selectedLanguage)),
-          subtitle: Text(translate(selectedNotificationsOption, selectedLanguage)),
+          title: Text('Notifications'),
+          subtitle: Text(selectedNotificationsOption),
           onTap: () {
             _showDialog(
               "Select notification option:",
