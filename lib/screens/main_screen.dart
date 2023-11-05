@@ -16,22 +16,9 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
 
-  void Function(String)? onLanguageChange;
-  String selectedLanguage = 'English';
   String? displayName;
 
-  @override
-  void initState() {
-    getSelectedLanguage().then((language) {
-      setState(() {
-        selectedLanguage = language;
-      });
-    });
-    onLanguageChange = setSelectedLanguage;
-    super.initState();
-  }
-
-  final List<Widget> pages = [
+  final List<Widget> pages = const [
     ProfileScreen(),
     EventsScreen(),
     LeaguesScreen(),
@@ -46,18 +33,6 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
-  Future<String> getSelectedLanguage() async {
-    final prefs = await SharedPreferences.getInstance();
-    final selectedLanguage = prefs.getString('selectedLanguage') ?? 'English';
-    return selectedLanguage;
-  }
-
-  void setSelectedLanguage(String newLanguage) {
-    setState(() {
-      selectedLanguage = newLanguage;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
 
@@ -65,7 +40,7 @@ class _MainScreenState extends State<MainScreen> {
     final double vw = MediaQuery.of(context).size.width/100;
 
     return Scaffold(
-      drawer: drawer(context, vw, vh, selectedLanguage, setSelectedLanguage),
+      drawer: drawer(context, vw, vh),
       body: Column(
         children: [
           Expanded(

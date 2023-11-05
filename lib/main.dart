@@ -1,13 +1,13 @@
-import 'package:app/components/profile_screen/settings_widget.dart';
 import 'package:app/firebase_options.dart';
 import 'package:app/screens/auth_screens/auth_screen.dart';
-import 'package:app/screens/settings_screen.dart';
 import 'package:app/themes/dark_theme.dart';
 import 'package:app/themes/light_theme.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,9 +33,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: lightTheme,
       darkTheme: darkTheme,
-      routes: {
-        '/settings': (context) => SettingsScreen(vw: MediaQuery.of(context).size.width / 100, vh: MediaQuery.of(context).size.height / 100, title: "Settings"),
-      },
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       home: const AuthScreen(),
     );
   }

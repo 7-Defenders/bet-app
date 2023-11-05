@@ -1,10 +1,9 @@
 import 'dart:io';
 
-import 'package:app/assets/translations.dart';
 import 'package:app/components/other/nunito_text.dart';
+import 'package:app/components/profile_screen/change_display_name_icon.dart';
 import 'package:app/components/profile_screen/gesture_detector_button.dart';
 import 'package:app/components/profile_screen/profile_pic.dart';
-import 'package:app/components/profile_screen/settings_widget.dart';
 import 'package:app/components/profile_screen/text_input_dialog.dart';
 import 'package:app/utils/functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -72,7 +71,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (file.lengthSync() > 5 * 1024 * 1024) {
       if (mounted) {
         showSnackbarMessage(
-            translate('Image size must be under 5MB', selectedLanguage),
+            'Image size must be under 5MB',
             context,);
       }
       return;
@@ -96,12 +95,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
       builder: (context) => TextInputDialog(
         vw: MediaQuery.of(context).size.width / 100,
         vh: MediaQuery.of(context).size.height / 100,
-        title: translate('Change username', selectedLanguage),
-        subtext: translate('You can change your username once every 30 days.', selectedLanguage),
-        hintText: translate('Enter new username', selectedLanguage),
+        title: 'Change username',
+        subtext: 'You can change your username once every 30 days.',
+        hintText: 'Enter new username',
         validator: (value) {
           if (value == null || value.length < 3) {
-            return translate('Username must be at least 3 characters long', selectedLanguage);
+            return 'Username must be at least 3 characters long';
           }
           return null;
         },
@@ -114,21 +113,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
-
-  // Future<void> popupSettings() async {
-  //   await showDialog(
-  //       context: context,
-  //       builder: (context) => SettingsExpansionButton(
-  //         vw: MediaQuery.of(context).size.width / 100,
-  //         vh: MediaQuery.of(context).size.height / 100,
-  //         title: translate('Settings', selectedLanguage),
-  //       ),
-  //   );
-  //   selectedLanguage = await getSelectedLanguage();
-  //   setState(() {
-  //     selectedLanguage = selectedLanguage;
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -148,7 +132,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Padding(
                 padding: EdgeInsets.fromLTRB(1*vw, 1*vw, 0, 0),
                 child: IconButton(
-                  icon: Icon(Icons.menu, color: Theme.of(context).colorScheme.background),
+                  icon: Icon(Icons.menu_rounded, color: Theme.of(context).colorScheme.background, size: 8*vw,),
                   onPressed: () {
                     if (mounted) {
                       Scaffold.of(context).openDrawer();
@@ -178,19 +162,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: Column(
                           children: [
                             // displayName
-                            Container(
-                              padding: EdgeInsets.fromLTRB(0, 0, 0, 1 * vh),
-                              child: nunitoText(displayName!, 50, FontWeight.bold, Theme.of(context).colorScheme.onBackground),
+                            Row(
+                              children: [
+                                Spacer(),
+                                Container(
+                                  padding: EdgeInsets.fromLTRB(0, 0, 1 * vw, 1 * vh),
+                                  child: nunitoText(displayName!, 50, FontWeight.bold, Theme.of(context).colorScheme.onBackground),
+                                ),
+                                Expanded(
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: nickButton(changeDisplayName, vw, vh, FontAwesomeIcons.penToSquare, context),
+                                  ),
+                                ),
+                              ],
                             ),
                             // email
                             Container(
                               padding: EdgeInsets.fromLTRB(0, 0, 0, 5*vh),
                               child: nunitoText(email!, 20, FontWeight.bold, Theme.of(context).colorScheme.tertiary),
-                            ),
-                            //change username
-                            Container(
-                              padding: EdgeInsets.fromLTRB(0, 0, 0, 2*vh),
-                              child: gestureDetectorButton(FontAwesomeIcons.penToSquare, translate("Change username", selectedLanguage), changeDisplayName, vw, vh, context),
                             ),
                           ],
                         ),
@@ -208,7 +198,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: Align(
             alignment: Alignment.bottomCenter,
             child: Container(
-              child: gestureDetectorButton(Icons.logout, translate("Log Out", selectedLanguage), logOutUser, vw, vh, context),
+              child: gestureDetectorButton(Icons.logout, "Log Out", logOutUser, vw, vh, context),
             ),
           ),
         ),
