@@ -2,7 +2,9 @@ import 'package:app/screens/navbar_screens/events_screen.dart';
 import 'package:app/screens/navbar_screens/leagues_screen.dart';
 import 'package:app/screens/navbar_screens/profile_screen.dart';
 import 'package:app/screens/navbar_screens/shop_screen.dart';
+import 'package:app/utils/constants.dart' as constants;
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -12,7 +14,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  List<Widget> pages = const [
+  final List<Widget> pages = const [
     ProfileScreen(),
     EventsScreen(),
     LeaguesScreen(),
@@ -29,68 +31,54 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: pages[currentIndex],
-      bottomNavigationBar: Container(
-      decoration: const BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 10,
-            offset: Offset(0, -1),
+    return Column(
+      children: [
+        Expanded(
+          child: pages[currentIndex],
+        ),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              buildNavBarItem(FontAwesomeIcons.user, 0, 'Profile'),
+              buildNavBarItem(FontAwesomeIcons.futbol, 1, 'Events'),
+              buildNavBarItem(FontAwesomeIcons.trophy, 2, 'Leagues'),
+              buildNavBarItem(FontAwesomeIcons.cartShopping, 3, 'Shop'),
+            ],
           ),
-        ],
-      ),
-      child: SizedBox(
-        height: 80,
-        child: ClipRRect(
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(30)), // Match the radius of the decoration
-          child: ColoredBox(
-            color: const Color(0xffffb303),
-            child: BottomNavigationBar(
-              onTap: onTap,
-              currentIndex: currentIndex,
-              elevation: 20,
-              showSelectedLabels: true,
-              selectedItemColor: Colors.black,
-              items: const [
-                BottomNavigationBarItem(
-                  icon: Icon(
-                    Icons.person,
-                    color: Colors.black,
-                  ),
-                  label: 'Profile',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(
-                    Icons.sports_soccer,
-                    color: Colors.black,
-                  ),
-                  label: 'Events',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(
-                    Icons.emoji_events,
-                    color: Colors.black,
-                  ),
-                  label: 'Leagues',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(
-                    Icons.shopping_cart,
-                    color: Colors.black,
-                  ),
-                  label: 'Shop',
-                ),
-              ],
-              selectedFontSize: 15,
-              iconSize: 33,
-              backgroundColor: Colors.transparent,
+        ),
+      ],
+    );
+  }
+
+  Widget buildNavBarItem(IconData iconData, int index, String label, {double iconSize=25}) {
+    final isSelected = index == currentIndex;
+
+    return GestureDetector(
+      onTap: () => onTap(index),
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        width: MediaQuery.of(context).size.width / 4,
+        decoration: BoxDecoration(
+          color: constants.quaternaryColor,
+          border: Border(
+            top: BorderSide(
+              color: isSelected
+                  ? constants.primaryColor
+                  : Colors.transparent,
+              width: isSelected ? 2 : 0,
             ),
           ),
         ),
+        child: Icon(
+          iconData,
+          color: isSelected
+              ? constants.primaryColor
+              : constants.navbarIconColor,
+          size: iconSize,
+        ),
       ),
-    ),
     );
   }
 }

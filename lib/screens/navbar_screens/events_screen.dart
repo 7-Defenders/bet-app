@@ -13,15 +13,24 @@ class EventsScreen extends StatefulWidget {
 class _EventsScreenState extends State<EventsScreen> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Column(
-        children: [
-          topBar(
-            context,
-            'lib/assets/images/Settings.svg',
-            () {
-              Navigator.pushNamed(context, '/settings');
-            },
+    return const Column(
+      children: [
+        // topBar(context,
+        //  'lib/assets/images/Settings.svg',
+        //  () {
+        //   //TODO navigate to settings screen
+        //  },
+        // ),
+        Expanded(
+          child: Center(
+            child: Text(
+              'Events go here',
+              style: TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
           ),
           const BetSelector(),
           const BetPreviewWidget(eventName: 'Arsenal - Chelsea', eventDetails: 'Premier League', bets: {'1':1.91, '1X':1.37, 'X': 3.24, 'X2':1.73, '2':2.06},),

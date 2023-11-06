@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class BetSelector extends StatefulWidget {
-  const BetSelector({Key? key});
+  const BetSelector();
 
   @override
   State<BetSelector> createState() => _BetSelectorState();
@@ -46,7 +46,7 @@ class _BetSelectorState extends State<BetSelector> {
                     color: const Color(0x4cfa9b02),
                     boxShadow: [
                       BoxShadow(
-                        color: Color(0x3f000000),
+                        color: const Color(0x3f000000),
                         offset: Offset(0 * fem, 4 * fem),
                         blurRadius: 2 * fem,
                       ),

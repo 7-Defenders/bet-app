@@ -1,26 +1,26 @@
-import 'package:app/components/button.dart';
-import 'package:app/components/image_tile.dart';
-import 'package:app/components/text_field.dart';
+import 'package:app/components/auth_screens/button.dart';
+import 'package:app/components/auth_screens/image_tile.dart';
+import 'package:app/components/auth_screens/text_field.dart';
 import 'package:app/services/auth_service.dart';
-import 'package:app/utils.dart' as utils;
+import 'package:app/utils/functions.dart' as utils;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class RegisterScreen extends StatefulWidget {
+class LogInScreen extends StatefulWidget {
   final Function()? toggleScreen;
-  const RegisterScreen({super.key, required this.toggleScreen});
+  const LogInScreen({super.key, required this.toggleScreen});
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  State<LogInScreen> createState() => _LogInScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _LogInScreenState extends State<LogInScreen> {
   final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-  final confirmPasswordController = TextEditingController();
 
-  Future<void> registerUser() async {
+  final passwordController = TextEditingController();
+
+  Future<void> logInUser() async {
     showDialog(
       context: context,
       builder: (context) {
@@ -30,19 +30,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       },
     );
     try {
-      if (passwordController.text.length < 8 ||
-          passwordController.text.length > 16) {
-        utils.showSnackbarMessage(
-          "Password must be between 8 and 16 characters.",
-          context,
-        );
-        return;
-      }
-      if (passwordController.text != confirmPasswordController.text) {
-        utils.showSnackbarMessage("Passwords do not match.", context);
-        return;
-      }
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: emailController.text,
         password: passwordController.text,
       );
@@ -78,41 +66,46 @@ class _RegisterScreenState extends State<RegisterScreen> {
             child: Column(
               children: [
                 const SizedBox(height: 30),
-                Icon(
-                  Icons.app_registration_rounded,
-                  size: 135,
-                  color: Colors.grey[800],
-                ),
+                Icon(Icons.login, size: 135, color: Colors.grey[800]),
                 const SizedBox(height: 20),
                 Text(
-                  "Let's get started:",
+                  'Welcome back!',
                   style: GoogleFonts.poppins(
                     fontSize: 25,
                     color: Colors.grey[700],
                   ),
                 ),
                 const SizedBox(height: 25),
-                MyTextField(
+                AuthTextField(
                   controller: emailController,
                   hintText: 'E-mail',
                   obscureText: false,
                 ),
                 const SizedBox(height: 15),
-                MyTextField(
+                AuthTextField(
                   controller: passwordController,
                   hintText: 'Password',
                   obscureText: true,
                 ),
-                const SizedBox(height: 15),
-                MyTextField(
-                  controller: confirmPasswordController,
-                  hintText: 'Confirm password',
-                  obscureText: true,
-                ),
                 const SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        'Forgot Password?',
+                        style: GoogleFonts.poppins(
+                          fontSize: 15,
+                          color: Colors.grey[700],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 const SizedBox(height: 15),
-                MyButton(text: "Sign up", onTap: registerUser),
-                const SizedBox(height: 20),
+                MyButton(text: "Log In", onTap: logInUser),
+                const SizedBox(height: 35),
                 Row(
                   children: [
                     Expanded(
@@ -140,7 +133,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 35),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -158,12 +151,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 45),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Already have an account? ",
+                      "Not a member? ",
                       style: GoogleFonts.poppins(
                         fontSize: 15,
                         color: Colors.grey[700],
@@ -173,7 +166,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     GestureDetector(
                       onTap: widget.toggleScreen,
                       child: Text(
-                        'Log in now',
+                        'Register now',
                         style: GoogleFonts.poppins(
                           fontSize: 15,
                           color: Colors.blue,
