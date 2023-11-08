@@ -141,7 +141,7 @@ class _SettingsExpansionButtonState extends State<SettingsExpansionButton> {
           subtitle: nunitoText(selectedOddsFormat, 3.5*widget.vw, FontWeight.normal, Theme.of(context).colorScheme.onBackground),
           onTap: () {
             _showDialog(
-              ("Select odds format:"),
+              "Select odds format:",
               'selectedOddsFormat',
               ['Decimal', 'Fractional', 'American'],
             );
