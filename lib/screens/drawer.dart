@@ -7,39 +7,55 @@ import 'package:flutter/material.dart';
 
 BackdropFilter drawer(BuildContext context, double vw, double vh) {
   return BackdropFilter(
-    filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
+    filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
     child: ClipRRect(
       borderRadius: const BorderRadius.only(
-        topRight: Radius.circular(30),
-        bottomRight: Radius.circular(30),
+        topRight: Radius.circular(20),
+        bottomRight: Radius.circular(20),
       ),
       child: Drawer(
         child: ColoredBox(
-          color: Theme.of(context).colorScheme.background.withOpacity(0.8),
-          child: SafeArea(
-            child: SingleChildScrollView(
-              child: Column(
+          color: Theme.of(context).colorScheme.primary,
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // SizedBox(height: 2 * vh),
-                  // nunitoText("Drawer", 22, FontWeight.bold, Theme.of(context).colorScheme.onBackground),
-                  SizedBox(height: 2 * vh),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 3 * vw),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(15),
-                      child: ColoredBox(
-                        color: Theme.of(context).colorScheme.onTertiary,
-                        child: SettingsExpansionButton(
-                          title: "Settings",
-                          vh: vh,
-                          vw: vw,
-                        ),
-                      ),
-                    ),
+                    padding: EdgeInsets.fromLTRB(0, 4 * vh, 0, 2.5 * vh),
+                    child: nunitoText("Menu", 3 * vh, FontWeight.bold, Theme.of(context).colorScheme.background),
                   ),
                 ],
               ),
-            ),
+              Expanded( // Wrap the entire container with Expanded
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(20),
+                  ),
+                  child: ColoredBox(
+                    color: Theme.of(context).colorScheme.background,
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(3 * vw, 3 * vh, 3 * vw, 0),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            child: ColoredBox(
+                              color: Theme.of(context).colorScheme.onTertiary,
+                              child: SettingsExpansionButton(
+                                title: "Settings",
+                                vh: vh,
+                                vw: vw,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),

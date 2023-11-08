@@ -178,10 +178,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ],
                             ),
                             // email
-                            Container(
+                            Padding(
                               padding: EdgeInsets.fromLTRB(0, 0, 0, 5*vh),
                               child: nunitoText(email!, 20, FontWeight.bold, Theme.of(context).colorScheme.tertiary),
                             ),
+                            gestureDetectorButton(FontAwesomeIcons.medal, "Achievements",
+                                    () {
+                                      Navigator.pushNamed(context, '/achievements');
+                                    },
+                                vw, vh, context,),
                           ],
                         ),
                       ),

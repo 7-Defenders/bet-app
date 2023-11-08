@@ -19,7 +19,6 @@ class SettingsExpansionButton extends StatefulWidget {
 }
 
 class _SettingsExpansionButtonState extends State<SettingsExpansionButton> {
-  String selectedLanguage = 'English';
   String selectedOddsFormat = 'Decimal';
   String selectedNotificationsOption = 'EndOfEveryMatch';
 
@@ -34,15 +33,8 @@ class _SettingsExpansionButtonState extends State<SettingsExpansionButton> {
 
   Future<void> _loadUserPreferences() async {
     final prefs = await SharedPreferences.getInstance();
-    final selectedLanguageValue = prefs.getString('selectedLanguage');
     final selectedOddsFormatValue = prefs.getString('selectedOddsFormat');
     final selectedNotificationsOptionValue = prefs.getString('selectedNotificationsOption');
-
-    if (selectedLanguageValue != null) {
-      setState(() {
-        selectedLanguage = selectedLanguageValue;
-      });
-    }
 
     if (selectedOddsFormatValue != null) {
       setState(() {
@@ -75,13 +67,16 @@ class _SettingsExpansionButtonState extends State<SettingsExpansionButton> {
             child: ListBody(
               children: <Widget>[
                 for (final String choice in choices)
-                  GestureDetector(
-                    onTap: () async {
-                      Navigator.of(context).pop(choice);
-                      final prefs = await SharedPreferences.getInstance();
-                      prefs.setString(sharedPrefsKeyName, choice);
-                    },
-                    child: Text(choice),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: GestureDetector(
+                      onTap: () async {
+                        Navigator.of(context).pop(choice);
+                        final prefs = await SharedPreferences.getInstance();
+                        prefs.setString(sharedPrefsKeyName, choice);
+                      },
+                      child: nunitoText(choice, 5*widget.vw, FontWeight.normal, Theme.of(context).colorScheme.onBackground),
+                    ),
                   ),
               ],
             ),
@@ -92,8 +87,6 @@ class _SettingsExpansionButtonState extends State<SettingsExpansionButton> {
     if (selectedValue != null) {
       setState(() {
         switch (sharedPrefsKeyName) {
-          case 'selectedLanguage':
-            selectedLanguage = selectedValue;
           case 'selectedOddsFormat':
             selectedOddsFormat = selectedValue;
           case 'selectedNotificationsOption':
@@ -111,9 +104,10 @@ class _SettingsExpansionButtonState extends State<SettingsExpansionButton> {
     return Column(
       children: [
         ExpansionTile(
+
           title: nunitoText(
             widget.title,
-            3*widget.vh,
+            2.5*widget.vh,
             FontWeight.bold,
             Theme.of(context).colorScheme.onBackground,
           ),
@@ -143,8 +137,8 @@ class _SettingsExpansionButtonState extends State<SettingsExpansionButton> {
       padding: const EdgeInsets.all(12.0),
       children: <Widget>[
         ListTile(
-          title: Text('Betting Odds Format'),
-          subtitle: Text(selectedOddsFormat),
+          title: nunitoText("Betting odds format", 4*widget.vw, FontWeight.bold, Theme.of(context).colorScheme.onBackground),
+          subtitle: nunitoText(selectedOddsFormat, 3.5*widget.vw, FontWeight.normal, Theme.of(context).colorScheme.onBackground),
           onTap: () {
             _showDialog(
               ("Select odds format:"),
@@ -154,8 +148,9 @@ class _SettingsExpansionButtonState extends State<SettingsExpansionButton> {
           },
         ),
         ListTile(
-          title: Text('Notifications'),
-          subtitle: Text(selectedNotificationsOption),
+          // title: Text('Notifications'),
+          title: nunitoText("Notifications", 4*widget.vw, FontWeight.bold, Theme.of(context).colorScheme.onBackground),
+          subtitle: nunitoText(selectedNotificationsOption, 3.5*widget.vw, FontWeight.normal, Theme.of(context).colorScheme.onBackground),
           onTap: () {
             _showDialog(
               "Select notification option:",

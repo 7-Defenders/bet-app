@@ -1,4 +1,5 @@
 import 'package:app/firebase_options.dart';
+import 'package:app/screens/achievements_screen.dart';
 import 'package:app/screens/auth_screens/auth_screen.dart';
 import 'package:app/themes/dark_theme.dart';
 import 'package:app/themes/light_theme.dart';
@@ -35,6 +36,9 @@ class MyApp extends StatelessWidget {
       darkTheme: darkTheme,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
+      routes: {
+        "/achievements": (context) => const AchievementsScreen(),
+      },
       home: const AuthScreen(),
     );
   }
