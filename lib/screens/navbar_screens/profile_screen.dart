@@ -164,7 +164,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             // displayName
                             Row(
                               children: [
-                                Spacer(),
+                                const Spacer(),
                                 Container(
                                   padding: EdgeInsets.fromLTRB(0, 0, 1 * vw, 1 * vh),
                                   child: nunitoText(displayName!, 50, FontWeight.bold, Theme.of(context).colorScheme.onBackground),
