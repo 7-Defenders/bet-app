@@ -28,9 +28,8 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
 
   Future<void> loadStructure() async {
     setState(() {
-      structure = sports;
+      structure = sportsObject;
     });
-    print(structure);
   }
 
   Future<void> fetchMatchesGivenLeague(String league) async {
@@ -71,8 +70,8 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
   Widget buildListView(
       List<String> items, String selectedItem, void Function(String) onTap,) {
     return SizedBox(
-      height: 80,
-      width: 80,
+      height: 60,
+      width: double.infinity,
       child: ListView.builder(
         itemCount: items.length,
         scrollDirection: Axis.horizontal,
@@ -83,8 +82,12 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
             onTap: () {
               onTap(item);
             },
-            child: ColoredBox(
-              color: Theme.of(context).colorScheme.secondary,
+            child: Container(
+              width: 100,
+              height: 100,
+              color: item == selectedItem
+                  ? Theme.of(context).colorScheme.primary
+                  : Theme.of(context).colorScheme.secondary,
               child: Center(child: Text(item)),
             ),
           );
@@ -109,25 +112,25 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
   }
 
   Widget buildCountryListView() {
-    final countries = structure
-        .firstWhere((sport) => sport.name == selectedSport,
-        orElse: () => Sport(name: '', countries: [], svgPath: ''),)
-        .countries
-        .map((country) => country.name)
-        .toList(); //?????
+    final List<Country> countries = [];
+
+    for (final Sport sport in structure) {
+      countries.addAll(sport.countries);
+    }
 
     return buildListView(
-      countries,
+      countries.map((country) => country.name).toList(),
       selectedCountry,
           (country) {
         setState(() {
           selectedCountry = country;
           selectedLeague = '';
           displayedMatches.clear();
-        },);
+        });
       },
     );
   }
+
 
   Widget buildLeagueListView() {
     final leagues = structure
@@ -158,17 +161,15 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Column(
-        children: [
-          const Text("test"),
-          buildSportListView(),
-          const Text("test"),
-          if (selectedSport.isNotEmpty) buildCountryListView(),
-          const Text("test"),
-          if (selectedCountry.isNotEmpty) buildLeagueListView(),
-          ...displayedMatches,
-          const Text("test"),
-        ],
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            buildSportListView(),
+            if (selectedSport.isNotEmpty) buildCountryListView(),
+            if (selectedCountry.isNotEmpty) buildLeagueListView(),
+            ...displayedMatches,
+          ],
+        ),
       ),
     );
   }

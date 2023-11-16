@@ -31,10 +31,11 @@ List<League> internationalLeagues = [
 
 //countries
 List<Country> footballCountries = [
+  Country(name: 'International', svgPath: 'lib/assets/images/country_logos/international.svg', leagues: internationalLeagues),
   Country(name: 'England', svgPath: 'lib/assets/images/country_logos/england.svg', leagues: englishLeagues),
 ];
 
 //sports
-List<Sport> sports = [
+List<Sport> sportsObject = [
   Sport(name: 'Football', svgPath: 'lib/assets/images/sport_logos/football.svg', countries: footballCountries),
 ];
