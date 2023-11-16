@@ -85,4 +85,5 @@ flutter:
   assets:
     - lib/assets/
     - lib/assets/images/
+    - lib/assets/images/league_logos/
     - .env
