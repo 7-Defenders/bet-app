@@ -1,7 +1,10 @@
 import 'package:app/components/leagues_screen/bet_preview.dart';
+import 'package:app/components/other/nunito_text.dart';
 import 'package:app/models/football_event.dart';
 import 'package:app/models/structure.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
 
 class LeaguesScreen extends StatefulWidget {
@@ -40,8 +43,6 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
     );
 
     final response = await http.get(Uri.parse('https://bet-app-e520a.ew.r.appspot.com/competitions/$league'));
-    debugPrint("RESPONSE:");
-    debugPrint(response.body);
     displayedMatches.clear();
     setState((){
       footballEventFromJson(response.body).forEach((element) =>
@@ -50,9 +51,9 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
           eventDetails: element.date,
           bets: {
             '1':element.homeodds,
-            '1X':element.homeodds + element.tieodds,
+            '1X':0,
             'X': element.tieodds,
-            'X2':element.awayodds + element.tieodds,
+            'X2':0,
             '2':element.awayodds,
           },
         ),),
@@ -67,33 +68,60 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
   Widget buildListView(
       List<dynamic> items, dynamic selectedItem, void Function(dynamic) onTap, ) {
     return SizedBox(
-      height: 100,
+      height: 75,
       width: double.infinity,
       child: ListView.builder(
         itemCount: items.length,
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.only(bottom: 5),
         itemBuilder: (context, index) {
           final item = items[index];
-          // every item has a name and a svgPath - TODO workaround linter for this
+          // every item has a name - TODO workaround linter for this, maybe cast
           final String itemName = item.name as String;
-          final String itemSvgPath = item.svgPath as String;
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5),
+            padding: const EdgeInsets.fromLTRB(0, 0, 20, 5),
             child: GestureDetector(
               onTap: () {
                 onTap(item);
-                debugPrint("itemName: $itemName, selectedItem: $selectedItem");
               },
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(15),
+                borderRadius: BorderRadius.circular(20),
                 child: Container(
-                  width: 100,
-                  height: 100,
+                  padding: const EdgeInsets.only(top: 5),
+                  width: 115,
                   color: item == selectedItem
-                      ? Theme.of(context).colorScheme.primary
-                      : Theme.of(context).colorScheme.secondary,
-                  child: Center(child: Text(itemName)),
+                      ? Theme.of(context).colorScheme.background
+                      : Theme.of(context).colorScheme.error,
+                  child: Column(
+                    children: [
+                      if (item is Country || item is League)
+                        SvgPicture.asset(
+                          item.svgPath as String,
+                          width: (item is Country) ? 45 : 40,
+                          height: (item is Country) ? 38 : 38,
+                        )
+                      else if (item is Sport)
+                        Icon(
+                          item.icon,
+                          color: Theme.of(context).colorScheme.onBackground,
+                          size: 35,
+                        ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 5),
+                          child: Container(
+                            alignment: Alignment.bottomCenter,
+                            child: nunitoText(
+                              itemName,
+                              14,
+                              FontWeight.normal,
+                              Theme.of(context).colorScheme.onBackground,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -133,7 +161,6 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
           selectedCountry = country as Country;
           selectedLeague = null;
           displayedMatches.clear();
-          debugPrint(selectedCountry?.name);
         });
       },
     );
@@ -144,7 +171,7 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
     final leagues = structure
         .firstWhere(
             (sport) => sport.name == selectedSport?.name,
-        orElse: () => Sport(name: '', countries: [], svgPath: ''),)
+        orElse: () => Sport(name: '', countries: [], icon: Icons.abc),)
         .countries
         .firstWhere(
             (country) => country.name == selectedCountry?.name,
@@ -159,8 +186,6 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
           (league) {
         setState(() {
           selectedLeague = league as League;
-          debugPrint("HERE");
-          debugPrint(selectedLeague?.name);
           fetchMatchesGivenLeague(selectedLeague!.id);
         });
       },
@@ -169,16 +194,61 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            buildSportListView(),
-            if (selectedSport != null) buildCountryListView(),
-            if (selectedCountry != null) buildLeagueListView(),
-            ...displayedMatches,
-          ],
-        ),
+    return ColoredBox(
+      color: Theme.of(context).colorScheme.error,
+      child: Column(
+        children: [
+          // filters
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 250),
+            height: selectedSport == null ? 140 : selectedCountry == null ? 220 : selectedLeague == null ? 290 : 290,
+            curve: Curves.easeInOut,
+            child: SingleChildScrollView( // this helps avoid overflow during animation
+              child: ClipRRect(
+                borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(30), bottomRight: Radius.circular(30)),
+                child: Container(
+                  color: Theme.of(context).colorScheme.primary,
+                  padding: const EdgeInsets.only(left: 20, top: 55, bottom: 10),
+                  child: Column(
+                    children: [
+                      buildSportListView(),
+                      if (selectedSport != null)
+                        buildCountryListView().animate(
+                          effects: [
+                            const SlideEffect(
+                              duration: Duration(milliseconds: 250),
+                              begin: Offset(0, -0.5),
+                              end: Offset.zero,
+                            ),
+                            const FadeEffect(
+                              duration: Duration(milliseconds: 250),
+                              begin: 0,
+                              end: 1,
+                            ),
+                          ],
+                        ),
+                      if (selectedCountry != null) buildLeagueListView(),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          // matches
+          Expanded(
+            child: SingleChildScrollView(
+              child: Container(
+                padding: const EdgeInsets.only(top: 10),
+                child: Column(
+                  children: [
+                    ...displayedMatches,
+                    const SizedBox(height: 100,),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

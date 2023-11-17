@@ -1,9 +1,11 @@
+import 'package:flutter/material.dart';
+
 class Sport {
   String name;
-  String svgPath;
+  IconData icon;
   List<Country> countries;
 
-  Sport({required this.name, required this.countries, required this.svgPath});
+  Sport({required this.name, required this.countries, required this.icon});
 }
 
 class Country {
@@ -26,7 +28,7 @@ List<League> englishLeagues = [
   League(name: 'Premier League', svgPath: 'lib/assets/images/league_logos/premier_league.svg', id: 'football_39'),
 ];
 List<League> internationalLeagues = [
-  League(name: 'Friendlies', svgPath: 'lib/assets/images/league_logos/friendlies.svg', id: 'football_10'),
+  League(name: 'Friendlies', svgPath: 'lib/assets/images/league_logos/Friendlies.svg', id: 'football_10'),
 ];
 
 //countries
@@ -37,5 +39,5 @@ List<Country> footballCountries = [
 
 //sports
 List<Sport> sportsObject = [
-  Sport(name: 'Football', svgPath: 'lib/assets/images/sport_logos/football.svg', countries: footballCountries),
+  Sport(name: 'Football', icon: Icons.sports_soccer_rounded, countries: footballCountries),
 ];
