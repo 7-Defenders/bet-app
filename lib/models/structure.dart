@@ -31,8 +31,8 @@ List<League> internationalLeagues = [
 
 //countries
 List<Country> footballCountries = [
-  Country(name: 'International', svgPath: 'lib/assets/images/country_logos/international.svg', leagues: internationalLeagues),
-  Country(name: 'England', svgPath: 'lib/assets/images/country_logos/england.svg', leagues: englishLeagues),
+  Country(name: 'International', svgPath: 'lib/assets/images/country_flags/Globe.svg', leagues: internationalLeagues),
+  Country(name: 'England', svgPath: 'lib/assets/images/country_flags/England.svg', leagues: englishLeagues),
 ];
 
 //sports

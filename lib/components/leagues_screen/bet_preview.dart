@@ -26,7 +26,7 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
       child: Container(
         width: containterWidth,
         decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 255, 136, 0),
+          color: Theme.of(context).colorScheme.secondary,
           borderRadius: BorderRadius.circular(8.0),
         ),
         child: Wrap(
@@ -78,7 +78,7 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor:
-                          _selectedOption == entry.key ? Colors.blue : Colors.amber,
+                          _selectedOption == entry.key ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.tertiary,
                         ),
                         child:
                         Column(

@@ -70,7 +70,7 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
   Widget buildListView(
       List<String> items, String selectedItem, void Function(String) onTap,) {
     return SizedBox(
-      height: 60,
+      height: 100,
       width: double.infinity,
       child: ListView.builder(
         itemCount: items.length,
@@ -78,17 +78,23 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
         padding: const EdgeInsets.all(10),
         itemBuilder: (context, index) {
           final String item = items[index];
-          return GestureDetector(
-            onTap: () {
-              onTap(item);
-            },
-            child: Container(
-              width: 100,
-              height: 100,
-              color: item == selectedItem
-                  ? Theme.of(context).colorScheme.primary
-                  : Theme.of(context).colorScheme.secondary,
-              child: Center(child: Text(item)),
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 5),
+            child: GestureDetector(
+              onTap: () {
+                onTap(item);
+              },
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(15),
+                child: Container(
+                  width: 100,
+                  height: 100,
+                  color: item == selectedItem
+                      ? Theme.of(context).colorScheme.primary
+                      : Theme.of(context).colorScheme.secondary,
+                  child: Center(child: Text(item)),
+                ),
+              ),
             ),
           );
         },
