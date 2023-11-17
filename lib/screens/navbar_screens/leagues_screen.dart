@@ -13,12 +13,11 @@ class LeaguesScreen extends StatefulWidget {
 
 class _LeaguesScreenState extends State<LeaguesScreen> {
 
-  // structure goes here
   List<Sport> structure = [];
   List<BetPreviewWidget> displayedMatches = [];
-  String selectedSport = '';
-  String selectedCountry = '';
-  String selectedLeague = '';
+  Sport? selectedSport;
+  Country? selectedCountry;
+  League? selectedLeague;
 
   @override
   void initState() {
@@ -41,8 +40,8 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
     );
 
     final response = await http.get(Uri.parse('https://bet-app-e520a.ew.r.appspot.com/competitions/$league'));
-    print("RESPONSE:");
-    print(response.body);
+    debugPrint("RESPONSE:");
+    debugPrint(response.body);
     displayedMatches.clear();
     setState((){
       footballEventFromJson(response.body).forEach((element) =>
@@ -59,8 +58,6 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
         ),),
       );
     });
-    print("DISPLAYED MATCHES: ");
-    print(displayedMatches);
 
     if (mounted){
       Navigator.of(context).pop();
@@ -68,7 +65,7 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
   }
 
   Widget buildListView(
-      List<String> items, String selectedItem, void Function(String) onTap,) {
+      List<dynamic> items, dynamic selectedItem, void Function(dynamic) onTap, ) {
     return SizedBox(
       height: 100,
       width: double.infinity,
@@ -77,12 +74,16 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.all(10),
         itemBuilder: (context, index) {
-          final String item = items[index];
+          final item = items[index];
+          // every item has a name and a svgPath - TODO workaround linter for this
+          final String itemName = item.name as String;
+          final String itemSvgPath = item.svgPath as String;
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 5),
             child: GestureDetector(
               onTap: () {
                 onTap(item);
+                debugPrint("itemName: $itemName, selectedItem: $selectedItem");
               },
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(15),
@@ -92,7 +93,7 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
                   color: item == selectedItem
                       ? Theme.of(context).colorScheme.primary
                       : Theme.of(context).colorScheme.secondary,
-                  child: Center(child: Text(item)),
+                  child: Center(child: Text(itemName)),
                 ),
               ),
             ),
@@ -104,13 +105,13 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
 
   Widget buildSportListView() {
     return buildListView(
-      structure.map((sport) => sport.name).toList(),
+      structure.map((sport) => sport).toList(),
       selectedSport,
           (sport) {
         setState(() {
-          selectedSport = sport;
-          selectedCountry = '';
-          selectedLeague = '';
+          selectedSport = sport as Sport;
+          selectedCountry = null;
+          selectedLeague = null;
           displayedMatches.clear();
         });
       },
@@ -125,13 +126,14 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
     }
 
     return buildListView(
-      countries.map((country) => country.name).toList(),
+      countries.map((country) => country).toList(),
       selectedCountry,
           (country) {
         setState(() {
-          selectedCountry = country;
-          selectedLeague = '';
+          selectedCountry = country as Country;
+          selectedLeague = null;
           displayedMatches.clear();
+          debugPrint(selectedCountry?.name);
         });
       },
     );
@@ -141,14 +143,14 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
   Widget buildLeagueListView() {
     final leagues = structure
         .firstWhere(
-            (sport) => sport.name == selectedSport,
+            (sport) => sport.name == selectedSport?.name,
         orElse: () => Sport(name: '', countries: [], svgPath: ''),)
         .countries
         .firstWhere(
-            (country) => country.name == selectedCountry,
+            (country) => country.name == selectedCountry?.name,
         orElse: () => Country(name: '', leagues: [], svgPath: ''),)
         .leagues
-        .map((league) => league.id)
+        .map((league) => league)
         .toList();
 
     return buildListView(
@@ -156,9 +158,10 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
       selectedLeague,
           (league) {
         setState(() {
-          selectedLeague = league;
-          print(selectedLeague);
-          fetchMatchesGivenLeague(selectedLeague);
+          selectedLeague = league as League;
+          debugPrint("HERE");
+          debugPrint(selectedLeague?.name);
+          fetchMatchesGivenLeague(selectedLeague!.id);
         });
       },
     );
@@ -171,8 +174,8 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
         child: Column(
           children: [
             buildSportListView(),
-            if (selectedSport.isNotEmpty) buildCountryListView(),
-            if (selectedCountry.isNotEmpty) buildLeagueListView(),
+            if (selectedSport != null) buildCountryListView(),
+            if (selectedCountry != null) buildLeagueListView(),
             ...displayedMatches,
           ],
         ),
