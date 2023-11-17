@@ -21,11 +21,26 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
   Sport? selectedSport;
   Country? selectedCountry;
   League? selectedLeague;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
     loadStructure();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _scrollToTop() {
+    _scrollController.animateTo(
+      0.0,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeInOut,
+    );
   }
 
   Future<void> loadStructure() async {
@@ -196,59 +211,57 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
   Widget build(BuildContext context) {
     return ColoredBox(
       color: Theme.of(context).colorScheme.error,
-      child: Column(
-        children: [
-          // filters
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 250),
-            height: selectedSport == null ? 140 : selectedCountry == null ? 220 : selectedLeague == null ? 290 : 290,
-            curve: Curves.easeInOut,
-            child: SingleChildScrollView( // this helps avoid overflow during animation
-              child: ClipRRect(
-                borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(30), bottomRight: Radius.circular(30)),
-                child: Container(
-                  color: Theme.of(context).colorScheme.primary,
-                  padding: const EdgeInsets.only(left: 20, top: 55, bottom: 10),
-                  child: Column(
-                    children: [
-                      buildSportListView(),
-                      if (selectedSport != null)
-                        buildCountryListView().animate(
-                          effects: [
-                            const SlideEffect(
-                              duration: Duration(milliseconds: 250),
-                              begin: Offset(0, -0.5),
-                              end: Offset.zero,
-                            ),
-                            const FadeEffect(
-                              duration: Duration(milliseconds: 250),
-                              begin: 0,
-                              end: 1,
-                            ),
-                          ],
-                        ),
-                      if (selectedCountry != null) buildLeagueListView(),
-                    ],
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            // filters
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 250),
+              height: selectedSport == null ? 140 : selectedCountry == null ? 220 : selectedLeague == null ? 290 : 290,
+              curve: Curves.easeInOut,
+              child: SingleChildScrollView( // this helps avoid overflow during animation
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(30), bottomRight: Radius.circular(30)),
+                  child: Container(
+                    color: Theme.of(context).colorScheme.primary,
+                    padding: const EdgeInsets.only(left: 20, top: 55, bottom: 10),
+                    child: Column(
+                      children: [
+                        buildSportListView(),
+                        if (selectedSport != null)
+                          buildCountryListView().animate(
+                            effects: [
+                              const SlideEffect(
+                                duration: Duration(milliseconds: 250),
+                                begin: Offset(0, -0.5),
+                                end: Offset.zero,
+                              ),
+                              const FadeEffect(
+                                duration: Duration(milliseconds: 250),
+                                begin: 0,
+                                end: 1,
+                              ),
+                            ],
+                          ),
+                        if (selectedCountry != null) buildLeagueListView(),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-          // matches
-          Expanded(
-            child: SingleChildScrollView(
-              child: Container(
-                padding: const EdgeInsets.only(top: 10),
-                child: Column(
-                  children: [
-                    ...displayedMatches,
-                    const SizedBox(height: 100,),
-                  ],
-                ),
+            // matches
+            Container(
+              padding: const EdgeInsets.only(top: 10),
+              child: Column(
+                children: [
+                  ...displayedMatches,
+                  const SizedBox(height: 100,),
+                ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
