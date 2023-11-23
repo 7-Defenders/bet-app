@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class LeaguesScreen extends StatefulWidget {
   const LeaguesScreen({super.key});
@@ -21,26 +22,11 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
   Sport? selectedSport;
   Country? selectedCountry;
   League? selectedLeague;
-  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
     loadStructure();
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  void _scrollToTop() {
-    _scrollController.animateTo(
-      0.0,
-      duration: const Duration(milliseconds: 500),
-      curve: Curves.easeInOut,
-    );
   }
 
   Future<void> loadStructure() async {
@@ -53,7 +39,9 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
     showDialog(
       context: context,
       builder: (context) {
-        return const Center(child: CircularProgressIndicator());
+        return Center(
+          child: LoadingAnimationWidget.hexagonDots(color: Theme.of(context).colorScheme.primary, size: 55,),
+        );
       },
     );
 
@@ -207,61 +195,102 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
     );
   }
 
+  void onMakeBetPressed() {
+    showModalBottomSheet(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
+        ),
+      ),
+      isScrollControlled: true,
+      context: context,
+      builder: (context) {
+        return SizedBox(
+          height: MediaQuery.of(context).size.height * 0.7,
+          child: const Center(child: Text("Hello")),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ColoredBox(
       color: Theme.of(context).colorScheme.error,
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            // filters
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 250),
-              height: selectedSport == null ? 140 : selectedCountry == null ? 220 : selectedLeague == null ? 290 : 290,
-              curve: Curves.easeInOut,
-              child: SingleChildScrollView( // this helps avoid overflow during animation
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(30), bottomRight: Radius.circular(30)),
-                  child: Container(
-                    color: Theme.of(context).colorScheme.primary,
-                    padding: const EdgeInsets.only(left: 20, top: 55, bottom: 10),
-                    child: Column(
-                      children: [
-                        buildSportListView(),
-                        if (selectedSport != null)
-                          buildCountryListView().animate(
-                            effects: [
-                              const SlideEffect(
-                                duration: Duration(milliseconds: 250),
-                                begin: Offset(0, -0.5),
-                                end: Offset.zero,
+      child: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Column(
+              children: [
+                // filters
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 250),
+                  height: selectedSport == null ? 140 : selectedCountry == null ? 220 : selectedLeague == null ? 290 : 290,
+                  curve: Curves.easeInOut,
+                  child: SingleChildScrollView( // this helps avoid overflow during animation
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(30), bottomRight: Radius.circular(30)),
+                      child: Container(
+                        color: Theme.of(context).colorScheme.primary,
+                        padding: const EdgeInsets.only(left: 20, top: 55, bottom: 10),
+                        child: Column(
+                          children: [
+                            buildSportListView(),
+                            if (selectedSport != null)
+                              buildCountryListView().animate(
+                                effects: [
+                                  const SlideEffect(
+                                    duration: Duration(milliseconds: 250),
+                                    begin: Offset(0, -0.5),
+                                    end: Offset.zero,
+                                  ),
+                                  const FadeEffect(
+                                    duration: Duration(milliseconds: 250),
+                                    begin: 0,
+                                    end: 1,
+                                  ),
+                                ],
                               ),
-                              const FadeEffect(
-                                duration: Duration(milliseconds: 250),
-                                begin: 0,
-                                end: 1,
-                              ),
-                            ],
-                          ),
-                        if (selectedCountry != null) buildLeagueListView(),
-                      ],
+                            if (selectedCountry != null) buildLeagueListView(),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 ),
+                // matches
+                Container(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: Column(
+                    children: [
+                      ...displayedMatches,
+                      const SizedBox(height: 100,),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+            bottom: 20,
+            right: 20,
+            child: SizedBox(
+              width: 70,
+              height: 70,
+              child: FloatingActionButton(
+                elevation: 10,
+                onPressed: onMakeBetPressed,
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                child: Icon(
+                  Icons.keyboard_arrow_up_rounded,
+                  size: 40,
+                  color: Theme.of(context).colorScheme.background,
+                ),
               ),
             ),
-            // matches
-            Container(
-              padding: const EdgeInsets.only(top: 10),
-              child: Column(
-                children: [
-                  ...displayedMatches,
-                  const SizedBox(height: 100,),
-                ],
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
