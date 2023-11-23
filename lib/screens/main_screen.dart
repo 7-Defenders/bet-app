@@ -5,6 +5,7 @@ import 'package:app/screens/navbar_screens/profile_screen.dart';
 import 'package:app/screens/navbar_screens/shop_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+// import 'package:card_swiper/card_swiper.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -25,6 +26,7 @@ class _MainScreenState extends State<MainScreen> {
   ];
 
   int currentIndex = 1;
+  // final SwiperController _swiperController = SwiperController();
 
   void onTap(int index) {
     setState(() {
