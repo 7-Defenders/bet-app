@@ -24,6 +24,8 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
   Country? selectedCountry;
   League? selectedLeague;
 
+  List<BetPreviewWidget> chosenMatches = [];
+
   @override
   void initState() {
     super.initState();
@@ -246,7 +248,12 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
         final buttonStatesProvider = Provider.of<ButtonStatesProvider>(context);
         return SizedBox(
           height: MediaQuery.of(context).size.height * 0.7,
-          child: const Center(child: Text("Test")),
+          child: ListView.builder(
+            itemCount: displayedMatches.length,
+            itemBuilder: (context, index) {
+              return displayedMatches[index];
+            },
+          ),
         );
       },
     );
