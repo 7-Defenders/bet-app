@@ -1,6 +1,8 @@
+import 'package:app/button_states_provider.dart';
 import 'package:app/firebase_options.dart';
 import 'package:app/screens/achievements_screen.dart';
 import 'package:app/screens/auth_screens/auth_screen.dart';
+import 'package:app/screens/navbar_screens/leagues_screen.dart';
 import 'package:app/themes/dark_theme.dart';
 import 'package:app/themes/light_theme.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
@@ -8,6 +10,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 // import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
@@ -22,7 +25,10 @@ void main() async {
     androidProvider: AndroidProvider.debug,
     appleProvider: AppleProvider.debug,
   );
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider<ButtonStatesProvider>(
+        create: (context) => ButtonStatesProvider(), child: const MyApp()),
+  );
 }
 
 class MyApp extends StatelessWidget {

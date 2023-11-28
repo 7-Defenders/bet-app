@@ -1,3 +1,4 @@
+import 'package:app/button_states_provider.dart';
 import 'package:app/components/leagues_screen/bet_preview.dart';
 import 'package:app/components/other/nunito_text.dart';
 import 'package:app/models/football_event.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:provider/provider.dart';
 
 class LeaguesScreen extends StatefulWidget {
   const LeaguesScreen({super.key});
@@ -21,7 +23,6 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
   Sport? selectedSport;
   Country? selectedCountry;
   League? selectedLeague;
-  Map<String, String> buttonStates = {};
 
   @override
   void initState() {
@@ -33,14 +34,6 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
     setState(() {
       structure = sportsObject;
     });
-  }
-
-  void updateButtonState(String buttonId, String? selectedOption) {
-    setState(() {
-      buttonStates[buttonId] = selectedOption!;
-    });
-    //debugging print
-    print(buttonStates);
   }
 
   Future<void> fetchMatchesGivenLeague(String league) async {
@@ -73,8 +66,14 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
               '2': element.awayodds,
             },
             onOptionSelected: (String? selectedOption) {
-              updateButtonState(
+              final buttonStatesProvider = context.read<ButtonStatesProvider>();
+              buttonStatesProvider.updateButtonState(
                   '${element.homename} - ${element.awayname}', selectedOption);
+              print(
+                  "ButtonStatesProvider values: ${buttonStatesProvider.buttonStates}");
+              //print whole map
+              print(Provider.of<ButtonStatesProvider>(context, listen: false)
+                  .buttonStates);
             },
           ),
         ),
@@ -228,6 +227,7 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
       isScrollControlled: true,
       context: context,
       builder: (context) {
+        final buttonStatesProvider = Provider.of<ButtonStatesProvider>(context);
         return SizedBox(
           height: MediaQuery.of(context).size.height * 0.7,
           child: const Center(child: Text("Test")),
@@ -238,6 +238,10 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print("LeaguesScreen context: $context");
+    print(
+        "Provider available: ${Provider.of<ButtonStatesProvider>(context, listen: false) != null}");
+
     return ColoredBox(
       color: Theme.of(context).colorScheme.error,
       child: Stack(
