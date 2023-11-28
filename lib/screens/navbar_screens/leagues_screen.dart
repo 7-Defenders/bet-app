@@ -16,12 +16,12 @@ class LeaguesScreen extends StatefulWidget {
 }
 
 class _LeaguesScreenState extends State<LeaguesScreen> {
-
   List<Sport> structure = [];
   List<BetPreviewWidget> displayedMatches = [];
   Sport? selectedSport;
   Country? selectedCountry;
   League? selectedLeague;
+  Map<String, String> buttonStates = {};
 
   @override
   void initState() {
@@ -35,41 +35,62 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
     });
   }
 
+  void updateButtonState(String buttonId, String? selectedOption) {
+    setState(() {
+      buttonStates[buttonId] = selectedOption!;
+    });
+    //debugging print
+    print(buttonStates);
+  }
+
   Future<void> fetchMatchesGivenLeague(String league) async {
     showDialog(
       context: context,
       builder: (context) {
         return Center(
-          child: LoadingAnimationWidget.hexagonDots(color: Theme.of(context).colorScheme.primary, size: 55,),
+          child: LoadingAnimationWidget.hexagonDots(
+            color: Theme.of(context).colorScheme.primary,
+            size: 55,
+          ),
         );
       },
     );
 
-    final response = await http.get(Uri.parse('https://bet-app-e520a.ew.r.appspot.com/competitions/$league'));
+    final response = await http.get(Uri.parse(
+        'https://bet-app-e520a.ew.r.appspot.com/competitions/$league'));
     displayedMatches.clear();
-    setState((){
-      footballEventFromJson(response.body).forEach((element) =>
-        displayedMatches.add(BetPreviewWidget(
-          eventName: '${element.homename} - ${element.awayname}',
-          eventDetails: element.date,
-          bets: {
-            '1':element.homeodds,
-            '1X':0,
-            'X': element.tieodds,
-            'X2':0,
-            '2':element.awayodds,
-          },
-        ),),
+    setState(() {
+      footballEventFromJson(response.body).forEach(
+        (element) => displayedMatches.add(
+          BetPreviewWidget(
+            eventName: '${element.homename} - ${element.awayname}',
+            eventDetails: element.date,
+            bets: {
+              '1': element.homeodds,
+              '1X': 0,
+              'X': element.tieodds,
+              'X2': 0,
+              '2': element.awayodds,
+            },
+            onOptionSelected: (String? selectedOption) {
+              updateButtonState(
+                  '${element.homename} - ${element.awayname}', selectedOption);
+            },
+          ),
+        ),
       );
     });
 
-    if (mounted){
+    if (mounted) {
       Navigator.of(context).pop();
     }
   }
 
   Widget buildListView(
-      List<dynamic> items, dynamic selectedItem, void Function(dynamic) onTap, ) {
+    List<dynamic> items,
+    dynamic selectedItem,
+    void Function(dynamic) onTap,
+  ) {
     return SizedBox(
       height: 75,
       width: double.infinity,
@@ -138,7 +159,7 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
     return buildListView(
       structure.map((sport) => sport).toList(),
       selectedSport,
-          (sport) {
+      (sport) {
         setState(() {
           selectedSport = sport as Sport;
           selectedCountry = null;
@@ -159,7 +180,7 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
     return buildListView(
       countries.map((country) => country).toList(),
       selectedCountry,
-          (country) {
+      (country) {
         setState(() {
           selectedCountry = country as Country;
           selectedLeague = null;
@@ -169,16 +190,17 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
     );
   }
 
-
   Widget buildLeagueListView() {
     final leagues = structure
         .firstWhere(
-            (sport) => sport.name == selectedSport?.name,
-        orElse: () => Sport(name: '', countries: [], icon: Icons.abc),)
+          (sport) => sport.name == selectedSport?.name,
+          orElse: () => Sport(name: '', countries: [], icon: Icons.abc),
+        )
         .countries
         .firstWhere(
-            (country) => country.name == selectedCountry?.name,
-        orElse: () => Country(name: '', leagues: [], svgPath: ''),)
+          (country) => country.name == selectedCountry?.name,
+          orElse: () => Country(name: '', leagues: [], svgPath: ''),
+        )
         .leagues
         .map((league) => league)
         .toList();
@@ -186,7 +208,7 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
     return buildListView(
       leagues,
       selectedLeague,
-          (league) {
+      (league) {
         setState(() {
           selectedLeague = league as League;
           fetchMatchesGivenLeague(selectedLeague!.id);
@@ -208,7 +230,7 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
       builder: (context) {
         return SizedBox(
           height: MediaQuery.of(context).size.height * 0.7,
-          child: const Center(child: Text("Hello")),
+          child: const Center(child: Text("Test")),
         );
       },
     );
@@ -226,14 +248,24 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
                 // filters
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 250),
-                  height: selectedSport == null ? 140 : selectedCountry == null ? 220 : selectedLeague == null ? 290 : 290,
+                  height: selectedSport == null
+                      ? 140
+                      : selectedCountry == null
+                          ? 220
+                          : selectedLeague == null
+                              ? 290
+                              : 290,
                   curve: Curves.easeInOut,
-                  child: SingleChildScrollView( // this helps avoid overflow during animation
+                  child: SingleChildScrollView(
+                    // this helps avoid overflow during animation
                     child: ClipRRect(
-                      borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(30), bottomRight: Radius.circular(30)),
+                      borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.circular(30),
+                          bottomRight: Radius.circular(30)),
                       child: Container(
                         color: Theme.of(context).colorScheme.primary,
-                        padding: const EdgeInsets.only(left: 20, top: 55, bottom: 10),
+                        padding: const EdgeInsets.only(
+                            left: 20, top: 55, bottom: 10),
                         child: Column(
                           children: [
                             buildSportListView(),
@@ -265,7 +297,9 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
                   child: Column(
                     children: [
                       ...displayedMatches,
-                      const SizedBox(height: 100,),
+                      const SizedBox(
+                        height: 100,
+                      ),
                     ],
                   ),
                 ),
