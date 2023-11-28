@@ -9,4 +9,9 @@ class ButtonStatesProvider with ChangeNotifier {
     _buttonStates[buttonId] = selectedOption!;
     notifyListeners();
   }
+
+  void removeButtonState(String buttonId) {
+    _buttonStates.remove(buttonId);
+    notifyListeners();
+  }
 }

@@ -67,10 +67,23 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
             },
             onOptionSelected: (String? selectedOption) {
               final buttonStatesProvider = context.read<ButtonStatesProvider>();
-              buttonStatesProvider.updateButtonState(
-                  '${element.homename} - ${element.awayname}', selectedOption);
-              print(
-                  "ButtonStatesProvider values: ${buttonStatesProvider.buttonStates}");
+              final String key = '${element.homename} - ${element.awayname}';
+
+              //print("Selected option: $selectedOption" + " key: $key");
+
+              //print selectedOption and buttonStatesProvider.buttonStates[key]
+              // print("Selected option: $selectedOption" +
+              //     " buttonStatesProvider.buttonStates[key]: " +
+              //     "${buttonStatesProvider.buttonStates[key]}");
+
+              if (buttonStatesProvider.buttonStates.containsKey(key) &&
+                  selectedOption == buttonStatesProvider.buttonStates[key]) {
+                buttonStatesProvider.removeButtonState(key);
+              } else {
+                buttonStatesProvider.updateButtonState(key, selectedOption);
+              }
+              //print(
+              //"ButtonStatesProvider values: ${buttonStatesProvider.buttonStates}");
               //print whole map
               print(Provider.of<ButtonStatesProvider>(context, listen: false)
                   .buttonStates);
@@ -238,9 +251,9 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("LeaguesScreen context: $context");
-    print(
-        "Provider available: ${Provider.of<ButtonStatesProvider>(context, listen: false) != null}");
+    //print("LeaguesScreen context: $context");
+    // print(
+    //     "Provider available: ${Provider.of<ButtonStatesProvider>(context, listen: false) != null}");
 
     return ColoredBox(
       color: Theme.of(context).colorScheme.error,

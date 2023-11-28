@@ -102,9 +102,7 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
                           setState(() {
                             _selectedOption =
                                 _selectedOption == entry.key ? null : entry.key;
-                            if (_selectedOption != null) {
-                              widget.onOptionSelected!(_selectedOption!);
-                            }
+                            widget.onOptionSelected!(entry.key);
                             debugPrint(entry.key);
                           });
                         },
