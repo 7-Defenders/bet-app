@@ -8,13 +8,16 @@ class BetPreviewWidget extends StatefulWidget {
   final String eventDetails;
   final Map<String, double> bets;
   final ValueChanged<String>? onOptionSelected;
+  final String? initialSelection;
 
-  const BetPreviewWidget(
-      {super.key,
-      required this.eventName,
-      required this.eventDetails,
-      required this.bets,
-      required this.onOptionSelected});
+  const BetPreviewWidget({
+    super.key,
+    required this.eventName,
+    required this.eventDetails,
+    required this.bets,
+    required this.onOptionSelected,
+    this.initialSelection,
+  });
 
   @override
   _BetPreviewWidgetState createState() => _BetPreviewWidgetState();
@@ -22,6 +25,12 @@ class BetPreviewWidget extends StatefulWidget {
 
 class _BetPreviewWidgetState extends State<BetPreviewWidget> {
   String? _selectedOption;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedOption = widget.initialSelection;
+  }
 
   @override
   Widget build(BuildContext context) {

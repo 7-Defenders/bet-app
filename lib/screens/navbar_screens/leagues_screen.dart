@@ -52,7 +52,9 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
     final response = await http.get(Uri.parse(
         'https://bet-app-e520a.ew.r.appspot.com/competitions/$league'));
     displayedMatches.clear();
+
     setState(() {
+      final buttonStatesProvider = context.read<ButtonStatesProvider>();
       footballEventFromJson(response.body).forEach(
         (element) => displayedMatches.add(
           BetPreviewWidget(
@@ -66,7 +68,6 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
               '2': element.awayodds,
             },
             onOptionSelected: (String? selectedOption) {
-              final buttonStatesProvider = context.read<ButtonStatesProvider>();
               final String key = '${element.homename} - ${element.awayname}';
 
               //print("Selected option: $selectedOption" + " key: $key");
@@ -88,6 +89,8 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
               print(Provider.of<ButtonStatesProvider>(context, listen: false)
                   .buttonStates);
             },
+            initialSelection: buttonStatesProvider
+                .buttonStates['${element.homename} - ${element.awayname}'],
           ),
         ),
       );
