@@ -77,9 +77,11 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
                             alignment: Alignment.center,
                             child: Text(
                               widget.eventName,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 14.0,
                                 fontWeight: FontWeight.bold,
+                                color:
+                                    Theme.of(context).colorScheme.onSecondary,
                               ),
                             ),
                           ),
@@ -87,9 +89,11 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
                             alignment: Alignment.center,
                             child: Text(
                               widget.eventDetails,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 12.0,
                                 fontWeight: FontWeight.normal,
+                                color:
+                                    Theme.of(context).colorScheme.onSecondary,
                               ),
                             ),
                           ),
@@ -104,8 +108,9 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: widget.bets.entries.map((entry) {
                     return SizedBox(
-                      // width: containterWidth / widget.bets.length,
-                      height: 35.0,
+                      width:
+                          (containterWidth - 4 * padding) / widget.bets.length,
+                      height: 38.0,
                       child: ElevatedButton(
                         onPressed: () {
                           setState(() {
@@ -122,17 +127,27 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16.0),
                           ),
+                          padding: EdgeInsets.symmetric(vertical: 0.5),
                         ),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
                               entry.key,
-                              style: const TextStyle(
-                                  fontSize: 14, fontWeight: FontWeight.w800),
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w800,
+                                color: Theme.of(context).colorScheme.onPrimary,
+                              ),
                             ),
                             Text(entry.value.toStringAsFixed(2),
-                                style: const TextStyle(fontSize: 12)),
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onPrimary
+                                      .withOpacity(0.8),
+                                )),
                           ],
                         ),
                       ),
