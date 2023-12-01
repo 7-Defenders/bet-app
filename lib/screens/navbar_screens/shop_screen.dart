@@ -1,6 +1,6 @@
+import 'package:app/blocs/league_joining_bloc/league_joining_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../blocs/league_joining_bloc/league_joining_bloc.dart';
 
 class ShopScreen extends StatefulWidget {
   ShopScreen({Key? key}) : super(key: key);
@@ -27,7 +27,14 @@ class _ShopScreenState extends State<ShopScreen> {
                   } else if (state is LeagueJoiningInitialState) {
                     return _buildInitialUI(context);
                   } else if (state is LeagueJoiningCodeInputState) {
-                    return _showLeagueCodeInputDialog(context);
+                    final TextEditingController leagueCodeController = TextEditingController();
+                    Future.delayed(Duration.zero, () { // avoids "setState() or markNeedsBuild() called during build"
+                      showDialog(
+                        context: context,
+                        builder: (context) => _buildLeagueCodeInputDialog(context, leagueCodeController),
+                      );
+                    });
+                    return _buildInitialUI(context);
                   } else if (state is LeagueJoiningSuccessState) {
                     Future.delayed(Duration.zero, () { // avoids "setState() or markNeedsBuild() called during build"
                       showDialog(
@@ -77,27 +84,27 @@ class _ShopScreenState extends State<ShopScreen> {
     );
   }
 
-  void _showDialog(Widget content) {
-    showDialog(
-      context: context,
-      builder: (context) => content,
-    );
-  }
+  // void _showDialog(Widget content) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (context) => content,
+  //   );
+  // }
 
   Widget _showLoadingDialog() {
     return CircularProgressIndicator(backgroundColor: Colors.black.withOpacity(0.5),);
   }
 
-  Widget _showLeagueCodeInputDialog(BuildContext context) {
-    final TextEditingController leagueCodeController = TextEditingController();
-
-    return ElevatedButton(
-      onPressed: () {
-        _showDialog(_buildLeagueCodeInputDialog(context, leagueCodeController));
-      },
-      child: const Text('Join League'),
-    );
-  }
+  // Widget _showLeagueCodeInputDialog(BuildContext context) {
+  //   final TextEditingController leagueCodeController = TextEditingController();
+  //
+  //   return ElevatedButton(
+  //     onPressed: () {
+  //       _showDialog(_buildLeagueCodeInputDialog(context, leagueCodeController));
+  //     },
+  //     child: const Text('Join League'),
+  //   );
+  // }
 
   Widget _buildLeagueCodeInputDialog(BuildContext context, TextEditingController leagueCodeController) {
     return AlertDialog(
@@ -151,7 +158,7 @@ class _ShopScreenState extends State<ShopScreen> {
         TextButton(
           onPressed: () {
             Navigator.of(context).pop(); // Close the dialog
-            BlocProvider.of<LeagueJoiningBloc>(context).add(CancelLeagueJoinEvent());
+            // BlocProvider.of<LeagueJoiningBloc>(context).add(CancelLeagueJoinEvent());
           },
           child: const Text('Ok'),
         ),
