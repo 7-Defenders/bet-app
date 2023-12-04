@@ -35,21 +35,20 @@ class _EventsScreenState extends State<EventsScreen> {
 //     League(id: '3', name: 'Matto', svgPath: 'lib/assets/images/league_logos/premier_league.svg'),
 //     League(id: '4', name: 'SEMPUUU', svgPath: 'lib/assets/images/league_logos/premier_league.svg'),
 //     League(id: '5', name: 'Herman', svgPath: 'lib/assets/images/league_logos/premier_league.svg'),
-//     League(id: '6', name: 'Chuj ', svgPath: 'lib/assets/images/league_logos/premier_league.svg'),
+//     League(id: '6', name: 'Maciek', svgPath: 'lib/assets/images/league_logos/premier_league.svg'),
 //   ];
+
 
 //   @override
 //   Widget build(BuildContext context) {
 //     return Column(
 //       children: [
-//         SizedBox(
-//           height: 200, // Set the height for the widget here
-//           child: LeagueListWidget(
-//             title: 'Ranking',
-//             leagues: mockLeagues,
-//           ),
+//         LeagueListWidget(
+//           leagues: mockLeagues,
+//           height: 300, 
 //         ),
 //       ],
 //     );
 //   }
 // }
+
