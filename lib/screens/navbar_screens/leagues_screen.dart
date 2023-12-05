@@ -290,7 +290,14 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
                     IconButton(
                       icon: Icon(Icons.close),
                       onPressed: () {
-                        // Handle the "X" button press here.
+                        final matchId = entry.key;
+
+                        chosenMatches.removeWhere(
+                          (element) => element.eventName == matchId,
+                        );
+
+                        buttonStatesProvider
+                            .removeButtonStateAndRefresh(matchId);
                       },
                     ),
                   ],
@@ -309,94 +316,103 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
     // print(
     //     "Provider available: ${Provider.of<ButtonStatesProvider>(context, listen: false) != null}");
 
-    return ColoredBox(
-      color: Theme.of(context).colorScheme.error,
-      child: Stack(
-        children: [
-          SingleChildScrollView(
-            child: Column(
-              children: [
-                // filters
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 250),
-                  height: selectedSport == null
-                      ? 140
-                      : selectedCountry == null
-                          ? 220
-                          : selectedLeague == null
-                              ? 290
-                              : 290,
-                  curve: Curves.easeInOut,
-                  child: SingleChildScrollView(
-                    // this helps avoid overflow during animation
-                    child: ClipRRect(
-                      borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(30),
-                          bottomRight: Radius.circular(30)),
-                      child: Container(
-                        color: Theme.of(context).colorScheme.primary,
-                        padding: const EdgeInsets.only(
-                            left: 20, top: 55, bottom: 10),
-                        child: Column(
-                          children: [
-                            buildSportListView(),
-                            if (selectedSport != null)
-                              buildCountryListView().animate(
-                                effects: [
-                                  const SlideEffect(
-                                    duration: Duration(milliseconds: 250),
-                                    begin: Offset(0, -0.5),
-                                    end: Offset.zero,
+    return Consumer<ButtonStatesProvider>(
+      builder: (context, buttonStatesProvider, child) {
+        return ColoredBox(
+          color: Theme.of(context).colorScheme.error,
+          child: Stack(
+            children: [
+              SingleChildScrollView(
+                child: Column(
+                  children: [
+                    // filters
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 250),
+                      height: selectedSport == null
+                          ? 140
+                          : selectedCountry == null
+                              ? 220
+                              : selectedLeague == null
+                                  ? 290
+                                  : 290,
+                      curve: Curves.easeInOut,
+                      child: SingleChildScrollView(
+                        // this helps avoid overflow during animation
+                        child: ClipRRect(
+                          borderRadius: const BorderRadius.only(
+                              bottomLeft: Radius.circular(30),
+                              bottomRight: Radius.circular(30)),
+                          child: Container(
+                            color: Theme.of(context).colorScheme.primary,
+                            padding: const EdgeInsets.only(
+                                left: 20, top: 55, bottom: 10),
+                            child: Column(
+                              children: [
+                                buildSportListView(),
+                                if (selectedSport != null)
+                                  buildCountryListView().animate(
+                                    effects: [
+                                      const SlideEffect(
+                                        duration: Duration(milliseconds: 250),
+                                        begin: Offset(0, -0.5),
+                                        end: Offset.zero,
+                                      ),
+                                      const FadeEffect(
+                                        duration: Duration(milliseconds: 250),
+                                        begin: 0,
+                                        end: 1,
+                                      ),
+                                    ],
                                   ),
-                                  const FadeEffect(
-                                    duration: Duration(milliseconds: 250),
-                                    begin: 0,
-                                    end: 1,
-                                  ),
-                                ],
-                              ),
-                            if (selectedCountry != null) buildLeagueListView(),
-                          ],
+                                if (selectedCountry != null)
+                                  buildLeagueListView(),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ),
-                // matches
-                Container(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: Column(
-                    children: [
-                      ...displayedMatches,
-                      const SizedBox(
-                        height: 100,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Positioned(
-            bottom: 20,
-            right: 20,
-            child: SizedBox(
-              width: 70,
-              height: 70,
-              child: FloatingActionButton(
-                elevation: 10,
-                onPressed: onMakeBetPressed,
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                child: Icon(
-                  Icons.keyboard_arrow_up_rounded,
-                  size: 40,
-                  color: Theme.of(context).colorScheme.background,
+                    // matches
+                    Consumer<ButtonStatesProvider>(
+                      builder: (context, buttonStatesProvider, child) {
+                        return Container(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: Column(
+                            children: [
+                              ...displayedMatches,
+                              const SizedBox(
+                                height: 100,
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ],
                 ),
               ),
-            ),
+              Positioned(
+                bottom: 20,
+                right: 20,
+                child: SizedBox(
+                  width: 70,
+                  height: 70,
+                  child: FloatingActionButton(
+                    elevation: 10,
+                    onPressed: onMakeBetPressed,
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    child: Icon(
+                      Icons.keyboard_arrow_up_rounded,
+                      size: 40,
+                      color: Theme.of(context).colorScheme.background,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
