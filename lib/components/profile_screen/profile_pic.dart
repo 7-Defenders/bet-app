@@ -11,8 +11,11 @@ Widget pictureWithBorder(
     height: 19 * vh,
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(40),
+      // ignore: require_trailing_commas
       border: Border.all(
-          width: 10, color: Theme.of(context).colorScheme.background),
+        width: 10,
+        color: Theme.of(context).colorScheme.background,
+      ),
       image: DecorationImage(
         fit: BoxFit.fill,
         image: photoURL != "" || photoURL != null

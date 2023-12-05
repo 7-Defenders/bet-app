@@ -1,7 +1,5 @@
-import 'package:app/button_states_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:provider/provider.dart';
 
 class BetPreviewWidget extends StatefulWidget {
   final String eventName;
@@ -35,7 +33,7 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final buttonStatesProvider = Provider.of<ButtonStatesProvider>(context);
+    //final buttonStatesProvider = Provider.of<ButtonStatesProvider>(context);
     final double containterWidth = MediaQuery.of(context).size.width * 0.9;
     const double padding = 8.0;
     const SizedBox paddingBox = SizedBox(height: padding, width: padding);
@@ -67,7 +65,8 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
                         width: 24,
                         height: 24,
                         child: SvgPicture.asset(
-                            'lib/assets/images/futbol-regular.svg'),
+                          'lib/assets/images/futbol-regular.svg',
+                        ),
                       ),
                       paddingBox,
                       Column(
@@ -75,7 +74,6 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Align(
-                            alignment: Alignment.center,
                             child: Text(
                               widget.eventName,
                               style: TextStyle(
@@ -87,7 +85,6 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
                             ),
                           ),
                           Align(
-                            alignment: Alignment.center,
                             child: Text(
                               widget.eventDetails,
                               style: TextStyle(
@@ -128,7 +125,7 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16.0),
                           ),
-                          padding: EdgeInsets.symmetric(vertical: 0.5),
+                          padding: const EdgeInsets.symmetric(vertical: 0.5),
                         ),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -141,14 +138,16 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
                                 color: Theme.of(context).colorScheme.onPrimary,
                               ),
                             ),
-                            Text(entry.value.toStringAsFixed(2),
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onPrimary
-                                      .withOpacity(0.8),
-                                )),
+                            Text(
+                              entry.value.toStringAsFixed(2),
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onPrimary
+                                    .withOpacity(0.8),
+                              ),
+                            ),
                           ],
                         ),
                       ),

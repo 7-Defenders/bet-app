@@ -62,8 +62,12 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  Widget buildNavBarItem(IconData iconData, int index, String label,
-      {double iconSize = 25}) {
+  Widget buildNavBarItem(
+    IconData iconData,
+    int index,
+    String label, {
+    double iconSize = 25,
+  }) {
     final isSelected = index == currentIndex;
 
     return GestureDetector(

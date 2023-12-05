@@ -171,18 +171,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   padding:
                                       EdgeInsets.fromLTRB(0, 0, 1 * vw, 1 * vh),
                                   child: nunitoText(
-                                      displayName!,
-                                      30,
-                                      FontWeight.bold,
-                                      Theme.of(context)
-                                          .colorScheme
-                                          .onBackground),
+                                    displayName!,
+                                    30,
+                                    FontWeight.bold,
+                                    Theme.of(context).colorScheme.onBackground,
+                                  ),
                                 ),
                                 Expanded(
                                   child: Align(
                                     alignment: Alignment.centerLeft,
-                                    child: nickButton(changeDisplayName, vw, vh,
-                                        FontAwesomeIcons.penToSquare, context),
+                                    child: nickButton(
+                                      changeDisplayName,
+                                      vw,
+                                      vh,
+                                      FontAwesomeIcons.penToSquare,
+                                      context,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -190,8 +194,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             // email
                             Padding(
                               padding: EdgeInsets.fromLTRB(0, 0, 0, 5 * vh),
-                              child: nunitoText(email!, 20, FontWeight.bold,
-                                  Theme.of(context).colorScheme.tertiary),
+                              child: nunitoText(
+                                email!,
+                                20,
+                                FontWeight.bold,
+                                Theme.of(context).colorScheme.tertiary,
+                              ),
                             ),
                             gestureDetectorButton(
                               FontAwesomeIcons.medal,
@@ -220,7 +228,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
             alignment: Alignment.bottomCenter,
             child: Container(
               child: gestureDetectorButton(
-                  Icons.logout, "Log Out", logOutUser, vw, vh, context),
+                Icons.logout,
+                "Log Out",
+                logOutUser,
+                vw,
+                vh,
+                context,
+              ),
             ),
           ),
         ),
@@ -237,7 +251,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
           left: 31 * vw,
           right: 0,
           child: smallButton(
-              changeProfilePicture, vw, vh, Icons.camera_alt_outlined, context),
+            changeProfilePicture,
+            vw,
+            vh,
+            Icons.camera_alt_outlined,
+            context,
+          ),
         ),
       ],
     );

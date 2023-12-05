@@ -64,8 +64,11 @@ class LeaguesScreenState extends State<LeaguesScreen> {
       },
     );
 
-    final response = await http.get(Uri.parse(
-        'https://bet-app-e520a.ew.r.appspot.com/competitions/$league'));
+    final response = await http.get(
+      Uri.parse(
+        'https://bet-app-e520a.ew.r.appspot.com/competitions/$league',
+      ),
+    );
     displayedMatches.clear();
 
     setState(() {
@@ -90,13 +93,10 @@ class LeaguesScreenState extends State<LeaguesScreen> {
               switch (selectedOption) {
                 case '1':
                   odds = element.homeodds;
-                  break;
                 case 'X':
                   odds = element.tieodds;
-                  break;
                 case '2':
                   odds = element.awayodds;
-                  break;
                 default:
                   odds = 0;
               }
@@ -121,13 +121,13 @@ class LeaguesScreenState extends State<LeaguesScreen> {
                 buttonStatesProvider.removeButtonState(key);
               } else {
                 buttonStatesProvider.updateButtonState(
-                    key, '$selectedOption,$odds');
+                  key,
+                  '$selectedOption,$odds',
+                );
               }
               //print(
               //"ButtonStatesProvider values: ${buttonStatesProvider.buttonStates}");
               //print whole map
-              print(Provider.of<ButtonStatesProvider>(context, listen: false)
-                  .buttonStates);
             },
             initialSelection: buttonStatesProvider
                 .buttonStates['${element.homename} - ${element.awayname}']
@@ -301,7 +301,7 @@ class LeaguesScreenState extends State<LeaguesScreen> {
                     ),
                     Text('Odds: ${entry.value.split(',')[1]}'),
                     IconButton(
-                      icon: Icon(Icons.close),
+                      icon: const Icon(Icons.close),
                       onPressed: () {
                         final matchId = entry.key;
 
@@ -316,7 +316,7 @@ class LeaguesScreenState extends State<LeaguesScreen> {
                         rebuild();
                       },
                     ),
-                    Expanded(
+                    const Expanded(
                       child: TextField(
                           // Configure your TextField here.
                           ),
@@ -325,7 +325,7 @@ class LeaguesScreenState extends State<LeaguesScreen> {
                       onPressed: () {
                         // Handle the button press here.
                       },
-                      child: Text('Place bet'),
+                      child: const Text('Place bet'),
                     ),
                   ],
                 ),
@@ -342,99 +342,102 @@ class LeaguesScreenState extends State<LeaguesScreen> {
     //print("LeaguesScreen context: $context");
     // print(
     //     "Provider available: ${Provider.of<ButtonStatesProvider>(context, listen: false) != null}");
-    final buttonStatesProvider = Provider.of<ButtonStatesProvider>(context);
     return ColoredBox(
-        color: Theme.of(context).colorScheme.error,
-        child: Stack(
-          children: [
-            SingleChildScrollView(
-              child: Column(
-                children: [
-                  // filters
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 250),
-                    height: selectedSport == null
-                        ? 140
-                        : selectedCountry == null
-                            ? 220
-                            : selectedLeague == null
-                                ? 290
-                                : 290,
-                    curve: Curves.easeInOut,
-                    child: SingleChildScrollView(
-                      // this helps avoid overflow during animation
-                      child: ClipRRect(
-                        borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(30),
-                            bottomRight: Radius.circular(30)),
-                        child: Container(
-                          color: Theme.of(context).colorScheme.primary,
-                          padding: const EdgeInsets.only(
-                              left: 20, top: 55, bottom: 10),
-                          child: Column(
-                            children: [
-                              buildSportListView(),
-                              if (selectedSport != null)
-                                buildCountryListView().animate(
-                                  effects: [
-                                    const SlideEffect(
-                                      duration: Duration(milliseconds: 250),
-                                      begin: Offset(0, -0.5),
-                                      end: Offset.zero,
-                                    ),
-                                    const FadeEffect(
-                                      duration: Duration(milliseconds: 250),
-                                      begin: 0,
-                                      end: 1,
-                                    ),
-                                  ],
-                                ),
-                              if (selectedCountry != null)
-                                buildLeagueListView(),
-                            ],
-                          ),
+      color: Theme.of(context).colorScheme.error,
+      child: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Column(
+              children: [
+                // filters
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 250),
+                  height: selectedSport == null
+                      ? 140
+                      : selectedCountry == null
+                          ? 220
+                          : selectedLeague == null
+                              ? 290
+                              : 290,
+                  curve: Curves.easeInOut,
+                  child: SingleChildScrollView(
+                    // this helps avoid overflow during animation
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(30),
+                        bottomRight: Radius.circular(30),
+                      ),
+                      child: Container(
+                        color: Theme.of(context).colorScheme.primary,
+                        padding: const EdgeInsets.only(
+                          left: 20,
+                          top: 55,
+                          bottom: 10,
+                        ),
+                        child: Column(
+                          children: [
+                            buildSportListView(),
+                            if (selectedSport != null)
+                              buildCountryListView().animate(
+                                effects: [
+                                  const SlideEffect(
+                                    duration: Duration(milliseconds: 250),
+                                    begin: Offset(0, -0.5),
+                                    end: Offset.zero,
+                                  ),
+                                  const FadeEffect(
+                                    duration: Duration(milliseconds: 250),
+                                    begin: 0,
+                                    end: 1,
+                                  ),
+                                ],
+                              ),
+                            if (selectedCountry != null) buildLeagueListView(),
+                          ],
                         ),
                       ),
                     ),
                   ),
-                  // matches
-                  Consumer<ButtonStatesProvider>(
-                    builder: (context, buttonStatesProvider, child) {
-                      return Container(
-                        padding: const EdgeInsets.only(top: 10),
-                        child: Column(
-                          children: [
-                            ...displayedMatches,
-                            const SizedBox(
-                              height: 100,
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
+                ),
+                // matches
+                Consumer<ButtonStatesProvider>(
+                  builder: (context, buttonStatesProvider, child) {
+                    return Container(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: Column(
+                        children: [
+                          ...displayedMatches,
+                          const SizedBox(
+                            height: 100,
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ],
             ),
-            Positioned(
-              bottom: 20,
-              right: 20,
-              child: SizedBox(
-                width: 70,
-                height: 70,
-                child: FloatingActionButton(
-                  elevation: 10,
-                  onPressed: onMakeBetPressed,
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  child: Icon(
-                    Icons.keyboard_arrow_up_rounded,
-                    size: 40,
-                    color: Theme.of(context).colorScheme.background,
-                  ),
+          ),
+          Positioned(
+            bottom: 20,
+            right: 20,
+            child: SizedBox(
+              width: 70,
+              height: 70,
+              child: FloatingActionButton(
+                elevation: 10,
+                onPressed: onMakeBetPressed,
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                child: Icon(
+                  Icons.keyboard_arrow_up_rounded,
+                  size: 40,
+                  color: Theme.of(context).colorScheme.background,
                 ),
               ),
             ),
-          ],
-        ));
+          ),
+        ],
+      ),
+    );
   }
 }

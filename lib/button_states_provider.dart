@@ -1,6 +1,6 @@
-import 'package:app/screens/navbar_screens/leagues_screen.dart';
+//import 'package:app/screens/navbar_screens/leagues_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+//import 'package:provider/provider.dart';
 
 class ButtonStatesProvider with ChangeNotifier {
   final ValueNotifier<Map<String, String>> _buttonStatesNotifier =
@@ -41,7 +41,6 @@ class ButtonStatesProvider with ChangeNotifier {
     //rebuild leagues screen
     //leaguesScreenStateKey.currentState?.rebuild();
 
-    print(_buttonStatesNotifier);
     //print(_buttonStatesNotifier.hasListeners);
   }
 }
