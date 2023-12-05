@@ -1,4 +1,6 @@
+import 'package:app/screens/navbar_screens/leagues_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ButtonStatesProvider with ChangeNotifier {
   final ValueNotifier<Map<String, String>> _buttonStatesNotifier =
@@ -24,7 +26,22 @@ class ButtonStatesProvider with ChangeNotifier {
   }
 
   void removeButtonStateAndRefresh(String buttonId) {
+    //print value notifier
+    //print(_buttonStatesNotifier);
     removeButtonState(buttonId);
     notifyListeners();
+
+    //print eagues screen state key
+    // WidgetsBinding.instance?.addPostFrameCallback((_) {
+    //   final leaguesScreenState = LeaguesScreenState.key.currentState;
+    //   print(leaguesScreenState.toString() + ' leagues screen state');
+    //   //leaguesScreenState?.rebuild();
+    // });
+
+    //rebuild leagues screen
+    //leaguesScreenStateKey.currentState?.rebuild();
+
+    print(_buttonStatesNotifier);
+    //print(_buttonStatesNotifier.hasListeners);
   }
 }
