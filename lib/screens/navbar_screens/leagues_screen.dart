@@ -316,6 +316,17 @@ class LeaguesScreenState extends State<LeaguesScreen> {
                         rebuild();
                       },
                     ),
+                    Expanded(
+                      child: TextField(
+                          // Configure your TextField here.
+                          ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        // Handle the button press here.
+                      },
+                      child: Text('Place bet'),
+                    ),
                   ],
                 ),
               );
