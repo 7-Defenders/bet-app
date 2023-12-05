@@ -30,6 +30,7 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
   void initState() {
     super.initState();
     _selectedOption = widget.initialSelection;
+    //print(widget.initialSelection);
   }
 
   @override

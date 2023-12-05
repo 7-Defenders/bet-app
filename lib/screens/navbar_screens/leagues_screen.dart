@@ -57,6 +57,7 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
 
     setState(() {
       final buttonStatesProvider = context.read<ButtonStatesProvider>();
+
       footballEventFromJson(response.body).forEach(
         (element) => displayedMatches.add(
           BetPreviewWidget(
@@ -71,6 +72,22 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
             },
             onOptionSelected: (String? selectedOption) {
               final String key = '${element.homename} - ${element.awayname}';
+              final double odds;
+
+              switch (selectedOption) {
+                case '1':
+                  odds = element.homeodds;
+                  break;
+                case 'X':
+                  odds = element.tieodds;
+                  break;
+                case '2':
+                  odds = element.awayodds;
+                  break;
+                default:
+                  odds = 0;
+              }
+              //replace this with proper way to fetch odds
 
               //print("Selected option: $selectedOption" + " key: $key");
 
@@ -79,11 +96,19 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
               //     " buttonStatesProvider.buttonStates[key]: " +
               //     "${buttonStatesProvider.buttonStates[key]}");
 
+              final currentOptionAndOdds =
+                  buttonStatesProvider.buttonStates[key]?.split(',');
+              final currentOption =
+                  currentOptionAndOdds != null ? currentOptionAndOdds[0] : null;
+
+              //print("Current option: $currentOption");
+
               if (buttonStatesProvider.buttonStates.containsKey(key) &&
-                  selectedOption == buttonStatesProvider.buttonStates[key]) {
+                  selectedOption == currentOption) {
                 buttonStatesProvider.removeButtonState(key);
               } else {
-                buttonStatesProvider.updateButtonState(key, selectedOption);
+                buttonStatesProvider.updateButtonState(
+                    key, '$selectedOption,$odds');
               }
               //print(
               //"ButtonStatesProvider values: ${buttonStatesProvider.buttonStates}");
@@ -92,7 +117,8 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
                   .buttonStates);
             },
             initialSelection: buttonStatesProvider
-                .buttonStates['${element.homename} - ${element.awayname}'],
+                .buttonStates['${element.homename} - ${element.awayname}']
+                ?.split(',')[0],
           ),
         ),
       );
@@ -249,9 +275,27 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
         return SizedBox(
           height: MediaQuery.of(context).size.height * 0.7,
           child: ListView.builder(
-            itemCount: displayedMatches.length,
+            itemCount: buttonStatesProvider.buttonStates.length,
             itemBuilder: (context, index) {
-              return displayedMatches[index];
+              final entry =
+                  buttonStatesProvider.buttonStates.entries.elementAt(index);
+              return ListTile(
+                title: Text('Match ID: ${entry.key}'),
+                subtitle: Row(
+                  children: [
+                    Expanded(
+                      child: Text('Option: ${entry.value.split(',')[0]}'),
+                    ),
+                    Text('Odds: ${entry.value.split(',')[1]}'),
+                    IconButton(
+                      icon: Icon(Icons.close),
+                      onPressed: () {
+                        // Handle the "X" button press here.
+                      },
+                    ),
+                  ],
+                ),
+              );
             },
           ),
         );
