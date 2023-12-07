@@ -13,7 +13,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
@@ -21,9 +20,7 @@ class ProfileScreen extends StatefulWidget {
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-
 class _ProfileScreenState extends State<ProfileScreen> {
-
   String selectedLanguage = 'English';
   final user = FirebaseAuth.instance.currentUser;
   final FirebaseStorage storage = FirebaseStorage.instance;
@@ -71,8 +68,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (file.lengthSync() > 5 * 1024 * 1024) {
       if (mounted) {
         showSnackbarMessage(
-            'Image size must be under 5MB',
-            context,);
+          'Image size must be under 5MB',
+          context,
+        );
       }
       return;
     }
@@ -116,9 +114,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-    final double vh = MediaQuery.of(context).size.height/100;
-    final double vw = MediaQuery.of(context).size.width/100;
+    final double vh = MediaQuery.of(context).size.height / 100;
+    final double vw = MediaQuery.of(context).size.width / 100;
 
     return Stack(
       children: [
@@ -130,9 +127,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: Align(
               alignment: Alignment.topLeft,
               child: Padding(
-                padding: EdgeInsets.fromLTRB(1*vw, 1*vw, 0, 0),
+                padding: EdgeInsets.fromLTRB(1 * vw, 1 * vw, 0, 0),
                 child: IconButton(
-                  icon: Icon(Icons.menu_rounded, color: Theme.of(context).colorScheme.background, size: 8*vw,),
+                  icon: Icon(
+                    Icons.menu_rounded,
+                    color: Theme.of(context).colorScheme.background,
+                    size: 8 * vw,
+                  ),
                   onPressed: () {
                     if (mounted) {
                       Scaffold.of(context).openDrawer();
@@ -145,11 +146,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         // white background
         Padding(
-          padding: EdgeInsets.fromLTRB(0, 25*vh, 0, 0),
+          padding: EdgeInsets.fromLTRB(0, 25 * vh, 0, 0),
           child: SizedBox(
-            width: 100*vw,
+            width: 100 * vw,
             child: ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(35)),
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(35)),
               child: Container(
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.background,
@@ -158,7 +160,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   children: [
                     Expanded(
                       child: Container(
-                        padding: EdgeInsets.fromLTRB(0,12*vh, 0, 0),
+                        padding: EdgeInsets.fromLTRB(0, 12 * vh, 0, 0),
                         child: Column(
                           children: [
                             // displayName
@@ -166,27 +168,60 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               children: [
                                 const Spacer(),
                                 Container(
-                                  padding: EdgeInsets.fromLTRB(0, 0, 1 * vw, 1 * vh),
-                                  child: nunitoText(displayName!, 50, FontWeight.bold, Theme.of(context).colorScheme.onBackground),
+                                  padding:
+                                      EdgeInsets.fromLTRB(0, 0, 1 * vw, 1 * vh),
+                                  child: nunitoText(
+                                    displayName!,
+                                    50,
+                                    FontWeight.bold,
+                                    Theme.of(context).colorScheme.onBackground,
+                                  ),
                                 ),
                                 Expanded(
                                   child: Align(
                                     alignment: Alignment.centerLeft,
-                                    child: nickButton(changeDisplayName, vw, vh, FontAwesomeIcons.penToSquare, context),
+                                    child: nickButton(
+                                      changeDisplayName,
+                                      vw,
+                                      vh,
+                                      FontAwesomeIcons.penToSquare,
+                                      context,
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
                             // email
                             Padding(
-                              padding: EdgeInsets.fromLTRB(0, 0, 0, 5*vh),
-                              child: nunitoText(email!, 20, FontWeight.bold, Theme.of(context).colorScheme.tertiary),
+                              padding: EdgeInsets.fromLTRB(0, 0, 0, 5 * vh),
+                              child: nunitoText(
+                                email!,
+                                20,
+                                FontWeight.bold,
+                                Theme.of(context).colorScheme.tertiary,
+                              ),
                             ),
-                            gestureDetectorButton(FontAwesomeIcons.medal, "Achievements",
-                                    () {
-                                      Navigator.pushNamed(context, '/achievements');
-                                    },
-                                vw, vh, context,),
+                            gestureDetectorButton(
+                              FontAwesomeIcons.medal,
+                              "Achievements",
+                              () {
+                                Navigator.pushNamed(context, '/achievements');
+                              },
+                              vw,
+                              vh,
+                              context,
+                            ),
+                            SizedBox(height: 2 * vh),
+                            gestureDetectorButton(
+                              Icons.history,
+                              "Bet history",
+                              () {
+                                Navigator.pushNamed(context, '/history');
+                              },
+                              vw,
+                              vh,
+                              context,
+                            ),
                           ],
                         ),
                       ),
@@ -199,16 +234,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         // log out
         Container(
-          padding: EdgeInsets.fromLTRB(0, 0, 0, 5*vh),
+          padding: EdgeInsets.fromLTRB(0, 0, 0, 5 * vh),
           child: Align(
             alignment: Alignment.bottomCenter,
             child: Container(
-              child: gestureDetectorButton(Icons.logout, "Log Out", logOutUser, vw, vh, context),
+              child: gestureDetectorButton(
+                Icons.logout,
+                "Log Out",
+                logOutUser,
+                vw,
+                vh,
+                context,
+              ),
             ),
           ),
         ),
         Positioned(
-          top: 17*vh,
+          top: 17 * vh,
           left: 0,
           right: 0,
           child: Center(
@@ -216,10 +258,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
         Positioned(
-          top: 31*vh,
-          left: 31*vw,
+          top: 31 * vh,
+          left: 31 * vw,
           right: 0,
-          child: smallButton(changeProfilePicture, vw, vh, Icons.camera_alt_outlined, context),
+          child: smallButton(
+            changeProfilePicture,
+            vw,
+            vh,
+            Icons.camera_alt_outlined,
+            context,
+          ),
         ),
       ],
     );
