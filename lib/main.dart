@@ -2,7 +2,7 @@ import 'package:app/button_states_provider.dart';
 import 'package:app/firebase_options.dart';
 import 'package:app/screens/achievements_screen.dart';
 import 'package:app/screens/auth_screens/auth_screen.dart';
-import 'package:app/screens/navbar_screens/leagues_screen.dart';
+import 'package:app/screens/navbar_screens/events_screen.dart';
 import 'package:app/themes/dark_theme.dart';
 import 'package:app/themes/light_theme.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
@@ -32,8 +32,8 @@ void main() async {
         ChangeNotifierProvider<ButtonStatesProvider>(
           create: (context) => ButtonStatesProvider(),
         ),
-        Provider<GlobalKey<LeaguesScreenState>>(
-          create: (_) => LeaguesScreenState.key,
+        Provider<GlobalKey<EventsScreenState>>(
+          create: (_) => EventsScreenState.key,
         ),
       ],
       child: const MyApp(),
