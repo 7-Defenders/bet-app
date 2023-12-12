@@ -1,5 +1,5 @@
 import 'package:app/blocs/league_joining_bloc/league_joining_bloc.dart';
-import 'package:app/components/events_screen/join_league_widget.dart';
+import 'package:app/components/league_screen/join_league_widget.dart';
 import 'package:app/components/shop_screen/add_points_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
