@@ -6,14 +6,14 @@ import 'package:flutter/material.dart';
 
 class HistoryScreen extends StatefulWidget {
   HistoryScreen({super.key});
+  final List<Bet> betList = [];
+  final List<HistoryBetWidget> betWidgets = [];
 
   @override
   State<HistoryScreen> createState() => _HistoryScreenState();
 }
 
 class _HistoryScreenState extends State<HistoryScreen> {
-  final List<Bet> betList = [];
-
   Future<void> getBetList() async {
     // fill betList with data from Firestore
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -33,7 +33,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           print('betSnapshot.data(): ${betSnapshot.data()}');
           final Bet bet =
               await Bet.create(betSnapshot.data()! as Map<String, dynamic>);
-          betList.add(bet);
+          widget.betList.add(bet);
         } else {
           print('Bet document not found for betRef: ${betRef.id}');
         }
@@ -41,36 +41,47 @@ class _HistoryScreenState extends State<HistoryScreen> {
     } catch (e) {
       print('Error fetching bet list: $e');
     }
-    // setState(() {});
-    print("bet list length: ${betList.length}");
-    print("betList: $betList");
+    setState(() {});
+    print("bet list length: ${widget.betList.length}");
+    print("betList: $widget.betList");
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getBetList();
   }
 
   @override
   Widget build(BuildContext context) {
     print("build called");
     return Scaffold(
-      body: FutureBuilder(
-        future: getBetList(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (snapshot.hasError) {
-            return Center(
-              child: Text('Error loading bet list: ${snapshot.error}'),
-            );
-          } else {
-            final List<Widget> betWidgets =
-                betList.map((bet) => HistoryBetWidget(bet: bet)).toList();
-            print("betWidgets: $betWidgets");
-
-            return ListView(
-              children: betWidgets,
-            );
-          }
-        },
+      body: Padding(
+        padding: const EdgeInsets.only(top: 30),
+        child: Column(
+          children: [
+            GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: const SizedBox(
+                height: 50,
+                child: Text(
+                  'History',
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              child: ListView(
+                children: widget.betList
+                    .map((bet) => HistoryBetWidget(bet: bet))
+                    .toList(),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -13,33 +13,10 @@ class EventsScreen extends StatefulWidget {
 }
 
 class _EventsScreenState extends State<EventsScreen> {
-
   @override
   Widget build(BuildContext context) {
-
-    Future<void> callFunctionPrintResultToConsole() async {
-      final FirebaseAuth auth = FirebaseAuth.instance;
-      final String uid = auth.currentUser!.uid;
-      final response = await http.post(
-        Uri.parse("https://joinleague-vhn3gxevdq-ew.a.run.app"),
-        body: {
-          'uid': uid,
-          'leagueId': 'ImIlLZv9iXdWQFSpK8YB',
-        },
-      );
-    }
-
-    return Column(
-      children: [
-        Expanded(
-          child: Center(
-            child: ElevatedButton(
-              onPressed: callFunctionPrintResultToConsole,
-              child: const Text("join league"),
-            )
-          ),
-        ),
-      ],
+    return const Center(
+      child: Text("hi"),
     );
   }
 }

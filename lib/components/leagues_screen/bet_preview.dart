@@ -6,11 +6,12 @@ class BetPreviewWidget extends StatefulWidget {
   final String eventDetails;
   final Map<String, double> bets;
 
-  const BetPreviewWidget(
-      {super.key,
-      required this.eventName,
-      required this.eventDetails,
-      required this.bets});
+  const BetPreviewWidget({
+    super.key,
+    required this.eventName,
+    required this.eventDetails,
+    required this.bets,
+  });
 
   @override
   _BetPreviewWidgetState createState() => _BetPreviewWidgetState();
