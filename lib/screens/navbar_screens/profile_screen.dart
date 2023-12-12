@@ -172,7 +172,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       EdgeInsets.fromLTRB(0, 0, 1 * vw, 1 * vh),
                                   child: nunitoText(
                                     displayName!,
-                                    50,
+                                    30,
                                     FontWeight.bold,
                                     Theme.of(context).colorScheme.onBackground,
                                   ),
@@ -254,7 +254,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           left: 0,
           right: 0,
           child: Center(
-            child: pictureWithBorder(photoURL, vh, context),
+            child: pictureWithBorder(photoURL ?? "", vh, context),
           ),
         ),
         Positioned(

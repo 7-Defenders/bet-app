@@ -5,12 +5,16 @@ class BetPreviewWidget extends StatefulWidget {
   final String eventName;
   final String eventDetails;
   final Map<String, double> bets;
+  final ValueChanged<String>? onOptionSelected;
+  final String? initialSelection;
 
   const BetPreviewWidget({
     super.key,
     required this.eventName,
     required this.eventDetails,
     required this.bets,
+    required this.onOptionSelected,
+    this.initialSelection,
   });
 
   @override
@@ -21,7 +25,15 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
   String? _selectedOption;
 
   @override
+  void initState() {
+    super.initState();
+    _selectedOption = widget.initialSelection;
+    //print(widget.initialSelection);
+  }
+
+  @override
   Widget build(BuildContext context) {
+    //final buttonStatesProvider = Provider.of<ButtonStatesProvider>(context);
     final double containterWidth = MediaQuery.of(context).size.width * 0.9;
     const double padding = 8.0;
     const SizedBox paddingBox = SizedBox(height: padding, width: padding);
@@ -53,7 +65,8 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
                         width: 24,
                         height: 24,
                         child: SvgPicture.asset(
-                            'lib/assets/images/futbol-regular.svg'),
+                          'lib/assets/images/futbol-regular.svg',
+                        ),
                       ),
                       paddingBox,
                       Column(
@@ -61,22 +74,24 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Align(
-                            alignment: Alignment.center,
                             child: Text(
                               widget.eventName,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 14.0,
                                 fontWeight: FontWeight.bold,
+                                color:
+                                    Theme.of(context).colorScheme.onSecondary,
                               ),
                             ),
                           ),
                           Align(
-                            alignment: Alignment.center,
                             child: Text(
                               widget.eventDetails,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 12.0,
                                 fontWeight: FontWeight.normal,
+                                color:
+                                    Theme.of(context).colorScheme.onSecondary,
                               ),
                             ),
                           ),
@@ -91,13 +106,15 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: widget.bets.entries.map((entry) {
                     return SizedBox(
-                      // width: containterWidth / widget.bets.length,
-                      height: 35.0,
+                      width:
+                          (containterWidth - 4 * padding) / widget.bets.length,
+                      height: 38.0,
                       child: ElevatedButton(
                         onPressed: () {
                           setState(() {
                             _selectedOption =
                                 _selectedOption == entry.key ? null : entry.key;
+                            widget.onOptionSelected!(entry.key);
                             debugPrint(entry.key);
                           });
                         },
@@ -108,17 +125,29 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16.0),
                           ),
+                          padding: const EdgeInsets.symmetric(vertical: 0.5),
                         ),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
                               entry.key,
-                              style: const TextStyle(
-                                  fontSize: 14, fontWeight: FontWeight.w800),
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w800,
+                                color: Theme.of(context).colorScheme.onPrimary,
+                              ),
                             ),
-                            Text(entry.value.toStringAsFixed(2),
-                                style: const TextStyle(fontSize: 12)),
+                            Text(
+                              entry.value.toStringAsFixed(2),
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onPrimary
+                                    .withOpacity(0.8),
+                              ),
+                            ),
                           ],
                         ),
                       ),

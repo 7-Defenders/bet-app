@@ -1,7 +1,13 @@
+import 'package:app/button_states_provider.dart';
+import 'package:app/firebase_options.dart';
+import 'package:app/screens/achievements_screen.dart';
+import 'package:app/screens/auth_screens/auth_screen.dart';
+import 'package:app/screens/navbar_screens/events_screen.dart';
 import 'package:app/blocs/league_joining_bloc/league_joining_bloc.dart';
 import 'package:app/firebase_options.dart';
 import 'package:app/screens/achievements_screen.dart';
 import 'package:app/screens/auth_screens/auth_screen.dart';
+import 'package:app/screens/navbar_screens/events_screen.dart';
 import 'package:app/screens/history_screen.dart';
 import 'package:app/themes/dark_theme.dart';
 import 'package:app/themes/light_theme.dart';
@@ -11,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 // import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
@@ -33,7 +40,17 @@ void main() async {
           create: (context) => LeagueJoiningBloc(),
         ),
       ],
-      child: const MyApp(),
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider<ButtonStatesProvider>(
+            create: (context) => ButtonStatesProvider(),
+          ),
+          Provider<GlobalKey<EventsScreenState>>(
+            create: (_) => EventsScreenState.key,
+          ),
+        ],
+        child: const MyApp(),
+      ),
     ),
   );
 }
