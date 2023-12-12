@@ -211,6 +211,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               vh,
                               context,
                             ),
+                            SizedBox(height: 2 * vh),
+                            gestureDetectorButton(
+                              Icons.history,
+                              "Bet history",
+                              () {
+                                Navigator.pushNamed(context, '/history');
+                              },
+                              vw,
+                              vh,
+                              context,
+                            ),
                           ],
                         ),
                       ),

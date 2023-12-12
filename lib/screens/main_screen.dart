@@ -15,12 +15,10 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  String? displayName;
-
-  final List<Widget> pages = const [
-    ProfileScreen(),
-    EventsScreen(),
-    LeaguesScreen(),
+  final List<Widget> pages = [
+    const ProfileScreen(),
+    const EventsScreen(),
+    const LeaguesScreen(),
     ShopScreen(),
   ];
 
@@ -39,6 +37,7 @@ class _MainScreenState extends State<MainScreen> {
     final double vw = MediaQuery.of(context).size.width / 100;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       drawer: drawer(context, vw, vh),
       body: Column(
         children: [
