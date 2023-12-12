@@ -1,7 +1,12 @@
+import 'dart:convert';
+
+import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:app/models/structure.dart'; 
 import 'package:app/components/leagues_screen/league_widget.dart';
+import 'package:http/http.dart' as http;
 
 class EventsScreen extends StatefulWidget {
   const EventsScreen({super.key});
@@ -13,14 +18,8 @@ class EventsScreen extends StatefulWidget {
 class _EventsScreenState extends State<EventsScreen> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: Center(
-            child: Text(AppLocalizations.of(context)!.helloWorld),
-          ),
-        ),
-      ],
+    return const Center(
+      child: Text("hi"),
     );
   }
 }

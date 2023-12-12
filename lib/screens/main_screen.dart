@@ -15,13 +15,10 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-
-  String? displayName;
-
-  final List<Widget> pages = const [
-    ProfileScreen(),
-    EventsScreen(),
-    LeaguesScreen(),
+  final List<Widget> pages = [
+    const ProfileScreen(),
+    const EventsScreen(),
+    const LeaguesScreen(),
     ShopScreen(),
   ];
 
@@ -36,11 +33,11 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-    final double vh = MediaQuery.of(context).size.height/100;
-    final double vw = MediaQuery.of(context).size.width/100;
+    final double vh = MediaQuery.of(context).size.height / 100;
+    final double vw = MediaQuery.of(context).size.width / 100;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       drawer: drawer(context, vw, vh),
       body: Column(
         children: [
@@ -64,7 +61,12 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  Widget buildNavBarItem(IconData iconData, int index, String label, {double iconSize=25}) {
+  Widget buildNavBarItem(
+    IconData iconData,
+    int index,
+    String label, {
+    double iconSize = 25,
+  }) {
     final isSelected = index == currentIndex;
 
     return GestureDetector(
