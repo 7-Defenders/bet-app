@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:app/models/structure.dart'; 
-import 'package:app/components/events_screen/league_widget.dart';
+import 'package:app/components/leagues_screen/league_widget.dart';
 
 class EventsScreen extends StatefulWidget {
   const EventsScreen({super.key});
