@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../components/other/nunito_text.dart';
+
 class HistoryScreen extends StatefulWidget {
   HistoryScreen({super.key});
   final List<Bet> betList = [];
@@ -56,20 +58,20 @@ class _HistoryScreenState extends State<HistoryScreen> {
   Widget build(BuildContext context) {
     print("build called");
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: Padding(
         padding: const EdgeInsets.only(top: 30),
         child: Column(
           children: [
             GestureDetector(
               onTap: () => Navigator.pop(context),
-              child: const SizedBox(
+              child: SizedBox(
                 height: 50,
-                child: Text(
+                child: nunitoText(
                   'History',
-                  style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  30,
+                  FontWeight.bold,
+                  Theme.of(context).colorScheme.onBackground,
                 ),
               ),
             ),

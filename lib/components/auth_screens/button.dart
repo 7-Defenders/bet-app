@@ -1,3 +1,4 @@
+import 'package:app/components/other/nunito_text.dart';
 import 'package:flutter/material.dart';
 
 class MyButton extends StatelessWidget {
@@ -19,16 +20,15 @@ class MyButton extends StatelessWidget {
         padding: const EdgeInsets.all(20),
         margin: const EdgeInsets.symmetric(horizontal: 25),
         decoration: BoxDecoration(
-          color: Colors.black,
-          borderRadius: BorderRadius.circular(10),
+          color: Theme.of(context).colorScheme.onBackground,
+          borderRadius: BorderRadius.circular(15),
         ),
         child: Center(
-          child: Text(
+          child: nunitoText(
             text,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 18,
-            ),
+            18,
+            FontWeight.normal,
+            Theme.of(context).colorScheme.background,
           ),
         ),),
     );

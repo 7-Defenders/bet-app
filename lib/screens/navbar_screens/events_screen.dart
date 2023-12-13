@@ -347,7 +347,7 @@ class EventsScreenState extends State<EventsScreen> {
     // print(
     //     "Provider available: ${Provider.of<ButtonStatesProvider>(context, listen: false) != null}");
     return ColoredBox(
-      color: Theme.of(context).colorScheme.error,
+      color: Theme.of(context).colorScheme.background,
       child: Stack(
         children: [
           SingleChildScrollView(
