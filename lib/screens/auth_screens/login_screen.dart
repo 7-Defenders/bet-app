@@ -1,12 +1,11 @@
 import 'package:app/components/auth_screens/button.dart';
 import 'package:app/components/auth_screens/image_tile.dart';
 import 'package:app/components/auth_screens/text_field.dart';
+import 'package:app/components/other/nunito_text.dart';
 import 'package:app/services/auth_service.dart';
 import 'package:app/utils/functions.dart' as utils;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:app/components/other/nunito_text.dart';
 
 class LogInScreen extends StatefulWidget {
   final Function()? toggleScreen;
@@ -22,6 +21,7 @@ class _LogInScreenState extends State<LogInScreen> {
   final passwordController = TextEditingController();
 
   Future<void> logInUser() async {
+    FocusManager.instance.primaryFocus?.unfocus();
     showDialog(
       context: context,
       builder: (context) {
@@ -35,25 +35,37 @@ class _LogInScreenState extends State<LogInScreen> {
         email: emailController.text,
         password: passwordController.text,
       );
-    } on FirebaseAuthException catch (e) {
+      } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         if (context.mounted) {
+          Navigator.pop(context);
           utils.showSnackbarMessage(
-            "No user found for that email.",
+            "No user found for given email.",
             context,
           );
         }
       } else if (e.code == 'wrong-password') {
         if (context.mounted) {
+          Navigator.pop(context);
           utils.showSnackbarMessage(
             "E-mail and password do not match.",
+            context,
+          );
+        }
+      } else {
+        if (context.mounted) {
+          Navigator.pop(context);
+          utils.showSnackbarMessage(
+            "error: ${e.code}",
             context,
           );
         }
       }
     }
     if (context.mounted) {
-      Navigator.pop(context);
+      if (Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
     }
   }
 

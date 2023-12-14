@@ -1,4 +1,3 @@
-import 'package:app/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:app/models/structure.dart'; 
 

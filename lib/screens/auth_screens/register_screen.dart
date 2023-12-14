@@ -37,10 +37,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
           "Password must be between 8 and 16 characters.",
           context,
         );
+        if (mounted) {
+          Navigator.pop(context);
+        }
         return;
       }
       if (passwordController.text != confirmPasswordController.text) {
         utils.showSnackbarMessage("Passwords do not match.", context);
+        if (mounted) {
+          Navigator.pop(context);
+        }
         return;
       }
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
@@ -48,15 +54,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
         password: passwordController.text,
       ).then((result) => result.user!.updateDisplayName(emailController.text));
     } on FirebaseAuthException catch (e) {
+      if (mounted) {
+        Navigator.pop(context);
+      }
       if (e.code == 'user-not-found') {
-        if (context.mounted) {
+        if (mounted) {
           utils.showSnackbarMessage(
             "No user found for that email.",
             context,
           );
         }
       } else if (e.code == 'wrong-password') {
-        if (context.mounted) {
+        if (mounted) {
           utils.showSnackbarMessage(
             "E-mail and password do not match.",
             context,
@@ -64,8 +73,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
         }
       }
     }
-    if (context.mounted) {
-      Navigator.pop(context);
+    if (mounted){
+      if (Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
     }
   }
 
