@@ -26,15 +26,15 @@ class HistoryBetWidget extends StatelessWidget {
                   '${bet.game.awayname} - ${bet.game.homename}',
                   16,
                   FontWeight.bold,
-                  Theme.of(context).colorScheme.onBackground,
+                  Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
                 ),
                 const SizedBox(height: 5),
                 if (bet.result == null)
-                  const GlowingCircle(color: Colors.yellow)
+                  GlowingCircle(color: Colors.yellow.withOpacity(0.7))
                 else if (bet.result == bet.bet)
-                  const GlowingCircle(color: Colors.green)
+                  GlowingCircle(color: Colors.green.withOpacity(0.7))
                 else
-                  const GlowingCircle(color: Colors.red)
+                  GlowingCircle(color: Colors.red.withOpacity(0.7)),
               ],
             ),
             const Spacer(),
@@ -45,7 +45,7 @@ class HistoryBetWidget extends StatelessWidget {
                   '${bet.amount} pts',
                   16,
                   FontWeight.normal,
-                  Theme.of(context).colorScheme.onBackground,
+                  Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
                 ),
                 const SizedBox(height: 5),
                 nunitoText(
@@ -56,7 +56,7 @@ class HistoryBetWidget extends StatelessWidget {
                           : '0 pts',
                   20,
                   FontWeight.normal,
-                  Theme.of(context).colorScheme.onBackground,
+                  Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
                 ),
               ],
             ),

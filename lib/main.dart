@@ -1,5 +1,6 @@
-import 'package:app/button_states_provider.dart';
+import 'package:app/providers/button_states_provider.dart';
 import 'package:app/firebase_options.dart';
+import 'package:app/providers/navigation_provider.dart';
 import 'package:app/screens/achievements_screen.dart';
 import 'package:app/screens/auth_screens/auth_screen.dart';
 import 'package:app/screens/navbar_screens/events_screen.dart';
@@ -42,6 +43,9 @@ void main() async {
       ],
       child: MultiProvider(
         providers: [
+          ChangeNotifierProvider<NavigationProvider>(
+            create: (_) => NavigationProvider(),
+          ),
           ChangeNotifierProvider<ButtonStatesProvider>(
             create: (context) => ButtonStatesProvider(),
           ),
@@ -66,10 +70,6 @@ class MyApp extends StatelessWidget {
       darkTheme: darkTheme,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      routes: {
-        "/achievements": (context) => const AchievementsScreen(),
-        "/history": (context) => HistoryScreen(),
-      },
       home: const AuthScreen(),
     );
   }
