@@ -1,6 +1,4 @@
 import 'package:app/components/events_screen/bet_preview.dart';
-import 'package:app/components/league_screen/join_league_widget.dart';
-import 'package:app/components/league_screen/league_widget.dart';
 import 'package:app/components/other/nunito_text.dart';
 import 'package:app/models/football_event.dart';
 import 'package:app/models/structure.dart';
@@ -226,7 +224,6 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Container(
       child: Column(
         children: 
@@ -254,10 +251,26 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
             ),
 
           const SizedBox(height: 40,),
-          JoinLeagueWidget(),
+          const Center(
+            child: Text(
+              'Sunba widget',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
 
           const SizedBox(height: 120,),
-          LeagueListWidget(leagues: const [], height: 300),
+          const Center(
+            child: Text(
+              'Herman widget',
+              style: TextStyle(
+                fontSize: 40,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
           const Spacer(),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -270,7 +283,83 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
               ),
         ),
             const SizedBox(height: 40,),
-      ],),
+      ],
+      // child: Stack(
+    //     children: [
+
+    //       // SingleChildScrollView(
+    //       //   child: Column(
+    //       //     children: [
+    //       //       // filters
+    //       //       AnimatedContainer(
+    //       //         duration: const Duration(milliseconds: 250),
+    //       //         height: selectedSport == null ? 140 : selectedCountry == null ? 220 : selectedLeague == null ? 290 : 290,
+    //       //         curve: Curves.easeInOut,
+    //       //         child: SingleChildScrollView( // this helps avoid overflow during animation
+    //       //           child: ClipRRect(
+    //       //             borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(30), bottomRight: Radius.circular(30)),
+    //       //             child: Container(
+    //       //               color: Theme.of(context).colorScheme.primary,
+    //       //               padding: const EdgeInsets.only(left: 20, top: 55, bottom: 10),
+    //       //               child: Column(
+    //       //                 children: [
+    //       //                   buildSportListView(),
+    //       //                   if (selectedSport != null)
+    //       //                     buildCountryListView().animate(
+    //       //                       effects: [
+    //       //                         const SlideEffect(
+    //       //                           duration: Duration(milliseconds: 250),
+    //       //                           begin: Offset(0, -0.5),
+    //       //                           end: Offset.zero,
+    //       //                         ),
+    //       //                         const FadeEffect(
+    //       //                           duration: Duration(milliseconds: 250),
+    //       //                           begin: 0,
+    //       //                           end: 1,
+    //       //                         ),
+    //       //                       ],
+    //       //                     ),
+    //       //                   if (selectedCountry != null) buildLeagueListView(),
+    //       //                 ],
+    //       //               ),
+    //       //             ),
+    //       //           ),
+    //       //         ),
+    //       //       ),
+    //       //       // matches
+    //       //       Container(
+    //       //         padding: const EdgeInsets.only(top: 10),
+    //       //         child: Column(
+    //       //           children: [
+    //       //             ...displayedMatches,
+    //       //             const SizedBox(height: 100,),
+    //       //           ],
+    //       //         ),
+    //       //       ),
+    //       //     ],
+    //       //   ),
+    //       // ),
+    //       // Positioned(
+    //       //   bottom: 20,
+    //       //   right: 20,
+    //       //   child: SizedBox(
+    //       //     width: 70,
+    //       //     height: 70,
+    //       //     child: FloatingActionButton(
+    //       //       elevation: 10,
+    //       //       onPressed: onMakeBetPressed,
+    //       //       backgroundColor: Theme.of(context).colorScheme.primary,
+    //       //       child: Icon(
+    //       //         Icons.keyboard_arrow_up_rounded,
+    //       //         size: 40,
+    //       //         color: Theme.of(context).colorScheme.background,
+    //       //       ),
+    //       //     ),
+    //       //   ),
+    //       // ),
+    //     ],
+    // )
+    )
     );
   }
 }

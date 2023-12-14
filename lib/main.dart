@@ -1,14 +1,11 @@
+import 'package:app/blocs/league_joining_bloc/league_joining_bloc.dart';
 import 'package:app/button_states_provider.dart';
 import 'package:app/firebase_options.dart';
 import 'package:app/screens/achievements_screen.dart';
 import 'package:app/screens/auth_screens/auth_screen.dart';
-import 'package:app/screens/navbar_screens/events_screen.dart';
-import 'package:app/blocs/league_joining_bloc/league_joining_bloc.dart';
-import 'package:app/firebase_options.dart';
-import 'package:app/screens/achievements_screen.dart';
-import 'package:app/screens/auth_screens/auth_screen.dart';
-import 'package:app/screens/navbar_screens/events_screen.dart';
 import 'package:app/screens/history_screen.dart';
+import 'package:app/screens/navbar_screens/events_screen.dart';
+import 'package:app/screens/navbar_screens/league_screens/league_creator.dart';
 import 'package:app/themes/dark_theme.dart';
 import 'package:app/themes/light_theme.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
@@ -69,6 +66,7 @@ class MyApp extends StatelessWidget {
       routes: {
         "/achievements": (context) => const AchievementsScreen(),
         "/history": (context) => HistoryScreen(),
+        "/league_creator": (context) => const LeagueCreator(),
       },
       home: const AuthScreen(),
     );
