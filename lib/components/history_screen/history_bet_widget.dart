@@ -1,5 +1,6 @@
 import 'package:app/components/bet.dart';
 import 'package:app/components/history_screen/glowing_circle.dart';
+import 'package:app/components/other/nunito_text.dart';
 import 'package:flutter/material.dart';
 
 class HistoryBetWidget extends StatelessWidget {
@@ -13,7 +14,7 @@ class HistoryBetWidget extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.tertiary,
+          color: Theme.of(context).colorScheme.secondary,
           borderRadius: BorderRadius.circular(15),
         ),
         child: Row(
@@ -21,44 +22,41 @@ class HistoryBetWidget extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                nunitoText(
                   '${bet.game.awayname} - ${bet.game.homename}',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  16,
+                  FontWeight.bold,
+                  Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
                 ),
                 const SizedBox(height: 5),
                 if (bet.result == null)
-                  const GlowingCircle(color: Colors.yellow)
+                  GlowingCircle(color: Colors.yellow.withOpacity(0.7))
                 else if (bet.result == bet.bet)
-                  const GlowingCircle(color: Colors.green)
+                  GlowingCircle(color: Colors.green.withOpacity(0.7))
                 else
-                  const GlowingCircle(color: Colors.red)
+                  GlowingCircle(color: Colors.red.withOpacity(0.7)),
               ],
             ),
             const Spacer(),
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text(
+                nunitoText(
                   '${bet.amount} pts',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.normal,
-                  ),
+                  16,
+                  FontWeight.normal,
+                  Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
                 ),
                 const SizedBox(height: 5),
-                Text(
+                nunitoText(
                   bet.result == null
                       ? 'pending'
                       : (bet.result == bet.bet)
                           ? 'won: ${bet.betOdds * bet.amount} pts'
                           : '0 pts',
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  20,
+                  FontWeight.normal,
+                  Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
                 ),
               ],
             ),

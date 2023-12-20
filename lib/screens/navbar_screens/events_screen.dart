@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:app/button_states_provider.dart';
+import 'package:app/providers/button_states_provider.dart';
 import 'package:app/components/events_screen/bet_preview.dart';
 import 'package:app/components/other/nunito_text.dart';
 import 'package:app/models/football_event.dart';
@@ -347,7 +347,7 @@ class EventsScreenState extends State<EventsScreen> {
     // print(
     //     "Provider available: ${Provider.of<ButtonStatesProvider>(context, listen: false) != null}");
     return ColoredBox(
-      color: Theme.of(context).colorScheme.error,
+      color: Theme.of(context).colorScheme.background,
       child: Stack(
         children: [
           SingleChildScrollView(

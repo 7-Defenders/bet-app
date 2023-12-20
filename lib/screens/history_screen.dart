@@ -1,8 +1,12 @@
 import 'package:app/components/bet.dart';
 import 'package:app/components/history_screen/history_bet_widget.dart';
+import 'package:app/components/other/nunito_text.dart';
+import 'package:app/providers/navigation_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HistoryScreen extends StatefulWidget {
   HistoryScreen({super.key});
@@ -14,7 +18,16 @@ class HistoryScreen extends StatefulWidget {
 }
 
 class _HistoryScreenState extends State<HistoryScreen> {
+  Future<void>? getBetListFuture;
+
+  void goToProfile() {
+    final NavigationProvider navigationProvider =
+        Provider.of<NavigationProvider>(context, listen: false);
+    navigationProvider.currentIndex = 0;
+  }
+
   Future<void> getBetList() async {
+    widget.betList.clear();
     // fill betList with data from Firestore
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
     final FirebaseAuth auth = FirebaseAuth.instance;
@@ -30,54 +43,102 @@ class _HistoryScreenState extends State<HistoryScreen> {
         final DocumentSnapshot betSnapshot = await betRef.get();
 
         if (betSnapshot.exists) {
-          print('betSnapshot.data(): ${betSnapshot.data()}');
           final Bet bet =
               await Bet.create(betSnapshot.data()! as Map<String, dynamic>);
           widget.betList.add(bet);
         } else {
-          print('Bet document not found for betRef: ${betRef.id}');
         }
       }
     } catch (e) {
-      print('Error fetching bet list: $e');
+      if (kDebugMode) {
+        print('Error fetching bet list: $e');
+      }
     }
     setState(() {});
-    print("bet list length: ${widget.betList.length}");
-    print("betList: $widget.betList");
   }
 
   @override
   void initState() {
     super.initState();
-    getBetList();
+    getBetListFuture = getBetList();
   }
 
   @override
   Widget build(BuildContext context) {
-    print("build called");
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.only(top: 30),
-        child: Column(
+
+    final double vw = MediaQuery.of(context).size.width / 100;
+    final double vh = MediaQuery.of(context).size.height / 100;
+
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        goToProfile();
+      },
+      child: Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.background,
+        body: Column(
           children: [
-            GestureDetector(
-              onTap: () => Navigator.pop(context),
-              child: const SizedBox(
-                height: 50,
-                child: Text(
-                  'History',
-                  style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
+            Column(
+              children: [
+                Container(
+                  color: Theme.of(context).colorScheme.primary,
+                  height: 2* vh, // artificial padding for 'History' text that makes color go under the notch
+                ),
+                Container(
+                  height: 10* vh,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primary,
+                    // color: Colors.red,
+                    borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(30),
+                      bottomRight: Radius.circular(30),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Row(
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                goToProfile();
+                              },
+                              icon: Icon(
+                                Icons.arrow_back_rounded,
+                                size: vw * 8,
+                                color: Theme.of(context).colorScheme.background,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      nunitoText(
+                        'History',
+                        30,
+                        FontWeight.bold,
+                        Theme.of(context).colorScheme.background,
+                      ),
+                      const Spacer(),
+                    ],
                   ),
                 ),
-              ),
+              ],
             ),
             Expanded(
-              child: ListView(
-                children: widget.betList
-                    .map((bet) => HistoryBetWidget(bet: bet))
-                    .toList(),
+              child: FutureBuilder<void>(
+                future: getBetListFuture,
+                builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else {
+                    return ListView(
+                      children: widget.betList
+                          .map((bet) => HistoryBetWidget(bet: bet))
+                          .toList(),
+                    );
+                  }
+                },
               ),
             ),
           ],

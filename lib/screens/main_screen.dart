@@ -1,10 +1,16 @@
+import 'dart:ffi';
+
+import 'package:app/providers/navigation_provider.dart';
+import 'package:app/screens/achievements_screen.dart';
 import 'package:app/screens/drawer.dart';
+import 'package:app/screens/history_screen.dart';
 import 'package:app/screens/navbar_screens/events_screen.dart';
 import 'package:app/screens/navbar_screens/leagues_screen.dart';
 import 'package:app/screens/navbar_screens/profile_screen.dart';
 import 'package:app/screens/navbar_screens/shop_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 // import 'package:card_swiper/card_swiper.dart';
 
 class MainScreen extends StatefulWidget {
@@ -20,14 +26,38 @@ class _MainScreenState extends State<MainScreen> {
     const EventsScreen(),
     const LeaguesScreen(),
     ShopScreen(),
+    HistoryScreen(), // this wont be on navbar, but needs to be here for NavigationProvider
+    const AchievementsScreen(), // this wont be on navbar, but needs to be here for NavigationProvider
   ];
 
-  int currentIndex = 1;
-  // final SwiperController _swiperController = SwiperController();
+  late int currentIndex;
+  late NavigationProvider navigationProvider;
+  late PageController _pageController;
 
   void onTap(int index) {
+    navigationProvider.currentIndex = index;
+    _pageController.jumpToPage(index);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    navigationProvider = Provider.of<NavigationProvider>(context, listen: false);
+    currentIndex = navigationProvider.currentIndex;
+    navigationProvider.addListener(updateIndex);
+    _pageController = PageController(initialPage: currentIndex);
+  }
+
+  @override
+  void dispose() {
+    navigationProvider.removeListener(updateIndex);
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  void updateIndex() {
     setState(() {
-      currentIndex = index;
+      currentIndex = navigationProvider.currentIndex;
     });
   }
 
@@ -39,25 +69,37 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       drawer: drawer(context, vw, vh),
-      body: Column(
-        children: [
-          Expanded(
-            child: pages[currentIndex],
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                buildNavBarItem(FontAwesomeIcons.user, 0, 'Profile'),
-                buildNavBarItem(FontAwesomeIcons.futbol, 1, 'Events'),
-                buildNavBarItem(FontAwesomeIcons.trophy, 2, 'Leagues'),
-                buildNavBarItem(FontAwesomeIcons.cartShopping, 3, 'Shop'),
-              ],
+      body: Consumer<NavigationProvider>(
+        builder: (context, navigationProvider, child) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _pageController.jumpToPage(navigationProvider.currentIndex);
+          });
+        return Column(
+          children: [
+            Expanded(
+              child: PageView(
+                controller: _pageController,
+                onPageChanged: (index) {
+                  navigationProvider.currentIndex = index;
+                },
+                children: pages,
+              ),
             ),
-          ),
-        ],
-      ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  buildNavBarItem(FontAwesomeIcons.user, 0, 'Profile'),
+                  buildNavBarItem(FontAwesomeIcons.futbol, 1, 'Events'),
+                  buildNavBarItem(FontAwesomeIcons.trophy, 2, 'Leagues'),
+                  buildNavBarItem(FontAwesomeIcons.cartShopping, 3, 'Shop'),
+                ],
+              ),
+            ),
+          ],
+        );
+      },),
     );
   }
 
@@ -67,7 +109,12 @@ class _MainScreenState extends State<MainScreen> {
     String label, {
     double iconSize = 25,
   }) {
-    final isSelected = index == currentIndex;
+    final isSelected = index == currentIndex || (index == 0 && (currentIndex == 4 || currentIndex == 5));
+    /*
+      this is because the history and achievements screens are not on the navbar
+      and they can only be accessed from the profile screen
+      hence why the profile icon is highlighted when on those screens.
+     */
 
     return GestureDetector(
       onTap: () => onTap(index),

@@ -20,8 +20,8 @@ class ImageTile extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.white),
-          color: Colors.grey[200],
+          border: Border.all(color: Theme.of(context).colorScheme.onTertiary,),
+          color: Theme.of(context).colorScheme.secondary,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Image.asset(

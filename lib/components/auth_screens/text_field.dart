@@ -21,13 +21,13 @@ class AuthTextField extends StatelessWidget {
         obscureText: obscureText,
         decoration: InputDecoration(
           hintText: hintText,
-          enabledBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.white),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Theme.of(context).colorScheme.onTertiary),
           ),
           focusedBorder: const OutlineInputBorder(
             borderSide: BorderSide(color: Colors.grey),
           ),
-          fillColor: Colors.grey.shade200,
+          fillColor: Theme.of(context).colorScheme.secondary,
           filled: true,
         ),
       ),
