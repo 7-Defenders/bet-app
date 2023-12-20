@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:app/models/structure.dart';
 
 class LeagueCreator extends StatefulWidget {
   const LeagueCreator({Key? key});
@@ -8,6 +9,51 @@ class LeagueCreator extends StatefulWidget {
 }
 
 class _LeagueCreatorState extends State<LeagueCreator> {
+
+  Set<String> selectedLeagues = {};
+
+  Widget setupAlertDialoadContainer() {
+  return Container(
+    height: 300.0, // Change as per your requirement
+    width: 300.0, // Change as per your requirement
+    child: ListView.builder(
+      shrinkWrap: true,
+      itemCount: sportsObject.length,
+      itemBuilder: (BuildContext context, int index) {
+      return ExpansionTile(
+        title: Text(sportsObject[index].name),
+        children: sportsObject[index].countries.map((country) {
+          return ExpansionTile(
+            title: Text(country.name),
+            children: country.leagues.map((league) {
+              final path = '${sportsObject[index].name}/${country.name}/${league.name}';
+
+              return StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) {
+                  return CheckboxListTile(
+                    title: Text(league.name),
+                    value: selectedLeagues.contains(path),
+                    onChanged: (val) {
+                      setState(() {
+                        if (selectedLeagues.contains(path)) {
+                          selectedLeagues.remove(path);
+                        } else {
+                          selectedLeagues.add(path);
+                        }
+                      });
+                    },
+                    selected: selectedLeagues.contains(path),
+                  );
+                },
+              );
+            }).toList(),
+          );
+        }).toList(),
+      );
+      },
+    ),
+  );
+}
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +93,14 @@ class _LeagueCreatorState extends State<LeagueCreator> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color.fromARGB(255, 5, 160, 221),
               ),
-              onPressed: () {},
+              onPressed: () async {
+                  await showDialog<void>(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                      content: setupAlertDialoadContainer(),
+                    ),
+                  );
+              },
               child: const Text(
                 'Pick competitions',
                 style: TextStyle(color: Colors.white),
