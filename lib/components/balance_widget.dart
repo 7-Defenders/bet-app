@@ -55,16 +55,15 @@ class BalanceWidget extends StatelessWidget {
                   FontWeight.w600,
                   Theme.of(context).colorScheme.background,
                 ),
-                SizedBox(width: 1 * vw,),
-                Icon(
-                  Icons.token,
-                  size: 7 * vw,
-                  color: Theme.of(context).colorScheme.background,
-                ),
-                Icon(
-                  Icons.add_rounded,
-                  size: 6.5 * vw,
-                  color: Theme.of(context).colorScheme.background,
+                SizedBox(width: 2 * vw,),
+                SvgPicture.asset(
+                  'lib/assets/images/coscos.svg',
+                  width: 7 * vw,
+                  height: 7 * vw,
+                  colorFilter: ColorFilter.mode(
+                    Theme.of(context).colorScheme.background,
+                    BlendMode.srcIn,
+                  ),
                 ),
               ],
             );
