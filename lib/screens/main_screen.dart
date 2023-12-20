@@ -1,10 +1,9 @@
-import 'dart:ffi';
-
 import 'package:app/providers/navigation_provider.dart';
 import 'package:app/screens/achievements_screen.dart';
 import 'package:app/screens/drawer.dart';
 import 'package:app/screens/history_screen.dart';
 import 'package:app/screens/navbar_screens/events_screen.dart';
+import 'package:app/screens/navbar_screens/league_screens/league_creator.dart';
 import 'package:app/screens/navbar_screens/leagues_screen.dart';
 import 'package:app/screens/navbar_screens/profile_screen.dart';
 import 'package:app/screens/navbar_screens/shop_screen.dart';
@@ -28,6 +27,7 @@ class _MainScreenState extends State<MainScreen> {
     ShopScreen(),
     HistoryScreen(), // this wont be on navbar, but needs to be here for NavigationProvider
     const AchievementsScreen(), // this wont be on navbar, but needs to be here for NavigationProvider
+    const LeagueCreator(), // this wont be on navbar, but needs to be here for NavigationProvider
   ];
 
   late int currentIndex;
@@ -109,7 +109,9 @@ class _MainScreenState extends State<MainScreen> {
     String label, {
     double iconSize = 25,
   }) {
-    final isSelected = index == currentIndex || (index == 0 && (currentIndex == 4 || currentIndex == 5));
+    final isSelected = index == currentIndex || 
+                      (index == 0 && (currentIndex == 4 || currentIndex == 5)) || 
+                      (index == 2 && (currentIndex == 6));
     /*
       this is because the history and achievements screens are not on the navbar
       and they can only be accessed from the profile screen

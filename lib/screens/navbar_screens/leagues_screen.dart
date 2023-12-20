@@ -8,6 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:app/blocs/league_joining_bloc/league_joining_bloc.dart';
+import 'package:app/providers/navigation_provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
 class LeaguesScreen extends StatefulWidget {
   const LeaguesScreen({super.key});
@@ -17,7 +21,8 @@ class LeaguesScreen extends StatefulWidget {
 }
 
 class _LeaguesScreenState extends State<LeaguesScreen> {
-
+  late NavigationProvider navigationProvider;
+  
   List<Sport> structure = [];
   List<BetPreviewWidget> displayedMatches = [];
   Sport? selectedSport;
@@ -30,6 +35,18 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
   void initState() {
     super.initState();
     loadStructure();
+    navigationProvider = Provider.of<NavigationProvider>(context, listen: false);
+    navigationProvider.addListener(resetBlocState);
+  }
+
+  @override
+  void dispose() {
+    navigationProvider.removeListener(resetBlocState);
+    super.dispose();
+  }
+
+  void resetBlocState() {
+    BlocProvider.of<LeagueJoiningBloc>(context).add(CancelLeagueJoinEvent());
   }
 
   Future<void> loadStructure() async {
@@ -220,8 +237,9 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
     );
   }
 
-  void moveToLeagueCreator() {
-    Navigator.of(context).pushNamed('/league_creator');
+  void moveToLeagueCreator(BuildContext context) {
+    final navigationProvider = Provider.of<NavigationProvider>(context, listen: false);
+    navigationProvider.currentIndex = 6;
   }
 
   @override
@@ -263,7 +281,7 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
             style: ElevatedButton.styleFrom(
               backgroundColor: Color.fromARGB(255, 5, 160, 221),
             ),
-            onPressed: moveToLeagueCreator,
+            onPressed: () => moveToLeagueCreator(context),
             child: const Text(
               'Create league',
               style: TextStyle(color: Colors.white),

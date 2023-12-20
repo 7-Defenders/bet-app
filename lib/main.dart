@@ -1,7 +1,6 @@
 import 'package:app/providers/button_states_provider.dart';
 import 'package:app/providers/navigation_provider.dart';
 import 'package:app/blocs/league_joining_bloc/league_joining_bloc.dart';
-import 'package:app/button_states_provider.dart';
 import 'package:app/firebase_options.dart';
 import 'package:app/screens/achievements_screen.dart';
 import 'package:app/screens/auth_screens/auth_screen.dart';
