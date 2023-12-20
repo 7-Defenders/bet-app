@@ -1,3 +1,5 @@
+import 'package:app/providers/button_states_provider.dart';
+import 'package:app/providers/navigation_provider.dart';
 import 'package:app/blocs/league_joining_bloc/league_joining_bloc.dart';
 import 'package:app/button_states_provider.dart';
 import 'package:app/firebase_options.dart';
@@ -39,6 +41,9 @@ void main() async {
       ],
       child: MultiProvider(
         providers: [
+          ChangeNotifierProvider<NavigationProvider>(
+            create: (_) => NavigationProvider(),
+          ),
           ChangeNotifierProvider<ButtonStatesProvider>(
             create: (context) => ButtonStatesProvider(),
           ),
@@ -63,11 +68,6 @@ class MyApp extends StatelessWidget {
       darkTheme: darkTheme,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      routes: {
-        "/achievements": (context) => const AchievementsScreen(),
-        "/history": (context) => HistoryScreen(),
-        "/league_creator": (context) => const LeagueCreator(),
-      },
       home: const AuthScreen(),
     );
   }

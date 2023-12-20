@@ -1,6 +1,7 @@
 import 'package:app/components/auth_screens/button.dart';
 import 'package:app/components/auth_screens/image_tile.dart';
 import 'package:app/components/auth_screens/text_field.dart';
+import 'package:app/components/other/nunito_text.dart';
 import 'package:app/services/auth_service.dart';
 import 'package:app/utils/functions.dart' as utils;
 import 'package:firebase_auth/firebase_auth.dart';
@@ -36,10 +37,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
           "Password must be between 8 and 16 characters.",
           context,
         );
+        if (mounted) {
+          Navigator.pop(context);
+        }
         return;
       }
       if (passwordController.text != confirmPasswordController.text) {
         utils.showSnackbarMessage("Passwords do not match.", context);
+        if (mounted) {
+          Navigator.pop(context);
+        }
         return;
       }
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
@@ -47,15 +54,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
         password: passwordController.text,
       ).then((result) => result.user!.updateDisplayName(emailController.text));
     } on FirebaseAuthException catch (e) {
+      if (mounted) {
+        Navigator.pop(context);
+      }
       if (e.code == 'user-not-found') {
-        if (context.mounted) {
+        if (mounted) {
           utils.showSnackbarMessage(
             "No user found for that email.",
             context,
           );
         }
       } else if (e.code == 'wrong-password') {
-        if (context.mounted) {
+        if (mounted) {
           utils.showSnackbarMessage(
             "E-mail and password do not match.",
             context,
@@ -63,15 +73,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
         }
       }
     }
-    if (context.mounted) {
-      Navigator.pop(context);
+    if (mounted){
+      if (Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -81,15 +93,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 Icon(
                   Icons.app_registration_rounded,
                   size: 135,
-                  color: Colors.grey[800],
+                  color: Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
                 ),
                 const SizedBox(height: 20),
-                Text(
+                nunitoText(
                   "Let's get started:",
-                  style: GoogleFonts.poppins(
-                    fontSize: 25,
-                    color: Colors.grey[700],
-                  ),
+                  25,
+                  FontWeight.normal,
+                  Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
                 ),
                 const SizedBox(height: 25),
                 AuthTextField(
@@ -117,22 +128,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   children: [
                     Expanded(
                       child: Divider(
-                        color: Colors.grey[700],
+                        color: Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
                         thickness: 0.5,
                         indent: 20,
                         endIndent: 10,
                       ),
                     ),
-                    Text(
+                    nunitoText(
                       'Or continue with: ',
-                      style: GoogleFonts.poppins(
-                        fontSize: 13,
-                        color: Colors.grey[700],
-                      ),
+                      13,
+                      FontWeight.normal,
+                      Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
                     ),
                     Expanded(
                       child: Divider(
-                        color: Colors.grey[700],
+                        color: Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
                         thickness: 0.5,
                         indent: 10,
                         endIndent: 20,
@@ -149,25 +159,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       imagePath: 'lib/assets/images/google.png',
                       imageHeight: 30,
                     ),
-                    const SizedBox(width: 30),
-                    ImageTile(
-                      // onTap: () => AuthService().signInWithFacebook(),
-                      onTap: () {},
-                      imagePath: 'lib/assets/images/facebook.png',
-                      imageHeight: 30,
-                    ),
+                    //TODO: Add Facebook registration
+                    // const SizedBox(width: 30),
+                    // ImageTile(
+                    //   // onTap: () => AuthService().signInWithFacebook(),
+                    //   onTap: () {},
+                    //   imagePath: 'lib/assets/images/facebook.png',
+                    //   imageHeight: 30,
+                    // ),
                   ],
                 ),
                 const SizedBox(height: 30),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
+                    nunitoText(
                       "Already have an account? ",
-                      style: GoogleFonts.poppins(
-                        fontSize: 15,
-                        color: Colors.grey[700],
-                      ),
+                      15,
+                      FontWeight.normal,
+                      Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
                     ),
                     const SizedBox(width: 5),
                     GestureDetector(

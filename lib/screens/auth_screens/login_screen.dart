@@ -1,11 +1,11 @@
 import 'package:app/components/auth_screens/button.dart';
 import 'package:app/components/auth_screens/image_tile.dart';
 import 'package:app/components/auth_screens/text_field.dart';
+import 'package:app/components/other/nunito_text.dart';
 import 'package:app/services/auth_service.dart';
 import 'package:app/utils/functions.dart' as utils;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class LogInScreen extends StatefulWidget {
   final Function()? toggleScreen;
@@ -21,6 +21,7 @@ class _LogInScreenState extends State<LogInScreen> {
   final passwordController = TextEditingController();
 
   Future<void> logInUser() async {
+    FocusManager.instance.primaryFocus?.unfocus();
     showDialog(
       context: context,
       builder: (context) {
@@ -34,46 +35,57 @@ class _LogInScreenState extends State<LogInScreen> {
         email: emailController.text,
         password: passwordController.text,
       );
-    } on FirebaseAuthException catch (e) {
+      } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         if (context.mounted) {
+          Navigator.pop(context);
           utils.showSnackbarMessage(
-            "No user found for that email.",
+            "No user found for given email.",
             context,
           );
         }
       } else if (e.code == 'wrong-password') {
         if (context.mounted) {
+          Navigator.pop(context);
           utils.showSnackbarMessage(
             "E-mail and password do not match.",
+            context,
+          );
+        }
+      } else {
+        if (context.mounted) {
+          Navigator.pop(context);
+          utils.showSnackbarMessage(
+            "error: ${e.code}",
             context,
           );
         }
       }
     }
     if (context.mounted) {
-      Navigator.pop(context);
+      if (Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
             child: Column(
               children: [
                 const SizedBox(height: 30),
-                Icon(Icons.login, size: 135, color: Colors.grey[800]),
+                Icon(Icons.login, size: 135, color: Theme.of(context).colorScheme.onBackground),
                 const SizedBox(height: 20),
-                Text(
+                nunitoText(
                   'Welcome back!',
-                  style: GoogleFonts.poppins(
-                    fontSize: 25,
-                    color: Colors.grey[700],
-                  ),
+                  25,
+                  FontWeight.normal,
+                  Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
                 ),
                 const SizedBox(height: 25),
                 AuthTextField(
@@ -93,39 +105,37 @@ class _LogInScreenState extends State<LogInScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Text(
+                      nunitoText(
                         'Forgot Password?',
-                        style: GoogleFonts.poppins(
-                          fontSize: 15,
-                          color: Colors.grey[700],
-                        ),
+                        16,
+                        FontWeight.normal,
+                        Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 15),
+                const SizedBox(height: 25),
                 MyButton(text: "Log In", onTap: logInUser),
                 const SizedBox(height: 35),
                 Row(
                   children: [
                     Expanded(
                       child: Divider(
-                        color: Colors.grey[700],
+                        color: Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
                         thickness: 0.5,
                         indent: 20,
                         endIndent: 10,
                       ),
                     ),
-                    Text(
+                    nunitoText(
                       'Or continue with: ',
-                      style: GoogleFonts.poppins(
-                        fontSize: 13,
-                        color: Colors.grey[700],
-                      ),
+                      13,
+                      FontWeight.normal,
+                      Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
                     ),
                     Expanded(
                       child: Divider(
-                        color: Colors.grey[700],
+                        color: Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
                         thickness: 0.5,
                         indent: 10,
                         endIndent: 20,
@@ -142,36 +152,34 @@ class _LogInScreenState extends State<LogInScreen> {
                       imagePath: 'lib/assets/images/google.png',
                       imageHeight: 30,
                     ),
-                    const SizedBox(width: 30),
-                    ImageTile(
-                      // onTap: () => AuthService().signInWithFacebook(),
-                      onTap: () {},
-                      imagePath: 'lib/assets/images/facebook.png',
-                      imageHeight: 30,
-                    ),
+                    //TODO: Implement Facebook login
+                    // const SizedBox(width: 30),
+                    // ImageTile(
+                    //   // onTap: () => AuthService().signInWithFacebook(),
+                    //   onTap: () {},
+                    //   imagePath: 'lib/assets/images/facebook.png',
+                    //   imageHeight: 30,
+                    // ),
                   ],
                 ),
                 const SizedBox(height: 45),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
+                    nunitoText(
                       "Not a member? ",
-                      style: GoogleFonts.poppins(
-                        fontSize: 15,
-                        color: Colors.grey[700],
-                      ),
+                      15,
+                      FontWeight.normal,
+                      Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
                     ),
                     const SizedBox(width: 5),
                     GestureDetector(
                       onTap: widget.toggleScreen,
-                      child: Text(
+                      child: nunitoText(
                         'Register now',
-                        style: GoogleFonts.poppins(
-                          fontSize: 15,
-                          color: Colors.blue,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        15,
+                        FontWeight.bold,
+                        Colors.blue,
                       ),
                     ),
                   ],

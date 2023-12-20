@@ -1,16 +1,19 @@
 import 'dart:io';
 
+import 'package:app/components/balance_widget.dart';
 import 'package:app/components/other/nunito_text.dart';
 import 'package:app/components/profile_screen/change_display_name_icon.dart';
 import 'package:app/components/profile_screen/gesture_detector_button.dart';
 import 'package:app/components/profile_screen/profile_pic.dart';
 import 'package:app/components/profile_screen/text_input_dialog.dart';
+import 'package:app/providers/navigation_provider.dart';
 import 'package:app/utils/functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -112,6 +115,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  void goToHistory(BuildContext context) {
+    final navigationProvider = Provider.of<NavigationProvider>(context, listen: false);
+    navigationProvider.currentIndex = 4;
+    // Navigator.pop(context);
+  }
+
+  void goToAchievements(BuildContext context) {
+    final navigationProvider = Provider.of<NavigationProvider>(context, listen: false);
+    navigationProvider.currentIndex = 5;
+    // Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     final double vh = MediaQuery.of(context).size.height / 100;
@@ -124,23 +139,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
             color: Theme.of(context).colorScheme.primary,
           ),
           child: SafeArea(
-            child: Align(
-              alignment: Alignment.topLeft,
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(1 * vw, 1 * vw, 0, 0),
-                child: IconButton(
-                  icon: Icon(
-                    Icons.menu_rounded,
-                    color: Theme.of(context).colorScheme.background,
-                    size: 8 * vw,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(1 * vw, 1 * vw, 0, 0),
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.menu_rounded,
+                        color: Theme.of(context).colorScheme.background,
+                        size: 8 * vw,
+                      ),
+                      onPressed: () {
+                        if (mounted) {
+                          Scaffold.of(context).openDrawer();
+                        }
+                      },
+                    ),
                   ),
-                  onPressed: () {
-                    if (mounted) {
-                      Scaffold.of(context).openDrawer();
-                    }
-                  },
                 ),
-              ),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(0, 2 * vw, 2.5 * vw, 0),
+                    child: BalanceWidget(vw: vw, vh: vh),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -165,11 +192,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           children: [
                             // displayName
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 const Spacer(),
-                                Container(
+                                Padding(
                                   padding:
-                                      EdgeInsets.fromLTRB(0, 0, 1 * vw, 1 * vh),
+                                      EdgeInsets.fromLTRB(0, 0, 0, 1 * vh),
                                   child: nunitoText(
                                     displayName!,
                                     30,
@@ -177,16 +205,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     Theme.of(context).colorScheme.onBackground,
                                   ),
                                 ),
+                                SizedBox(width: 1 * vw),
                                 Expanded(
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: nickButton(
-                                      changeDisplayName,
-                                      vw,
-                                      vh,
-                                      FontAwesomeIcons.penToSquare,
-                                      context,
-                                    ),
+                                  child: Row(
+                                    children: [
+                                      nickButton(
+                                        changeDisplayName,
+                                        vw,
+                                        vh,
+                                        FontAwesomeIcons.penToSquare,
+                                        context,
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
@@ -204,9 +234,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             gestureDetectorButton(
                               FontAwesomeIcons.medal,
                               "Achievements",
-                              () {
-                                Navigator.pushNamed(context, '/achievements');
-                              },
+                              () => goToAchievements(context),
                               vw,
                               vh,
                               context,
@@ -215,9 +243,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             gestureDetectorButton(
                               Icons.history,
                               "Bet history",
-                              () {
-                                Navigator.pushNamed(context, '/history');
-                              },
+                              () => goToHistory(context),
                               vw,
                               vh,
                               context,
