@@ -274,7 +274,7 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
         JoinLeagueWidget(),
     
         const SizedBox(height: 120,),
-        LeagueListWidget(leagues: const [], height: 300),
+        LeagueListWidget(items: 5, height: 300),
         const Spacer(),
         ElevatedButton(
           style: ElevatedButton.styleFrom(

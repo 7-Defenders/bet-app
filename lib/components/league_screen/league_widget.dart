@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:app/models/structure.dart'; 
 
 class LeagueListWidget extends StatelessWidget {
-  final List<League> leagues;
+  final int items;
   final double height;
 
-  LeagueListWidget({ required this.leagues , required this.height});
+  LeagueListWidget({ required this.items  , required this.height});
 
   @override
   Widget build(BuildContext context) {
@@ -36,12 +35,12 @@ class LeagueListWidget extends StatelessWidget {
       child: ListView.separated(
         shrinkWrap: true,
         physics: ClampingScrollPhysics(),
-        itemCount: leagues.length,
+        itemCount: items,
         separatorBuilder: (context, index) => Divider(height: 1, color: Colors.grey), 
         itemBuilder: (context, index) {
           return InkWell(
             onTap: () {
-              // Miejsce na obsługę zdarzenia dotknięcia
+              // show league or user details 
             },
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -51,7 +50,7 @@ class LeagueListWidget extends StatelessWidget {
                   Container(
                     margin: EdgeInsets.only(right: 16),
                     child: Text(
-                      '${index + 1}',
+                      "1",
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.onBackground,
                       ),
@@ -59,7 +58,7 @@ class LeagueListWidget extends StatelessWidget {
                   ),
                   Expanded(
                     child: Text(
-                      leagues[index].name,
+                      "League/user name",
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.onBackground,
                       ),
