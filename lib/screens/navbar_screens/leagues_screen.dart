@@ -244,6 +244,17 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> leadingWidgets = [
+      CircleAvatar(child: Text('L1')),
+      CircleAvatar(child: Text('L2')),
+      CircleAvatar(child: Text('L3')),
+    ];
+
+    List<String> titles = [
+      'League One',
+      'League Two',
+      'League Three'
+    ];
 
     return Column(
       children: 
@@ -274,7 +285,18 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
         JoinLeagueWidget(),
     
         const SizedBox(height: 120,),
-        LeagueListWidget(items: 5, height: 300),
+        LeagueListWidget(
+          leadingWidgets: leadingWidgets,
+          titles: titles,
+          icon: Icons.arrow_forward_ios,
+          onTap: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('League item tapped')),
+            );
+          },
+          height: 300,
+        ),
+
         const Spacer(),
         ElevatedButton(
           style: ElevatedButton.styleFrom(
