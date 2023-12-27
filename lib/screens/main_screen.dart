@@ -32,11 +32,9 @@ class _MainScreenState extends State<MainScreen> {
 
   late int currentIndex;
   late NavigationProvider navigationProvider;
-  late PageController _pageController;
 
   void onTap(int index) {
     navigationProvider.currentIndex = index;
-    _pageController.jumpToPage(index);
   }
 
   @override
@@ -45,13 +43,11 @@ class _MainScreenState extends State<MainScreen> {
     navigationProvider = Provider.of<NavigationProvider>(context, listen: false);
     currentIndex = navigationProvider.currentIndex;
     navigationProvider.addListener(updateIndex);
-    _pageController = PageController(initialPage: currentIndex);
   }
 
   @override
   void dispose() {
     navigationProvider.removeListener(updateIndex);
-    _pageController.dispose();
     super.dispose();
   }
 
@@ -71,19 +67,10 @@ class _MainScreenState extends State<MainScreen> {
       drawer: drawer(context, vw, vh),
       body: Consumer<NavigationProvider>(
         builder: (context, navigationProvider, child) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            _pageController.jumpToPage(navigationProvider.currentIndex);
-          });
         return Column(
           children: [
             Expanded(
-              child: PageView(
-                controller: _pageController,
-                onPageChanged: (index) {
-                  navigationProvider.currentIndex = index;
-                },
-                children: pages,
-              ),
+              child: pages[navigationProvider.currentIndex],
             ),
             Align(
               alignment: Alignment.bottomCenter,

@@ -100,8 +100,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         subtext: 'You can change your username once every 30 days.',
         hintText: 'Enter new username',
         validator: (value) {
-          if (value == null || value.length < 3) {
-            return 'Username must be at least 3 characters long';
+          if (value == null || value.length < 3 || value.length > 20) {
+            return 'Username must be between 3 and 20 characters long';
           }
           return null;
         },
@@ -190,19 +190,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         padding: EdgeInsets.fromLTRB(0, 12 * vh, 0, 0),
                         child: Column(
                           children: [
-                            // displayName
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 const Spacer(),
-                                Padding(
-                                  padding:
-                                      EdgeInsets.fromLTRB(0, 0, 0, 1 * vh),
-                                  child: nunitoText(
-                                    displayName!,
-                                    30,
-                                    FontWeight.bold,
-                                    Theme.of(context).colorScheme.onBackground,
+                                Container(
+                                  constraints: BoxConstraints(
+                                    maxWidth: 60 * vw,
+                                  ),
+                                  child: Padding(
+                                    padding:
+                                        EdgeInsets.fromLTRB(0, 0, 0, 1 * vh),
+                                    child: FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Text(
+                                        displayName!,
+                                        style: TextStyle(
+                                          // fontWeight: FontWeight.bold,
+                                          fontSize: 30,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onBackground,
+                                        ),
+                                      ),
+                                      ),
                                   ),
                                 ),
                                 SizedBox(width: 1 * vw),
