@@ -12,6 +12,7 @@ class HistoryBetWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(12, 0, 12, 15),
       child: Container(
+        height: 100,
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.secondary,
@@ -21,6 +22,7 @@ class HistoryBetWidget extends StatelessWidget {
           children: <Widget>[
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 nunitoText(
                   '${bet.game.awayname} - ${bet.game.homename}',
@@ -31,7 +33,7 @@ class HistoryBetWidget extends StatelessWidget {
                 const SizedBox(height: 5),
                 if (bet.result == null)
                   GlowingCircle(color: Colors.yellow.withOpacity(0.7))
-                else if (bet.result == bet.bet)
+                else if (bet.result == 1)
                   GlowingCircle(color: Colors.green.withOpacity(0.7))
                 else
                   GlowingCircle(color: Colors.red.withOpacity(0.7)),
@@ -40,14 +42,14 @@ class HistoryBetWidget extends StatelessWidget {
             const Spacer(),
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 nunitoText(
-                  '${bet.amount} pts',
+                  'bet: ${bet.bet}; stake: ${bet.amount} pts',
                   16,
                   FontWeight.normal,
                   Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
                 ),
-                const SizedBox(height: 5),
                 nunitoText(
                   bet.result == null
                       ? 'pending'
