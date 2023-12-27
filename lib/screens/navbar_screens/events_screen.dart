@@ -70,7 +70,7 @@ class EventsScreenState extends State<EventsScreen> {
 
     final response = await http.get(
       Uri.parse(
-        'https://bet-app-e520a.ew.r.appspot.com/competitions/$league',
+        'https://bet-app-e520a.ew.r.appspot.com/v1/competitions/$league',
       ),
     );
     displayedMatches.clear();
@@ -85,9 +85,9 @@ class EventsScreenState extends State<EventsScreen> {
             eventDetails: element.date,
             bets: {
               '1': element.homeodds,
-              '1X': 0,
+              '1X': element.homedrawodds,
               'X': element.tieodds,
-              'X2': 0,
+              'X2': element.drawawayodds,
               '2': element.awayodds,
             },
             onOptionSelected: (String? selectedOption) {

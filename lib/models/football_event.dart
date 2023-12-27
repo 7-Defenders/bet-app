@@ -20,6 +20,8 @@ class FootballEvent {
   double awayodds;
   // String competition;
   String date;
+  double drawawayodds;
+  double homedrawodds;
   String homename;
   double homeodds;
   String? referee;
@@ -30,6 +32,8 @@ class FootballEvent {
     required this.awayodds,
     // required this.competition,
     required this.date,
+    required this.drawawayodds,
+    required this.homedrawodds,
     required this.homename,
     required this.homeodds,
     required this.referee,
@@ -41,6 +45,8 @@ class FootballEvent {
         awayodds: double.parse(json["awayodds"].toString()),
         // competition: json["competition"]  as String,
         date: json["date"] as String,
+        drawawayodds: double.parse(json["drawawayodds"].toString()),
+        homedrawodds: double.parse(json["homedrawodds"].toString()),
         homename: json["homename"] as String,
         homeodds: double.parse(json["homeodds"].toString()),
         referee: json["referee"] as String?,
@@ -52,6 +58,8 @@ class FootballEvent {
         "awayodds": awayodds,
         // "competition": competition,
         "date": date,
+        "drawawayodds": drawawayodds,
+        "homedrawodds": homedrawodds,
         "homename": homename,
         "homeodds": homeodds,
         "referee": referee,
