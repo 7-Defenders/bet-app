@@ -17,25 +17,27 @@ List<LeaguePreviewModel> leaguePreviewFromJson(String str) {
 
 class LeaguePreviewModel {
   String leagueName;
+  String leagueID;
   int playerCount;
   int rank;
 
   LeaguePreviewModel({
     required this.leagueName,
+    required this.leagueID,
     required this.playerCount,
-    // required this.competition,
     required this.rank,
   });
 
   factory LeaguePreviewModel.fromJson(Map<String, dynamic> json) => LeaguePreviewModel(
         leagueName: json["leagueName"] as String,
+        leagueID: json["leagueID"] as String,
         playerCount: json["playerCount"] as int,
-        // competition: json["competition"]  as String,
         rank: json["rank"] as int,
       );
 
   Map<String, dynamic> toJson() => {
         "leagueName": leagueName,
+        "leagueID": leagueID,
         "playerCount": playerCount,
         "rank": rank,
       };

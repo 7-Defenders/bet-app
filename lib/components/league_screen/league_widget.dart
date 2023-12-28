@@ -3,17 +3,22 @@ import 'package:flutter/material.dart';
 class LeagueListWidget extends StatelessWidget {
   final List<Widget> leadingWidgets;
   final List<String> titles;
+  final List<Object?>? addons;
   final IconData icon;
-  final VoidCallback onTap;
+  final Function(int) onTap;
   final double height;
 
-  LeagueListWidget({
+  const LeagueListWidget({
     required this.leadingWidgets,
     required this.titles,
+    this.addons,
     required this.icon,
     required this.onTap,
     required this.height,
-  }) : assert(leadingWidgets.length == titles.length, 'The length of leadingWidgets and titles must be the same.');
+  }) : assert(
+    (addons == null ? leadingWidgets.length == titles.length : leadingWidgets.length == titles.length && leadingWidgets.length == addons.length),
+   'The length of addons (optional), leadingWidgets and titles must be the same.',
+   );
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +34,7 @@ class LeagueListWidget extends StatelessWidget {
             color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
             spreadRadius: 2,
             blurRadius: 5,
-            offset: Offset(0, 3),
+            offset: const Offset(0, 3),
           ),
         ],
       ),
@@ -40,31 +45,33 @@ class LeagueListWidget extends StatelessWidget {
   Widget _buildListView() {
     return ListView.separated(
       shrinkWrap: true,
-      physics: ClampingScrollPhysics(),
+      physics: const ClampingScrollPhysics(),
       itemCount: leadingWidgets.length,
-      separatorBuilder: (context, index) => Divider(height: 1, color: Colors.grey),
+      separatorBuilder: (context, index) => const Divider(height: 1, color: Colors.grey),
       itemBuilder: (context, index) {
-        return InkWell(
-          onTap: onTap,
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-              leadingWidgets[index],
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.only(left: 8), 
-                  child: Text(
-                    titles[index],
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onBackground,
+        return Material(
+          child: InkWell(
+            onTap: () => onTap(index),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                leadingWidgets[index],
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8), 
+                    child: Text(
+                      titles[index],
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onBackground,
+                      ),
                     ),
                   ),
                 ),
+                  Icon(icon, size: 16, color: Theme.of(context).colorScheme.primary),
+                ],
               ),
-                Icon(icon, size: 16, color: Theme.of(context).colorScheme.primary),
-              ],
             ),
           ),
         );

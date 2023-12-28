@@ -1,19 +1,15 @@
-import 'package:app/components/events_screen/bet_preview.dart';
+import 'package:app/blocs/league_joining_bloc/league_joining_bloc.dart';
 import 'package:app/components/league_screen/join_league_widget.dart';
 import 'package:app/components/league_screen/league_widget.dart';
-import 'package:app/components/other/nunito_text.dart';
-import 'package:app/models/football_event.dart';
 import 'package:app/models/league_preview.dart';
-import 'package:app/models/structure.dart';
+import 'package:app/providers/navigation_provider.dart';
+import 'package:app/screens/navbar_screens/league_screens/league_summary.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:app/blocs/league_joining_bloc/league_joining_bloc.dart';
-import 'package:app/providers/navigation_provider.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class LeaguesScreen extends StatefulWidget {
   const LeaguesScreen({super.key});
@@ -28,6 +24,7 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
   
   List<String> rank = [];
   List<String> names = [];
+  List<String> leagueIDs = [];
 
   final List<bool> _selected = [true, false];
 
@@ -62,11 +59,12 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
     );
 
     final response = await http.get(Uri.parse('https://bet-app-e520a.ew.r.appspot.com/v1/users/$uid/leagues'));
-    print(response.body);
+    // print(response.body);
     setState((){
       leaguePreviewFromJson(response.body).forEach((element) {
             rank.add('${element.rank}/${element.playerCount}');
             names.add(element.leagueName);
+            leagueIDs.add(element.leagueID);
           }
         );
     });
@@ -79,6 +77,14 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
   void moveToLeagueCreator(BuildContext context) {
     final navigationProvider = Provider.of<NavigationProvider>(context, listen: false);
     navigationProvider.currentIndex = 6;
+  }
+
+  void moveToLeagueSummary(BuildContext context, int index) {
+    // final navigationProvider = Provider.of<NavigationProvider>(context, listen: false);
+    // // navigationProvider.currentIndex = 7;
+    // navigationProvider.setIndexAndAddons(7, leagueIDs[index]);
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => LeagueSummary(leagueID: leagueIDs[index],)));
+    // Navigator.of(context).push(MaterialPageRoute(builder: (context) => const LeaguesScreen()));
   }
 
   @override
@@ -99,7 +105,7 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
           }
         }(),
         child: Text(e),
-        )
+        ),
       ).toList();
 
     return Column(
@@ -134,11 +140,10 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
         LeagueListWidget(
           leadingWidgets: leadingWidgets,
           titles: names,
+          addons: leagueIDs,
           icon: Icons.arrow_forward_ios,
-          onTap: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('League item tapped')),
-            );
+          onTap: (int index) {
+            moveToLeagueSummary(context, index);
           },
           height: 300,
         ),
@@ -146,7 +151,7 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
         const Spacer(),
         ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: Color.fromARGB(255, 5, 160, 221),
+            backgroundColor: const Color.fromARGB(255, 5, 160, 221),
           ),
           onPressed: () => moveToLeagueCreator(context),
           child: const Text(
