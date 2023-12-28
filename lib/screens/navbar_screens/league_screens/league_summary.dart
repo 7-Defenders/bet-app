@@ -1,6 +1,7 @@
 import 'package:app/components/league_screen/league_widget.dart';
 import 'package:app/models/player_league_summary.dart';
 import 'package:app/providers/navigation_provider.dart';
+import 'package:app/screens/history_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -30,6 +31,7 @@ class _LeagueSummaryState extends State<LeagueSummary> {
   List<String> ranks = [];
   List<int> points = [];
   List<String> usernames = [];
+  List<String> ids = [];
 
   String? leagueName;
   String? leagueCode;
@@ -41,6 +43,14 @@ class _LeagueSummaryState extends State<LeagueSummary> {
     WidgetsBinding.instance.addPostFrameCallback((_){
       fetchLeagueData();
     });
+  }
+
+  void moveToHistory(BuildContext context, int index) {
+    // final navigationProvider = Provider.of<NavigationProvider>(context, listen: false);
+    // // navigationProvider.currentIndex = 7;
+    // navigationProvider.setIndexAndAddons(7, leagueIDs[index]);
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => HistoryScreen(userID: ids[index],)));
+    // Navigator.of(context).push(MaterialPageRoute(builder: (context) => const LeaguesScreen()));
   }
 
   Future<void> fetchLeagueData() async {
@@ -57,7 +67,7 @@ class _LeagueSummaryState extends State<LeagueSummary> {
     // print(response.body);
     setState((){
       final body = leagueSummaryFromJson(response.body);
-      // print(body);
+      print(body);
 
       leagueName = body.leagueName;
       leagueCode = body.leagueCode;
@@ -70,6 +80,7 @@ class _LeagueSummaryState extends State<LeagueSummary> {
         ranks.add('${index+1}/$playerCount');
         usernames.add(element.username!);
         points.add(element.points!);
+        ids.add(element.userID!);
       });
 
       if (mounted){
@@ -156,7 +167,7 @@ class _LeagueSummaryState extends State<LeagueSummary> {
           titles: usernames,
           // addons: points,
           icon: Icons.arrow_forward_ios,
-          onTap: (index) {},
+          onTap: (index) {moveToHistory(context, index);},
           height: 300,
         ),
     ],);

@@ -55,18 +55,21 @@ class LeagueSummaryModel{
 class PlayerSummaryModel {
   int? points;
   String? username;
+  String? userID;
 
-  PlayerSummaryModel({this.points, this.username});
+  PlayerSummaryModel({this.points, this.username, this.userID});
 
   PlayerSummaryModel.fromJson(Map<String, dynamic> json) {
     points = int.parse(json['points'].toString());
     username = json['username'].toString();
+    userID = json['userID'].toString();
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['points'] = points;
     data['username'] = username;
+    data['userID'] = userID;
     return data;
   }
 }

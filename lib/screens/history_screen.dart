@@ -9,15 +9,20 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class HistoryScreen extends StatefulWidget {
-  HistoryScreen({super.key});
+  String? userID;
+  HistoryScreen({super.key, this.userID});
   final List<Bet> betList = [];
   final List<HistoryBetWidget> betWidgets = [];
 
   @override
-  State<HistoryScreen> createState() => _HistoryScreenState();
+  // ignore: no_logic_in_create_state
+  State<HistoryScreen> createState() => _HistoryScreenState(userID: userID);
 }
 
 class _HistoryScreenState extends State<HistoryScreen> {
+  String? userID;
+  _HistoryScreenState({this.userID});
+
   Future<void>? getBetListFuture;
 
   void goToProfile() {
@@ -33,7 +38,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
     final FirebaseAuth auth = FirebaseAuth.instance;
     final User? user = auth.currentUser;
     final CollectionReference userBets =
-        firestore.collection('Users').doc(user!.uid).collection('UserBets');
+        firestore.collection('Users').doc(userID == null ? user!.uid : userID!).collection('UserBets');
     try {
       final QuerySnapshot userBetsSnapshot = await userBets.get();
 

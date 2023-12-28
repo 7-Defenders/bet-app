@@ -27,8 +27,6 @@ class FootballEvent {
   String? referee;
   double tieodds;
   String matchRef;
-  double homedrawodds;
-  double drawawayodds;
 
   FootballEvent({
     required this.awayname,
@@ -42,8 +40,6 @@ class FootballEvent {
     required this.referee,
     required this.tieodds,
     required this.matchRef,
-    required this.homedrawodds,
-    required this.drawawayodds,
   });
 
   factory FootballEvent.fromJson(Map<String, dynamic> json) => FootballEvent(
@@ -58,8 +54,6 @@ class FootballEvent {
         referee: json["referee"] as String?,
         tieodds: double.parse(json["tieodds"].toString()),
         matchRef: json["matchRef"] as String,
-        homedrawodds: double.parse(json["homedrawodds"].toString()),
-        drawawayodds: double.parse(json["drawawayodds"].toString()),
       );
 
   Map<String, dynamic> toJson() => {
@@ -74,7 +68,5 @@ class FootballEvent {
         "referee": referee,
         "tieodds": tieodds,
         "matchRef": matchRef,
-        "homedrawodds": homedrawodds,
-        "drawayodds": drawawayodds,
       };
 }
