@@ -1,12 +1,13 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 
-import 'package:cloud_functions/cloud_functions.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:app/providers/button_states_provider.dart';
 import 'package:app/components/events_screen/bet_preview.dart';
 import 'package:app/components/other/nunito_text.dart';
 import 'package:app/models/football_event.dart';
 import 'package:app/models/structure.dart';
+import 'package:app/providers/button_states_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_svg/svg.dart';
@@ -22,6 +23,7 @@ class EventsScreen extends StatefulWidget {
 }
 
 class EventsScreenState extends State<EventsScreen> {
+  final Map<String, TextEditingController> amountControllers = {};
   static final GlobalKey<EventsScreenState> key =
       GlobalKey<EventsScreenState>();
 
@@ -55,6 +57,56 @@ class EventsScreenState extends State<EventsScreen> {
     });
   }
 
+  Future<bool> createBet(
+      int amount, String betType, double betOdds, String matchRef) async {
+    // showDialog(
+    //   context: context,
+    //   builder: (context) {
+    //     return Center(
+    //       child: LoadingAnimationWidget.hexagonDots(
+    //         color: Theme.of(context).colorScheme.primary,
+    //         size: 55,
+    //       ),
+    //     );
+    //   },
+    // );
+    final String uid = FirebaseAuth.instance.currentUser!.uid;
+
+    print(jsonEncode(
+      <String, dynamic>{
+        'userID': uid,
+        'amount': amount,
+        'bet': betType,
+        'betodds': betOdds,
+        'gameRef': matchRef,
+        'result': null,
+      },
+    ));
+
+    final response = await http.post(
+      Uri.parse(
+        'https://bet-app-e520a.ew.r.appspot.com/v1/bets', // Change the endpoint to /bets
+      ),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(
+        <String, dynamic>{
+          'userID': uid,
+          'amount': amount,
+          'bet': betType,
+          'betodds': betOdds,
+          'gameRef': matchRef,
+          'result': null,
+        },
+      ),
+    );
+
+    print(response.body);
+
+    return (response.statusCode == 201);
+  }
+
   Future<void> fetchMatchesGivenLeague(String league) async {
     showDialog(
       context: context,
@@ -70,9 +122,11 @@ class EventsScreenState extends State<EventsScreen> {
 
     final response = await http.get(
       Uri.parse(
-        'https://bet-app-e520a.ew.r.appspot.com/competitions/$league',
+        'https://bet-app-e520a.ew.r.appspot.com/v1/competitions/$league',
       ),
     );
+    print(response.body);
+
     displayedMatches.clear();
 
     setState(() {
@@ -85,14 +139,15 @@ class EventsScreenState extends State<EventsScreen> {
             eventDetails: element.date,
             bets: {
               '1': element.homeodds,
-              '1X': 0,
+              '1X': element.homedrawodds,
               'X': element.tieodds,
-              'X2': 0,
+              'X2': element.drawawayodds,
               '2': element.awayodds,
             },
             onOptionSelected: (String? selectedOption) {
               final String key = '${element.homename} - ${element.awayname}';
               final double odds;
+              final String matchRef = element.matchRef;
 
               switch (selectedOption) {
                 case '1':
@@ -101,6 +156,10 @@ class EventsScreenState extends State<EventsScreen> {
                   odds = element.tieodds;
                 case '2':
                   odds = element.awayodds;
+                case '1X':
+                  odds = element.homedrawodds;
+                case 'X2':
+                  odds = element.drawawayodds;
                 default:
                   odds = 0;
               }
@@ -126,7 +185,7 @@ class EventsScreenState extends State<EventsScreen> {
               } else {
                 buttonStatesProvider.updateButtonState(
                   key,
-                  '$selectedOption,$odds',
+                  '$selectedOption,$odds,$matchRef',
                 );
               }
               //print(
@@ -296,18 +355,30 @@ class EventsScreenState extends State<EventsScreen> {
             itemBuilder: (context, index) {
               final entry =
                   buttonStatesProvider.buttonStates.entries.elementAt(index);
+              final gameName = entry.key;
+              final betType = entry.value.split(',')[0];
+              final double odds = double.parse(entry.value.split(',')[1]);
+              final matchRef = entry.value.split(',')[2];
+
+              print("matchRef: $matchRef");
+
+              final amountController = amountControllers.putIfAbsent(
+                  entry.key, () => TextEditingController());
+
               return ListTile(
-                title: Text('Match ID: ${entry.key}'),
+                title: Text('Match: $gameName'),
                 subtitle: Row(
                   children: [
                     Expanded(
-                      child: Text('Option: ${entry.value.split(',')[0]}'),
+                      child: Text('Option: $betType'),
                     ),
-                    Text('Odds: ${entry.value.split(',')[1]}'),
+                    Text('Odds: $odds'),
                     IconButton(
                       icon: const Icon(Icons.close),
                       onPressed: () {
                         final matchId = entry.key;
+
+                        //print ("matchId: $matchId");
 
                         chosenMatches.removeWhere(
                           (element) => element.eventName == matchId,
@@ -320,14 +391,40 @@ class EventsScreenState extends State<EventsScreen> {
                         rebuild();
                       },
                     ),
-                    const Expanded(
+                    Expanded(
                       child: TextField(
-                          // Configure your TextField here.
-                          ),
+                        keyboardType: TextInputType.number,
+                        controller: amountController,
+                        decoration: const InputDecoration(
+                          hintText: 'Amount',
+                        ),
+
+                        // Configure your TextField here.
+                      ),
                     ),
                     ElevatedButton(
-                      onPressed: () {
-                        // Handle the button press here.
+                      onPressed: () async {
+                        final int amount = int.parse(amountController.text);
+                        final bool success = await createBet(
+                          amount, // Replace with actual amount
+                          betType, // Replace with actual bet type
+                          odds, // Replace with actual bet odds
+                          matchRef, // Replace with actual game reference
+                        );
+
+                        if (success) {
+                          chosenMatches.removeWhere(
+                            (element) => element.eventName == gameName,
+                          );
+                          print("gameName: $gameName");
+                          print("chosenMatches: $chosenMatches");
+
+                          buttonStatesProvider
+                              .removeButtonStateAndRefresh(gameName);
+                          rebuild();
+                        } else {
+                          print('Failed to create bet.');
+                        }
                       },
                       child: const Text('Place bet'),
                     ),

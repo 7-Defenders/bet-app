@@ -7,6 +7,7 @@ class BetPreviewWidget extends StatefulWidget {
   final Map<String, double> bets;
   final ValueChanged<String>? onOptionSelected;
   final String? initialSelection;
+  final String? matchRef;
 
   const BetPreviewWidget({
     super.key,
@@ -15,6 +16,7 @@ class BetPreviewWidget extends StatefulWidget {
     required this.bets,
     required this.onOptionSelected,
     this.initialSelection,
+    this.matchRef,
   });
 
   @override
