@@ -82,7 +82,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
               children: [
                 Container(
                   color: Theme.of(context).colorScheme.primary,
-                  height: 2* vh, // artificial padding for 'History' text that makes color go under the notch
+                  height: 5* vh, // artificial padding for 'History' text that makes color go under the notch
+                  //TODO: check if theres a way to get safe area height
                 ),
                 Container(
                   height: 10* vh,

@@ -18,9 +18,9 @@ Widget pictureWithBorder(
       ),
       image: DecorationImage(
         fit: BoxFit.fill,
-        image: photoURL != "" || photoURL != null
-            ? Image.network(photoURL!).image
-            : Image.asset('lib/assets/images/default_pfp.jpg').image,
+        image: photoURL != "" && photoURL != null
+            ? Image.network(photoURL).image
+            : const AssetImage('lib/assets/images/default_pfp.jpg'),
       ),
     ),
   );

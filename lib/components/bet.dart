@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Bet {
   late num amount;
-  late num bet;
+  late String bet;
   late num betOdds;
   late num? result;
   late DocumentReference gameRef;
@@ -30,7 +30,7 @@ class Bet {
     print("Bet public factory");
     final bet = Bet._();
     bet.amount = data['amount'] as num;
-    bet.bet = data['bet'] as num;
+    bet.bet = data['bet'] as String;
     bet.betOdds = data['betodds'] as num;
     bet.result = data['result'] as num?;
     bet.gameRef = data['gameRef'] as DocumentReference;
