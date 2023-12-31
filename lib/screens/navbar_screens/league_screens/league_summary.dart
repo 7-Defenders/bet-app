@@ -15,16 +15,10 @@ class LeagueSummary extends StatefulWidget {
     });
 
   @override
-  // ignore: no_logic_in_create_state
-  State<LeagueSummary> createState() => _LeagueSummaryState(leagueID: leagueID);
+  State<LeagueSummary> createState() => _LeagueSummaryState();
 }
 
 class _LeagueSummaryState extends State<LeagueSummary> {
-  final String leagueID;
-
-  _LeagueSummaryState({
-    required this.leagueID,
-  });
 
   late NavigationProvider navigationProvider;
 
@@ -63,7 +57,7 @@ class _LeagueSummaryState extends State<LeagueSummary> {
       },
     );
 
-    final response = await http.get(Uri.parse('https://bet-app-e520a.ew.r.appspot.com/v1/leagues/$leagueID/users'));
+    final response = await http.get(Uri.parse('https://bet-app-e520a.ew.r.appspot.com/v1/leagues/${widget.leagueID}/users'));
     // print(response.body);
     setState((){
       final body = leagueSummaryFromJson(response.body);
@@ -110,66 +104,69 @@ class _LeagueSummaryState extends State<LeagueSummary> {
         ),
       ).toList();
 
-    return Column(
-      children: 
-      [
-        const SizedBox(height: 40,),
-        Center(
-          child: Text(
-            leagueName == null ? 'League Name' : leagueName!,
-            style: const TextStyle(
-              fontSize: 30,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        const SizedBox(height: 40,),
-        Material(
-          child: InkWell(
-            onTap: () {
-              Clipboard.setData(
-                ClipboardData(
-                  text: leagueCode!,
-                ),
-              );
-            },
-            child: Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    leagueCode == null ? 'League Name' : leagueCode!,
-                    style: const TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(width: 10,),
-                  const Icon(Icons.copy),
-                ],
+    return Scaffold(
+      body: Column(
+        children: 
+        [
+          const SizedBox(height: 40,),
+          Center(
+            child: Text(
+              leagueName == null ? 'League Name' : leagueName!,
+              style: const TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
-        ),      
-        const SizedBox(height: 25,),
-        Center(
-          child: Text(
-            'Entry cost - ${entryCost == null ? 'N/A' : entryCost!}',
-            style: const TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.bold,
+          const SizedBox(height: 40,),
+          Material(
+            child: InkWell(
+              onTap: () {
+                Clipboard.setData(
+                  ClipboardData(
+                    text: leagueCode!,
+                  ),
+                );
+              },
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      leagueCode == null ? 'League Name' : leagueCode!,
+                      style: const TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(width: 10,),
+                    const Icon(Icons.copy),
+                  ],
+                ),
+              ),
             ),
+          ),      
+          const SizedBox(height: 25,),
+          Center(
+            child: Text(
+              'Entry cost - ${entryCost == null ? 'N/A' : entryCost!}',
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),  
+          const SizedBox(height: 80,),
+          LeagueListWidget(
+            leadingWidgets: leadingWidgets,
+            titles: usernames,
+            // addons: points,
+            icon: Icons.arrow_forward_ios,
+            onTap: (index) {moveToHistory(context, index);},
+            height: 300,
           ),
-        ),  
-        const SizedBox(height: 80,),
-        LeagueListWidget(
-          leadingWidgets: leadingWidgets,
-          titles: usernames,
-          // addons: points,
-          icon: Icons.arrow_forward_ios,
-          onTap: (index) {moveToHistory(context, index);},
-          height: 300,
-        ),
-    ],);
+        ],
+      ),
+    );
   }
 }

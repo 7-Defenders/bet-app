@@ -1,7 +1,7 @@
 import 'package:app/components/game.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Bet {
+class BetOld {
   late num amount;
   late String bet;
   late num betOdds;
@@ -9,10 +9,10 @@ class Bet {
   late DocumentReference gameRef;
   late Game game;
 
-  Bet._();
+  BetOld._();
 
   Future<void> _complexAsyncInit() async {
-    print("Bet._complexAsyncInit called");
+    print("BetOld._complexAsyncInit called");
     final DocumentSnapshot gameSnapshot = await gameRef.get();
     final Map<String, dynamic>? gameData =
         gameSnapshot.data() as Map<String, dynamic>?;
@@ -26,9 +26,9 @@ class Bet {
   }
 
   // our own factory-like constructor
-  static Future<Bet> create(Map<String, dynamic> data) async {
-    print("Bet public factory");
-    final bet = Bet._();
+  static Future<BetOld> create(Map<String, dynamic> data) async {
+    print("BetOld public factory");
+    final bet = BetOld._();
     bet.amount = data['amount'] as num;
     bet.bet = data['bet'] as String;
     bet.betOdds = data['betodds'] as num;

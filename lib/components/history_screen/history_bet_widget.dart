@@ -1,6 +1,6 @@
-import 'package:app/components/bet.dart';
 import 'package:app/components/history_screen/glowing_circle.dart';
 import 'package:app/components/other/nunito_text.dart';
+import 'package:app/models/bet.dart';
 import 'package:flutter/material.dart';
 
 class HistoryBetWidget extends StatelessWidget {
@@ -25,7 +25,7 @@ class HistoryBetWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 nunitoText(
-                  '${bet.game.awayname} - ${bet.game.homename}',
+                  bet.game != null ? '${bet.game!.awayname} - ${bet.game!.homename}' : 'N/A',
                   16,
                   FontWeight.bold,
                   Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
@@ -54,7 +54,7 @@ class HistoryBetWidget extends StatelessWidget {
                   bet.result == null
                       ? 'pending'
                       : (bet.result == bet.bet)
-                          ? 'won: ${bet.betOdds * bet.amount} pts'
+                          ? 'won: ${bet.betodds! * bet.amount!} pts'
                           : '0 pts',
                   20,
                   FontWeight.normal,
