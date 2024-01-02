@@ -51,7 +51,7 @@ class HistoryBetWidget extends StatelessWidget {
                 nunitoText(
                   bet.result == null
                       ? 'pending'
-                      : (bet.result == bet.bet)
+                      : (bet.result == 1)
                           ? 'won: ${bet.betOdds * bet.amount} pts'
                           : '0 pts',
                   20,

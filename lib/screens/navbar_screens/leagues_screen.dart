@@ -227,8 +227,8 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
   @override
   Widget build(BuildContext context) {
 
-    return Container(
-      child: Column(
+    return Scaffold(
+      body: Column(
         children: 
         [
           const SizedBox(height: 40,),

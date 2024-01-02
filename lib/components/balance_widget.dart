@@ -1,5 +1,4 @@
 import 'package:app/components/other/nunito_text.dart';
-import 'package:app/providers/navigation_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -13,8 +12,7 @@ class BalanceWidget extends StatelessWidget {
   final double vh;
 
   void goToShop(BuildContext context) {
-    final navigationProvider = Provider.of<NavigationProvider>(context, listen: false);
-    navigationProvider.currentIndex = 3;
+
   }
 
   Future<num> getBalance() async {

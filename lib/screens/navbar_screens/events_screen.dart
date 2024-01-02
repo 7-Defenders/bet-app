@@ -443,9 +443,9 @@ class EventsScreenState extends State<EventsScreen> {
     //print("LeaguesScreen context: $context");
     // print(
     //     "Provider available: ${Provider.of<ButtonStatesProvider>(context, listen: false) != null}");
-    return ColoredBox(
-      color: Theme.of(context).colorScheme.background,
-      child: Stack(
+    return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.background,
+      body: Stack(
         children: [
           SingleChildScrollView(
             child: Column(
