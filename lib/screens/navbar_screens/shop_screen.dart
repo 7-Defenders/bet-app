@@ -16,19 +16,22 @@ class _ShopScreenState extends State<ShopScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
-      body: const Column(
-        children: [
-          Expanded(
-            child: Column(
-              children: [
-                SizedBox(height: 50),
-                Text('Random Text'),
-                SizedBox(height: 20),
-                AddPointsWidget(),
-              ],
+      body: Container(
+        width: MediaQuery.of(context).size.width,
+        child: const Column(
+          children: [
+            Expanded(
+              child: Column(
+                children: [
+                  SizedBox(height: 50),
+                  Text('Random Text'),
+                  SizedBox(height: 20),
+                  AddPointsWidget(),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
