@@ -58,7 +58,11 @@ class EventsScreenState extends State<EventsScreen> {
   }
 
   Future<bool> createBet(
-      int amount, String betType, double betOdds, String matchRef) async {
+    int amount,
+    String betType,
+    double betOdds,
+    String matchRef,
+  ) async {
     // showDialog(
     //   context: context,
     //   builder: (context) {
@@ -72,16 +76,18 @@ class EventsScreenState extends State<EventsScreen> {
     // );
     final String uid = FirebaseAuth.instance.currentUser!.uid;
 
-    print(jsonEncode(
-      <String, dynamic>{
-        'userID': uid,
-        'amount': amount,
-        'bet': betType,
-        'betodds': betOdds,
-        'gameRef': matchRef,
-        'result': null,
-      },
-    ));
+    print(
+      jsonEncode(
+        <String, dynamic>{
+          'userID': uid,
+          'amount': amount,
+          'bet': betType,
+          'betodds': betOdds,
+          'gameRef': matchRef,
+          'result': null,
+        },
+      ),
+    );
 
     final response = await http.post(
       Uri.parse(
@@ -363,7 +369,9 @@ class EventsScreenState extends State<EventsScreen> {
               print("matchRef: $matchRef");
 
               final amountController = amountControllers.putIfAbsent(
-                  entry.key, () => TextEditingController());
+                entry.key,
+                () => TextEditingController(),
+              );
 
               return ListTile(
                 title: Text('Match: $gameName'),
@@ -403,30 +411,95 @@ class EventsScreenState extends State<EventsScreen> {
                       ),
                     ),
                     ElevatedButton(
-                      onPressed: () async {
+                      onPressed: () {
                         final int amount = int.parse(amountController.text);
-                        final bool success = await createBet(
+                        final Future<bool> betFuture = createBet(
                           amount, // Replace with actual amount
                           betType, // Replace with actual bet type
                           odds, // Replace with actual bet odds
                           matchRef, // Replace with actual game reference
                         );
 
-                        if (success) {
-                          chosenMatches.removeWhere(
-                            (element) => element.eventName == gameName,
-                          );
-                          print("gameName: $gameName");
-                          print("chosenMatches: $chosenMatches");
-
-                          buttonStatesProvider
-                              .removeButtonStateAndRefresh(gameName);
-                          rebuild();
-                        } else {
-                          print('Failed to create bet.');
-                        }
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return FutureBuilder<bool>(
+                              future: betFuture,
+                              builder: (
+                                BuildContext context,
+                                AsyncSnapshot<bool> snapshot,
+                              ) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const AlertDialog(
+                                    title: Text('Placing bet...'),
+                                    content: CircularProgressIndicator(),
+                                  );
+                                } else if (snapshot.hasError) {
+                                  return AlertDialog(
+                                    title: const Text('Error'),
+                                    content:
+                                        const Text('Failed to create bet.'),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: const Text('OK'),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                } else {
+                                  final bool success = snapshot.data ?? false;
+                                  return AlertDialog(
+                                    title: const Text('Bet Status'),
+                                    content: Text(
+                                      success
+                                          ? 'Bet created successfully.'
+                                          : 'Failed to create bet.',
+                                    ),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: const Text('OK'),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                }
+                              },
+                            );
+                          },
+                        );
                       },
                       child: const Text('Place bet'),
+                      // onPressed: () async {
+                      // final int amount = int.parse(amountController.text);
+                      // final bool success = await createBet(
+                      //   amount,
+                      //   betType,
+                      //   odds,
+                      //   matchRef,
+                      // );
+
+                      // if (success) {
+                      //   chosenMatches.removeWhere(
+                      //     (element) => element.eventName == gameName,
+                      //   );
+
+                      //   print("gameName: $gameName");
+                      //   print("chosenMatches: $chosenMatches");
+
+                      //   buttonStatesProvider
+                      //       .removeButtonStateAndRefresh(gameName);
+                      //   rebuild();
+                      // } else {
+                      //   print('Failed to create bet.');
+                      // }
+
+                      //   },
+                      //   child: const Text('Place bet'),
                     ),
                   ],
                 ),
