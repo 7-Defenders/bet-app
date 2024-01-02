@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:app/models/structure.dart';
+import 'package:flutter/material.dart';
 
 class LeagueCreator extends StatefulWidget {
-  const LeagueCreator({Key? key});
+  const LeagueCreator({super.key});
 
   @override
   State<LeagueCreator> createState() => _LeagueCreatorState();

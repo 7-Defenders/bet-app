@@ -6,6 +6,7 @@ import 'package:app/components/profile_screen/change_display_name_icon.dart';
 import 'package:app/components/profile_screen/gesture_detector_button.dart';
 import 'package:app/components/profile_screen/profile_pic.dart';
 import 'package:app/components/profile_screen/text_input_dialog.dart';
+import 'package:app/screens/drawer.dart';
 import 'package:app/utils/functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -56,9 +57,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<void> logOutUser() async {
     await FirebaseAuth.instance.signOut();
-    if (mounted){
-      context.go('/auth');
-    }
   }
 
   Future<void> changeProfilePicture() async {
@@ -133,6 +131,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final double vw = MediaQuery.of(context).size.width / 100;
 
     return Scaffold(
+      // drawer: drawer(context, vw, vh),
       body: Stack(
         children: [
           Container(
@@ -156,6 +155,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         onPressed: () {
                           if (mounted) {
                             Scaffold.of(context).openDrawer();
+                            print("drawer opened");
                           }
                         },
                       ),

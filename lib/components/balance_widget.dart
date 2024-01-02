@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 
 class BalanceWidget extends StatelessWidget {
   const BalanceWidget({super.key, required this.vw, required this.vh});
@@ -12,7 +12,7 @@ class BalanceWidget extends StatelessWidget {
   final double vh;
 
   void goToShop(BuildContext context) {
-
+    context.go('/shop');
   }
 
   Future<num> getBalance() async {

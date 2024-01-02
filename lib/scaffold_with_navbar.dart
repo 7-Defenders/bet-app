@@ -1,3 +1,4 @@
+import 'package:app/screens/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -19,6 +20,7 @@ class ScaffoldWithNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: drawer(context, MediaQuery.of(context).size.width/100, MediaQuery.of(context).size.height/100),
       body: child,
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: Theme.of(context).colorScheme.primary,

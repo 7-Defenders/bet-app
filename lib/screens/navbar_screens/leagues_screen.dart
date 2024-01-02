@@ -201,6 +201,7 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
     );
   }
 
+  //TODO why is this here? XD
   void onMakeBetPressed() {
     showModalBottomSheet(
       shape: const RoundedRectangleBorder(
