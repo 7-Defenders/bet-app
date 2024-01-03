@@ -1,14 +1,10 @@
 import 'dart:async';
-import 'dart:async';
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:app/components/events_screen/bet_preview.dart';
 import 'package:app/components/other/nunito_text.dart';
 import 'package:app/models/football_event.dart';
 import 'package:app/models/structure.dart';
-import 'package:app/providers/button_states_provider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:app/providers/button_states_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +22,6 @@ class EventsScreen extends StatefulWidget {
 }
 
 class EventsScreenState extends State<EventsScreen> {
-  final Map<String, TextEditingController> amountControllers = {};
   final Map<String, TextEditingController> amountControllers = {};
   static final GlobalKey<EventsScreenState> key =
       GlobalKey<EventsScreenState>();
@@ -138,8 +133,6 @@ class EventsScreenState extends State<EventsScreen> {
     );
     print(response.body);
 
-    print(response.body);
-
     displayedMatches.clear();
 
     setState(() {
@@ -153,9 +146,7 @@ class EventsScreenState extends State<EventsScreen> {
             bets: {
               '1': element.homeodds,
               '1X': element.homedrawodds,
-              '1X': element.homedrawodds,
               'X': element.tieodds,
-              'X2': element.drawawayodds,
               'X2': element.drawawayodds,
               '2': element.awayodds,
             },
@@ -171,10 +162,6 @@ class EventsScreenState extends State<EventsScreen> {
                   odds = element.tieodds;
                 case '2':
                   odds = element.awayodds;
-                case '1X':
-                  odds = element.homedrawodds;
-                case 'X2':
-                  odds = element.drawawayodds;
                 case '1X':
                   odds = element.homedrawodds;
                 case 'X2':

@@ -7,9 +7,6 @@ import 'package:app/utils/functions.dart' as utils;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
-
-import '../../providers/navigation_provider.dart';
 
 class RegisterScreen extends StatefulWidget {
   final Function()? toggleScreen;
@@ -57,7 +54,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
         password: passwordController.text,
       ).then((result) {
         result.user!.updateDisplayName("guest");
-        Provider.of<NavigationProvider>(context, listen: false).currentIndex = 1;
       });
       if (mounted) {
         if (Navigator.canPop(context)) {

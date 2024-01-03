@@ -2,14 +2,12 @@ import 'package:app/blocs/league_joining_bloc/league_joining_bloc.dart';
 import 'package:app/components/league_screen/join_league_widget.dart';
 import 'package:app/components/league_screen/league_widget.dart';
 import 'package:app/models/league_preview.dart';
-import 'package:app/providers/navigation_provider.dart';
-import 'package:app/screens/navbar_screens/league_screens/league_summary.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:provider/provider.dart';
 
 class LeaguesScreen extends StatefulWidget {
   const LeaguesScreen({super.key});
@@ -20,7 +18,6 @@ class LeaguesScreen extends StatefulWidget {
 
 class _LeaguesScreenState extends State<LeaguesScreen> {
   final String uid = FirebaseAuth.instance.currentUser!.uid;
-  late NavigationProvider navigationProvider;
   
   List<String> rank = [];
   List<String> names = [];
@@ -31,17 +28,9 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
   @override
   void initState() {
     super.initState();
-    navigationProvider = Provider.of<NavigationProvider>(context, listen: false);
-    navigationProvider.addListener(resetBlocState);
     WidgetsBinding.instance.addPostFrameCallback((_){
       fetchPlayersLeagues();
     });
-  }
-
-  @override
-  void dispose() {
-    navigationProvider.removeListener(resetBlocState);
-    super.dispose();
   }
 
   void resetBlocState() {
@@ -69,23 +58,18 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
         );
     });
 
-    if (mounted){
-      Navigator.of(context).pop();
+    // if (mounted){
+    //   Navigator.of(context).pop();
+    // }
+  }
+
+  void goToLeagueCreator(BuildContext context) {
+    context.go("/leagues/creator");
+  }
+
+  void goToLeagueSummary(BuildContext context, int index) {
+    context.go("/leagues/summary", extra: leagueIDs[index]);
     }
-  }
-
-  void moveToLeagueCreator(BuildContext context) {
-    final navigationProvider = Provider.of<NavigationProvider>(context, listen: false);
-    navigationProvider.currentIndex = 6;
-  }
-
-  void moveToLeagueSummary(BuildContext context, int index) {
-    // final navigationProvider = Provider.of<NavigationProvider>(context, listen: false);
-    // // navigationProvider.currentIndex = 7;
-    // navigationProvider.setIndexAndAddons(7, leagueIDs[index]);
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => LeagueSummary(leagueID: leagueIDs[index],)));
-    // Navigator.of(context).push(MaterialPageRoute(builder: (context) => const LeaguesScreen()));
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -143,7 +127,7 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
           addons: leagueIDs,
           icon: Icons.arrow_forward_ios,
           onTap: (int index) {
-            moveToLeagueSummary(context, index);
+            goToLeagueSummary(context, index);
           },
           height: 300,
         ),
@@ -153,7 +137,7 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
           style: ElevatedButton.styleFrom(
             backgroundColor: const Color.fromARGB(255, 5, 160, 221),
           ),
-          onPressed: () => moveToLeagueCreator(context),
+          onPressed: () => goToLeagueCreator(context),
           child: const Text(
             'Create league',
             style: TextStyle(color: Colors.white),

@@ -1,9 +1,8 @@
 import 'package:app/components/league_screen/league_widget.dart';
 import 'package:app/models/player_league_summary.dart';
-import 'package:app/providers/navigation_provider.dart';
-import 'package:app/screens/history_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
@@ -19,8 +18,6 @@ class LeagueSummary extends StatefulWidget {
 }
 
 class _LeagueSummaryState extends State<LeagueSummary> {
-
-  late NavigationProvider navigationProvider;
 
   List<String> ranks = [];
   List<int> points = [];
@@ -40,11 +37,7 @@ class _LeagueSummaryState extends State<LeagueSummary> {
   }
 
   void moveToHistory(BuildContext context, int index) {
-    // final navigationProvider = Provider.of<NavigationProvider>(context, listen: false);
-    // // navigationProvider.currentIndex = 7;
-    // navigationProvider.setIndexAndAddons(7, leagueIDs[index]);
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => HistoryScreen(userID: ids[index],)));
-    // Navigator.of(context).push(MaterialPageRoute(builder: (context) => const LeaguesScreen()));
+    context.go("/leagues/summary/history", extra: ids[index]);
   }
 
   Future<void> fetchLeagueData() async {
@@ -77,9 +70,9 @@ class _LeagueSummaryState extends State<LeagueSummary> {
         ids.add(element.userID!);
       });
 
-      if (mounted){
-        Navigator.of(context).pop();
-      }
+      // if (mounted){
+      //   Navigator.of(context).pop();
+      // }
     });
   }
 

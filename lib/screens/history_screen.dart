@@ -1,7 +1,6 @@
 import 'package:app/components/history_screen/history_bet_widget.dart';
 import 'package:app/components/other/nunito_text.dart';
 import 'package:app/models/bet.dart';
-import 'package:app/providers/navigation_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -44,9 +43,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
       widget.betList = betFromJson(response.body);
     });
 
-      if (mounted){
-        Navigator.of(context).pop();
-      }
+      // if (mounted){
+      //   Navigator.of(context).pop();
+      // }
     // // fill betList with data from Firestore
     // final FirebaseFirestore firestore = FirebaseFirestore.instance;
     // final FirebaseAuth auth = FirebaseAuth.instance;
