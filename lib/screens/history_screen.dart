@@ -21,9 +21,7 @@ class HistoryScreen extends StatefulWidget {
 class _HistoryScreenState extends State<HistoryScreen> {
 
   void goToProfile() {
-    final NavigationProvider navigationProvider =
-        Provider.of<NavigationProvider>(context, listen: false);
-    navigationProvider.currentIndex = 0;
+
   }
 
 
@@ -92,12 +90,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
     final double vw = MediaQuery.of(context).size.width / 100;
     final double vh = MediaQuery.of(context).size.height / 100;
 
-    return PopScope(
-      canPop: false,
-      onPopInvoked: (didPop) {
-        goToProfile();
-      },
-      child: Scaffold(
+    return Scaffold(
+    // return PopScope(
+      // canPop: false,
+      // onPopInvoked: (didPop) {
+      //   goToProfile();
+      // },
+      // child: Scaffold(
         backgroundColor: Theme.of(context).colorScheme.background,
         body: Column(
           children: [
@@ -158,7 +157,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
             ),
           ],
         ),
-      ),
-    );
+      );
+    //   ),
+    // );
   }
 }

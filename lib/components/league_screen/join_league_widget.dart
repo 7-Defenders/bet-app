@@ -22,6 +22,7 @@ class _JoinLeagueWidgetState extends State<JoinLeagueWidget> {
           final TextEditingController leagueCodeController = TextEditingController();
           Future.delayed(Duration.zero, () { // avoids "setState() or markNeedsBuild() called during build"
             showDialog(
+              barrierDismissible: false,
               context: context,
               builder: (context) => _buildLeagueCodeInputDialog(context, leagueCodeController),
             );
@@ -30,6 +31,7 @@ class _JoinLeagueWidgetState extends State<JoinLeagueWidget> {
         } else if (state is LeagueJoiningSuccessState) {
           Future.delayed(Duration.zero, () { // avoids "setState() or markNeedsBuild() called during build"
             showDialog(
+              barrierDismissible: false,
               context: context,
               builder: (context) => _buildSuccessDialog(state),
             );
@@ -38,15 +40,16 @@ class _JoinLeagueWidgetState extends State<JoinLeagueWidget> {
         } else if (state is LeagueJoiningFailedState) {
           Future.delayed(Duration.zero, () {
             showDialog(
+              barrierDismissible: false,
               context: context,
               builder: (context) => _buildFailedDialog(state),
             );
           });
           return _buildInitialUI(context);
         } else if (state is LeagueJoiningConfirmationSuccessState) {
-          Future.delayed(Duration.zero, ()
-          {
+          Future.delayed(Duration.zero, () {
             showDialog(
+              barrierDismissible: false,
               context: context,
               builder: (context) => _buildConfirmationSuccessDialog(),
             );
@@ -57,7 +60,6 @@ class _JoinLeagueWidgetState extends State<JoinLeagueWidget> {
         }
       },
       listener: (context, state) {
-        // Add any necessary logic based on state changes
       },
     );
   }

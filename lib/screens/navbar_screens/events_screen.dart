@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
@@ -6,6 +7,8 @@ import 'package:app/components/events_screen/bet_preview.dart';
 import 'package:app/components/other/nunito_text.dart';
 import 'package:app/models/football_event.dart';
 import 'package:app/models/structure.dart';
+import 'package:app/providers/button_states_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:app/providers/button_states_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +26,7 @@ class EventsScreen extends StatefulWidget {
 }
 
 class EventsScreenState extends State<EventsScreen> {
+  final Map<String, TextEditingController> amountControllers = {};
   final Map<String, TextEditingController> amountControllers = {};
   static final GlobalKey<EventsScreenState> key =
       GlobalKey<EventsScreenState>();
@@ -58,7 +62,11 @@ class EventsScreenState extends State<EventsScreen> {
   }
 
   Future<bool> createBet(
-      int amount, String betType, double betOdds, String matchRef) async {
+    int amount,
+    String betType,
+    double betOdds,
+    String matchRef,
+  ) async {
     // showDialog(
     //   context: context,
     //   builder: (context) {
@@ -72,16 +80,18 @@ class EventsScreenState extends State<EventsScreen> {
     // );
     final String uid = FirebaseAuth.instance.currentUser!.uid;
 
-    print(jsonEncode(
-      <String, dynamic>{
-        'userID': uid,
-        'amount': amount,
-        'bet': betType,
-        'betodds': betOdds,
-        'gameRef': matchRef,
-        'result': null,
-      },
-    ));
+    print(
+      jsonEncode(
+        <String, dynamic>{
+          'userID': uid,
+          'amount': amount,
+          'bet': betType,
+          'betodds': betOdds,
+          'gameRef': matchRef,
+          'result': null,
+        },
+      ),
+    );
 
     final response = await http.post(
       Uri.parse(
@@ -120,11 +130,14 @@ class EventsScreenState extends State<EventsScreen> {
       },
     );
 
+    try {
     final response = await http.get(
       Uri.parse(
-        'https://bet-app-e520a.ew.r.appspot.com/v1/competitions/$league',
+        'https://bet-app-e520a.ew.r.appspot.com/v1/v1/competitions/$league',
       ),
     );
+    print(response.body);
+
     print(response.body);
 
     displayedMatches.clear();
@@ -140,7 +153,9 @@ class EventsScreenState extends State<EventsScreen> {
             bets: {
               '1': element.homeodds,
               '1X': element.homedrawodds,
+              '1X': element.homedrawodds,
               'X': element.tieodds,
+              'X2': element.drawawayodds,
               'X2': element.drawawayodds,
               '2': element.awayodds,
             },
@@ -156,6 +171,10 @@ class EventsScreenState extends State<EventsScreen> {
                   odds = element.tieodds;
                 case '2':
                   odds = element.awayodds;
+                case '1X':
+                  odds = element.homedrawodds;
+                case 'X2':
+                  odds = element.drawawayodds;
                 case '1X':
                   odds = element.homedrawodds;
                 case 'X2':
@@ -199,9 +218,12 @@ class EventsScreenState extends State<EventsScreen> {
         ),
       );
     });
-
-    if (mounted) {
-      Navigator.of(context).pop();
+    } finally {
+      if (mounted) {
+        if (Navigator.of(context, rootNavigator: true).canPop()){
+          Navigator.of(context, rootNavigator: true).pop();
+        }
+      }
     }
   }
 
@@ -363,7 +385,9 @@ class EventsScreenState extends State<EventsScreen> {
               print("matchRef: $matchRef");
 
               final amountController = amountControllers.putIfAbsent(
-                  entry.key, () => TextEditingController());
+                entry.key,
+                () => TextEditingController(),
+              );
 
               return ListTile(
                 title: Text('Match: $gameName'),
@@ -377,6 +401,8 @@ class EventsScreenState extends State<EventsScreen> {
                       icon: const Icon(Icons.close),
                       onPressed: () {
                         final matchId = entry.key;
+
+                        //print ("matchId: $matchId");
 
                         //print ("matchId: $matchId");
 
@@ -403,30 +429,95 @@ class EventsScreenState extends State<EventsScreen> {
                       ),
                     ),
                     ElevatedButton(
-                      onPressed: () async {
+                      onPressed: () {
                         final int amount = int.parse(amountController.text);
-                        final bool success = await createBet(
+                        final Future<bool> betFuture = createBet(
                           amount, // Replace with actual amount
                           betType, // Replace with actual bet type
                           odds, // Replace with actual bet odds
                           matchRef, // Replace with actual game reference
                         );
 
-                        if (success) {
-                          chosenMatches.removeWhere(
-                            (element) => element.eventName == gameName,
-                          );
-                          print("gameName: $gameName");
-                          print("chosenMatches: $chosenMatches");
-
-                          buttonStatesProvider
-                              .removeButtonStateAndRefresh(gameName);
-                          rebuild();
-                        } else {
-                          print('Failed to create bet.');
-                        }
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return FutureBuilder<bool>(
+                              future: betFuture,
+                              builder: (
+                                BuildContext context,
+                                AsyncSnapshot<bool> snapshot,
+                              ) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const AlertDialog(
+                                    title: Text('Placing bet...'),
+                                    content: CircularProgressIndicator(),
+                                  );
+                                } else if (snapshot.hasError) {
+                                  return AlertDialog(
+                                    title: const Text('Error'),
+                                    content:
+                                        const Text('Failed to create bet.'),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: const Text('OK'),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                } else {
+                                  final bool success = snapshot.data ?? false;
+                                  return AlertDialog(
+                                    title: const Text('Bet Status'),
+                                    content: Text(
+                                      success
+                                          ? 'Bet created successfully.'
+                                          : 'Failed to create bet.',
+                                    ),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: const Text('OK'),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                }
+                              },
+                            );
+                          },
+                        );
                       },
                       child: const Text('Place bet'),
+                      // onPressed: () async {
+                      // final int amount = int.parse(amountController.text);
+                      // final bool success = await createBet(
+                      //   amount,
+                      //   betType,
+                      //   odds,
+                      //   matchRef,
+                      // );
+
+                      // if (success) {
+                      //   chosenMatches.removeWhere(
+                      //     (element) => element.eventName == gameName,
+                      //   );
+
+                      //   print("gameName: $gameName");
+                      //   print("chosenMatches: $chosenMatches");
+
+                      //   buttonStatesProvider
+                      //       .removeButtonStateAndRefresh(gameName);
+                      //   rebuild();
+                      // } else {
+                      //   print('Failed to create bet.');
+                      // }
+
+                      //   },
+                      //   child: const Text('Place bet'),
                     ),
                   ],
                 ),
@@ -443,16 +534,16 @@ class EventsScreenState extends State<EventsScreen> {
     //print("LeaguesScreen context: $context");
     // print(
     //     "Provider available: ${Provider.of<ButtonStatesProvider>(context, listen: false) != null}");
-    return ColoredBox(
-      color: Theme.of(context).colorScheme.background,
-      child: Stack(
+    return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.background,
+      body: Stack(
         children: [
           SingleChildScrollView(
             child: Column(
               children: [
                 // filters
                 AnimatedContainer(
-                  duration: const Duration(milliseconds: 250),
+                  duration: const Duration(milliseconds: 150),
                   height: selectedSport == null
                       ? 140
                       : selectedCountry == null
@@ -463,39 +554,33 @@ class EventsScreenState extends State<EventsScreen> {
                   curve: Curves.easeInOut,
                   child: SingleChildScrollView(
                     // this helps avoid overflow during animation
-                    child: ClipRRect(
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(30),
-                        bottomRight: Radius.circular(30),
+                    child: Container(
+                      color: Theme.of(context).colorScheme.primary,
+                      padding: const EdgeInsets.only(
+                        left: 20,
+                        top: 55,
+                        bottom: 10,
                       ),
-                      child: Container(
-                        color: Theme.of(context).colorScheme.primary,
-                        padding: const EdgeInsets.only(
-                          left: 20,
-                          top: 55,
-                          bottom: 10,
-                        ),
-                        child: Column(
-                          children: [
-                            buildSportListView(),
-                            if (selectedSport != null)
-                              buildCountryListView().animate(
-                                effects: [
-                                  const SlideEffect(
-                                    duration: Duration(milliseconds: 250),
-                                    begin: Offset(0, -0.5),
-                                    end: Offset.zero,
-                                  ),
-                                  const FadeEffect(
-                                    duration: Duration(milliseconds: 250),
-                                    begin: 0,
-                                    end: 1,
-                                  ),
-                                ],
-                              ),
-                            if (selectedCountry != null) buildLeagueListView(),
-                          ],
-                        ),
+                      child: Column(
+                        children: [
+                          buildSportListView(),
+                          if (selectedSport != null)
+                            buildCountryListView().animate(
+                              effects: [
+                                const SlideEffect(
+                                  duration: Duration(milliseconds: 250),
+                                  begin: Offset(0, -0.5),
+                                  end: Offset.zero,
+                                ),
+                                const FadeEffect(
+                                  duration: Duration(milliseconds: 250),
+                                  begin: 0,
+                                  end: 1,
+                                ),
+                              ],
+                            ),
+                          if (selectedCountry != null) buildLeagueListView(),
+                        ],
                       ),
                     ),
                   ),
@@ -519,25 +604,31 @@ class EventsScreenState extends State<EventsScreen> {
               ],
             ),
           ),
-          Positioned(
-            bottom: 20,
-            right: 20,
-            child: SizedBox(
-              width: 70,
-              height: 70,
-              child: FloatingActionButton(
-                elevation: 10,
-                onPressed: onMakeBetPressed,
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                child: Icon(
-                  Icons.keyboard_arrow_up_rounded,
-                  size: 40,
-                  color: Theme.of(context).colorScheme.background,
+        ],
+      ),
+      floatingActionButton: ValueListenableBuilder(
+        valueListenable: context.watch<ButtonStatesProvider>().buttonStatesNotifier,
+        builder: (context, Map<String, String> value, child) {
+          return value.isNotEmpty
+            ? Padding(
+              padding: const EdgeInsets.all(15),
+              child: SizedBox(
+                width: 65,
+                height: 65,
+                child: FloatingActionButton(
+                  elevation: 10,
+                  onPressed: onMakeBetPressed,
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  child: Icon(
+                    Icons.keyboard_arrow_up_rounded,
+                    size: 40,
+                    color: Theme.of(context).colorScheme.background,
+                  ),
                 ),
               ),
-            ),
-          ),
-        ],
+            )
+            : const SizedBox.shrink();
+        },
       ),
     );
   }
