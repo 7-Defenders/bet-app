@@ -123,6 +123,8 @@ class EventsScreenState extends State<EventsScreen> {
           ),
         );
       },
+      barrierDismissible: false,
+      useRootNavigator: false,
     );
 
     try {

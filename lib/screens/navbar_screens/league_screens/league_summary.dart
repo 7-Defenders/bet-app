@@ -48,6 +48,8 @@ class _LeagueSummaryState extends State<LeagueSummary> {
           child: LoadingAnimationWidget.hexagonDots(color: Theme.of(context).colorScheme.primary, size: 55,),
         );
       },
+      barrierDismissible: false,
+      useRootNavigator: false,
     );
 
     final response = await http.get(Uri.parse('https://bet-app-e520a.ew.r.appspot.com/v1/leagues/${widget.leagueID}/users'));
@@ -70,9 +72,9 @@ class _LeagueSummaryState extends State<LeagueSummary> {
         ids.add(element.userID!);
       });
 
-      // if (mounted){
-      //   Navigator.of(context).pop();
-      // }
+      if (mounted){
+        Navigator.of(context).pop();
+      }
     });
   }
 

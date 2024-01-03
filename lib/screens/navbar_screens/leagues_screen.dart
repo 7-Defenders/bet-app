@@ -45,6 +45,8 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
           child: LoadingAnimationWidget.hexagonDots(color: Theme.of(context).colorScheme.primary, size: 55,),
         );
       },
+      barrierDismissible: false,
+      useRootNavigator: false,
     );
 
     final response = await http.get(Uri.parse('https://bet-app-e520a.ew.r.appspot.com/v1/users/$uid/leagues'));
@@ -58,9 +60,9 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
         );
     });
 
-    // if (mounted){
-    //   Navigator.of(context).pop();
-    // }
+    if (mounted){
+      Navigator.of(context).pop();
+    }
   }
 
   void goToLeagueCreator(BuildContext context) {

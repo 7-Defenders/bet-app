@@ -34,6 +34,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
           child: LoadingAnimationWidget.hexagonDots(color: Theme.of(context).colorScheme.primary, size: 55,),
         );
       },
+      barrierDismissible: false,
+      useRootNavigator: false,
     );
 
     final response = await http.get(Uri.parse('https://bet-app-e520a.ew.r.appspot.com/v1/bets/${widget.userID}'));
@@ -43,9 +45,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
       widget.betList = betFromJson(response.body);
     });
 
-      // if (mounted){
-      //   Navigator.of(context).pop();
-      // }
+      if (mounted){
+        Navigator.of(context).pop();
+      }
     // // fill betList with data from Firestore
     // final FirebaseFirestore firestore = FirebaseFirestore.instance;
     // final FirebaseAuth auth = FirebaseAuth.instance;
