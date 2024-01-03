@@ -201,6 +201,7 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
     );
   }
 
+  //TODO why is this here? XD
   void onMakeBetPressed() {
     showModalBottomSheet(
       shape: const RoundedRectangleBorder(
@@ -227,11 +228,13 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
   @override
   Widget build(BuildContext context) {
 
-    return Container(
-      child: Column(
-        children: 
-        [
-          const SizedBox(height: 40,),
+    return Scaffold(
+      body: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        child: Column(
+          children:
+          [
+            const SizedBox(height: 40,),
             ToggleButtons(
               onPressed: (int index) {
                 setState(() {
@@ -253,24 +256,41 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
               children: const [Text('Private'), Text('Public')],
             ),
 
-          const SizedBox(height: 40,),
-          JoinLeagueWidget(),
-
-          const SizedBox(height: 120,),
-          LeagueListWidget(leagues: const [], height: 300),
-          const Spacer(),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Color.fromARGB(255, 5, 160, 221),
-            ),
-            onPressed: moveToLeagueCreator,
-            child: const Text(
-              'Create league',
-              style: TextStyle(color: Colors.white),
-              ),
-        ),
             const SizedBox(height: 40,),
-      ],),
+            JoinLeagueWidget(),
+
+            const SizedBox(height: 120,),
+            LeagueListWidget(leagues: const [], height: 300),
+            const Spacer(),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color.fromARGB(255, 5, 160, 221),
+              ),
+              onPressed: moveToLeagueCreator,
+              child: const Text(
+                'Create league',
+                style: TextStyle(color: Colors.white),
+                ),
+          ),
+              const SizedBox(height: 40,),
+        ],),
+      ),
     );
   }
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   return const Scaffold(
+  //     backgroundColor: Colors.red,
+  //     body: Center(
+  //       child: Text(
+  //         "xd",
+  //         style: TextStyle(
+  //           color: Colors.white,
+  //           fontSize: 30,
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 }

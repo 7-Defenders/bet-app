@@ -6,12 +6,14 @@ import 'package:app/components/profile_screen/change_display_name_icon.dart';
 import 'package:app/components/profile_screen/gesture_detector_button.dart';
 import 'package:app/components/profile_screen/profile_pic.dart';
 import 'package:app/components/profile_screen/text_input_dialog.dart';
-import 'package:app/providers/navigation_provider.dart';
+import 'package:app/screens/drawer.dart';
 import 'package:app/utils/functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -100,8 +102,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         subtext: 'You can change your username once every 30 days.',
         hintText: 'Enter new username',
         validator: (value) {
-          if (value == null || value.length < 3) {
-            return 'Username must be at least 3 characters long';
+          if (value == null || value.length < 3 || value.length > 20) {
+            return 'Username must be between 3 and 20 characters long';
           }
           return null;
         },
@@ -116,15 +118,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void goToHistory(BuildContext context) {
-    final navigationProvider = Provider.of<NavigationProvider>(context, listen: false);
-    navigationProvider.currentIndex = 4;
-    // Navigator.pop(context);
+    context.go('/profile/history');
   }
 
   void goToAchievements(BuildContext context) {
-    final navigationProvider = Provider.of<NavigationProvider>(context, listen: false);
-    navigationProvider.currentIndex = 5;
-    // Navigator.pop(context);
+    context.go('/profile/achievements');
   }
 
   @override
@@ -132,170 +130,185 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final double vh = MediaQuery.of(context).size.height / 100;
     final double vw = MediaQuery.of(context).size.width / 100;
 
-    return Stack(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primary,
-          ),
-          child: SafeArea(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: Padding(
-                    padding: EdgeInsets.fromLTRB(1 * vw, 1 * vw, 0, 0),
-                    child: IconButton(
-                      icon: Icon(
-                        Icons.menu_rounded,
-                        color: Theme.of(context).colorScheme.background,
-                        size: 8 * vw,
+    return Scaffold(
+      // drawer: drawer(context, vw, vh),
+      body: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            child: SafeArea(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(1 * vw, 1 * vw, 0, 0),
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.menu_rounded,
+                          color: Theme.of(context).colorScheme.background,
+                          size: 8 * vw,
+                        ),
+                        onPressed: () {
+                          if (mounted) {
+                            Scaffold.of(context).openDrawer();
+                            print("drawer opened");
+                          }
+                        },
                       ),
-                      onPressed: () {
-                        if (mounted) {
-                          Scaffold.of(context).openDrawer();
-                        }
-                      },
                     ),
                   ),
-                ),
-                Align(
-                  alignment: Alignment.topRight,
-                  child: Padding(
-                    padding: EdgeInsets.fromLTRB(0, 2 * vw, 2.5 * vw, 0),
-                    child: BalanceWidget(vw: vw, vh: vh),
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(0, 2 * vw, 2.5 * vw, 0),
+                      child: BalanceWidget(vw: vw, vh: vh),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-        // white background
-        Padding(
-          padding: EdgeInsets.fromLTRB(0, 25 * vh, 0, 0),
-          child: SizedBox(
-            width: 100 * vw,
-            child: ClipRRect(
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(35)),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.background,
-                ),
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        padding: EdgeInsets.fromLTRB(0, 12 * vh, 0, 0),
-                        child: Column(
-                          children: [
-                            // displayName
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Spacer(),
-                                Padding(
-                                  padding:
-                                      EdgeInsets.fromLTRB(0, 0, 0, 1 * vh),
-                                  child: nunitoText(
-                                    displayName!,
-                                    30,
-                                    FontWeight.bold,
-                                    Theme.of(context).colorScheme.onBackground,
-                                  ),
-                                ),
-                                SizedBox(width: 1 * vw),
-                                Expanded(
-                                  child: Row(
-                                    children: [
-                                      nickButton(
-                                        changeDisplayName,
-                                        vw,
-                                        vh,
-                                        FontAwesomeIcons.penToSquare,
-                                        context,
+          // white background
+          Padding(
+            padding: EdgeInsets.fromLTRB(0, 25 * vh, 0, 0),
+            child: SizedBox(
+              width: 100 * vw,
+              child: ClipRRect(
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(35)),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.background,
+                  ),
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.fromLTRB(0, 12 * vh, 0, 0),
+                          child: Column(
+                            children: [
+                              // displayName
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Spacer(),
+                                  Padding(
+                                    padding:
+                                        EdgeInsets.fromLTRB(0, 0, 0, 1 * vh),
+                                    child: Container(
+                                      constraints: BoxConstraints(
+                                        maxWidth: 65 * vw,
                                       ),
-                                    ],
+                                      child: FittedBox(
+                                        fit: BoxFit.scaleDown,
+                                        child: Text(
+                                          displayName!,
+                                          style: GoogleFonts.nunito(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 30,
+                                            color: Theme.of(context).colorScheme.onBackground,
+                                          ),
+                                          maxLines: 1,
+                                        ),
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                            // email
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(0, 0, 0, 5 * vh),
-                              child: nunitoText(
-                                email!,
-                                20,
-                                FontWeight.bold,
-                                Theme.of(context).colorScheme.tertiary,
+                                  SizedBox(width: 1 * vw),
+                                  Expanded(
+                                    child: Row(
+                                      children: [
+                                        nickButton(
+                                          changeDisplayName,
+                                          vw,
+                                          vh,
+                                          FontAwesomeIcons.penToSquare,
+                                          context,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                            gestureDetectorButton(
-                              FontAwesomeIcons.medal,
-                              "Achievements",
-                              () => goToAchievements(context),
-                              vw,
-                              vh,
-                              context,
-                            ),
-                            SizedBox(height: 2 * vh),
-                            gestureDetectorButton(
-                              Icons.history,
-                              "Bet history",
-                              () => goToHistory(context),
-                              vw,
-                              vh,
-                              context,
-                            ),
-                          ],
+                              // email
+                              Padding(
+                                padding: EdgeInsets.fromLTRB(0, 0, 0, 5 * vh),
+                                child: nunitoText(
+                                  email!,
+                                  20,
+                                  FontWeight.bold,
+                                  Theme.of(context).colorScheme.tertiary,
+                                ),
+                              ),
+                              gestureDetectorButton(
+                                FontAwesomeIcons.medal,
+                                "Achievements",
+                                () => goToAchievements(context),
+                                vw,
+                                vh,
+                                context,
+                              ),
+                              SizedBox(height: 2 * vh),
+                              gestureDetectorButton(
+                                Icons.history,
+                                "Bet history",
+                                () => goToHistory(context),
+                                vw,
+                                vh,
+                                context,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-        // log out
-        Container(
-          padding: EdgeInsets.fromLTRB(0, 0, 0, 5 * vh),
-          child: Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              child: gestureDetectorButton(
-                Icons.logout,
-                "Log Out",
-                logOutUser,
-                vw,
-                vh,
-                context,
+          // log out
+          Container(
+            padding: EdgeInsets.fromLTRB(0, 0, 0, 5 * vh),
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                child: gestureDetectorButton(
+                  Icons.logout,
+                  "Log Out",
+                  logOutUser,
+                  vw,
+                  vh,
+                  context,
+                ),
               ),
             ),
           ),
-        ),
-        Positioned(
-          top: 17 * vh,
-          left: 0,
-          right: 0,
-          child: Center(
-            child: pictureWithBorder(photoURL ?? "", vh, context),
+          Positioned(
+            top: 17 * vh,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: pictureWithBorder(photoURL ?? "", vh, context),
+            ),
           ),
-        ),
-        Positioned(
-          top: 31 * vh,
-          left: 31 * vw,
-          right: 0,
-          child: smallButton(
-            changeProfilePicture,
-            vw,
-            vh,
-            Icons.camera_alt_outlined,
-            context,
+          Positioned(
+            top: 31 * vh,
+            left: 31 * vw,
+            right: 0,
+            child: smallButton(
+              changeProfilePicture,
+              vw,
+              vh,
+              Icons.camera_alt_outlined,
+              context,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

@@ -11,7 +11,7 @@ class LeagueListWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     // Container for the entire league list widget
     return Container(
-      width: MediaQuery.of(context).size.width - 32,
+      width: MediaQuery.of(context).size.width * 0.8,
       height: height,
       padding: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
