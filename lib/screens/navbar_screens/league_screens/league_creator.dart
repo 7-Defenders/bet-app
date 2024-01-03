@@ -1,5 +1,10 @@
+import 'dart:convert';
+
 import 'package:app/models/structure.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class LeagueCreator extends StatefulWidget {
   const LeagueCreator({super.key});
@@ -11,9 +16,62 @@ class LeagueCreator extends StatefulWidget {
 class _LeagueCreatorState extends State<LeagueCreator> {
 
   Set<String> selectedLeagues = {};
+  int entryCost = 0;
+  String leagueName = '';
+
+  final entryCostController = TextEditingController();
+  final leagueNameController = TextEditingController();
+
+  @override
+  void dispose() {
+    entryCostController.dispose();
+    leagueNameController.dispose();
+    super.dispose();
+  }
+
+  Future<void> createLeague() async{
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Center(
+          child: LoadingAnimationWidget.hexagonDots(color: Theme.of(context).colorScheme.primary, size: 55,),
+        );
+      },
+    );
+
+    if (leagueNameController.text == '' || int.parse(entryCostController.text) < 0 || selectedLeagues.isEmpty) return;
+
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+    final List<String> competitions = [];
+    for (final element in selectedLeagues) { 
+      competitions.add(
+        sportsObject.firstWhere((sport) => sport.name == element.split('/')[0]).countries
+                  .firstWhere((country) => country.name == element.split('/')[1]).leagues
+                  .firstWhere((league) => league.name == element.split('/')[2]).id,
+      );
+    }
+
+    final response = await http.post(
+      Uri.parse('https://bet-app-e520a.ew.r.appspot.com/v1/leagues'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'userID': uid,
+        'entryCost': int.parse(entryCostController.text),
+        'leagueName': leagueNameController.text,
+        'competitionRefs': competitions,
+        'private': true,
+      }),
+    );
+
+    if (mounted){
+      Navigator.of(context).pop();
+    }
+  }
 
   Widget setupAlertDialoadContainer() {
-  return Container(
+  return SizedBox(
     height: 300.0, // Change as per your requirement
     width: 300.0, // Change as per your requirement
     child: ListView.builder(
@@ -41,6 +99,7 @@ class _LeagueCreatorState extends State<LeagueCreator> {
                           selectedLeagues.add(path);
                         }
                       });
+                      print(selectedLeagues.toList());
                     },
                     selected: selectedLeagues.contains(path),
                   );
@@ -72,19 +131,21 @@ class _LeagueCreatorState extends State<LeagueCreator> {
         child: Column(
           children: [
             const Center(child: Text('League name')),
-            const Center(child: TextField(
-              decoration: InputDecoration(
+            Center(child: TextField(
+              controller: leagueNameController,
+              decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   hintText: 'League name',
                 ),
               ),
             ),
             const Center(child: Text('Entry fee')),
-            const Center(child: TextField(
+            Center(child: TextField(
+              controller: entryCostController,
               keyboardType: TextInputType.number,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                   border: OutlineInputBorder(),
-                  hintText: 'League name',
+                  hintText: 'Entry fee',
                 ),
               ),
             ),
@@ -106,27 +167,20 @@ class _LeagueCreatorState extends State<LeagueCreator> {
                 style: TextStyle(color: Colors.white),
                 ),
              ),
-            const Center(child: Text('Player cap')),
-            const Center(child: TextField(
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Max players',
-                ),
-              ),
-            ),
             const Spacer(),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color.fromARGB(255, 5, 160, 221),
               ),
-              onPressed: () {},
+              onPressed: () async {
+                await createLeague();
+              },
               child: const Text(
                 'Create league',
                 style: TextStyle(color: Colors.white),
                 ),
              ),
-             const SizedBox(height: 40)
+             const SizedBox(height: 40),
           ],
         ),
       ),

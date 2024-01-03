@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:app/components/events_screen/bet_preview.dart';
 import 'package:app/components/other/nunito_text.dart';
 import 'package:app/models/football_event.dart';
@@ -122,12 +123,14 @@ class EventsScreenState extends State<EventsScreen> {
           ),
         );
       },
+      barrierDismissible: false,
+      useRootNavigator: false,
     );
 
     try {
     final response = await http.get(
       Uri.parse(
-        'https://bet-app-e520a.ew.r.appspot.com/v1/competitions/$league',
+        'https://bet-app-e520a.ew.r.appspot.com/v1/v1/competitions/$league',
       ),
     );
     print(response.body);
@@ -387,6 +390,8 @@ class EventsScreenState extends State<EventsScreen> {
                       icon: const Icon(Icons.close),
                       onPressed: () {
                         final matchId = entry.key;
+
+                        //print ("matchId: $matchId");
 
                         //print ("matchId: $matchId");
 

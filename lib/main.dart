@@ -6,6 +6,8 @@ import 'package:app/screens/achievements_screen.dart';
 import 'package:app/screens/auth_screens/login_or_register_screen.dart';
 import 'package:app/screens/history_screen.dart';
 import 'package:app/screens/navbar_screens/events_screen.dart';
+import 'package:app/screens/navbar_screens/league_screens/league_creator.dart';
+import 'package:app/screens/navbar_screens/league_screens/league_summary.dart';
 import 'package:app/screens/navbar_screens/leagues_screen.dart';
 import 'package:app/screens/navbar_screens/profile_screen.dart';
 import 'package:app/screens/navbar_screens/shop_screen.dart';
@@ -101,6 +103,83 @@ final _router = GoRouter(
         GoRoute(
           path: '/leagues',
           pageBuilder: fadePageBuilder(const LeaguesScreen()),
+          routes: <RouteBase>[
+            // The history screen to display stacked on the inner Navigator.
+            // This will cover profile screen but not the application shell.
+            GoRoute(
+              path: 'creator',
+              // builder: (BuildContext context, GoRouterState state) {
+              //   return HistoryScreen();
+              // },
+              pageBuilder: (BuildContext context, GoRouterState state) {
+                return CustomTransitionPage<void>(
+                  key: state.pageKey,
+                  child: const LeagueCreator(),
+                  transitionDuration: const Duration(milliseconds: 301),
+                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                    return const FadeUpwardsPageTransitionsBuilder().buildTransitions(
+                      MaterialPageRoute(builder: (context) => Container()),
+                      context,
+                      animation,
+                      secondaryAnimation,
+                      child,
+                    );
+                  },
+                );
+              },
+            ),
+            GoRoute(
+              path: 'summary',
+              // builder: (BuildContext context, GoRouterState state) {
+              //   return HistoryScreen();
+              // },
+              pageBuilder: (BuildContext context, GoRouterState state) {
+                return CustomTransitionPage<void>(
+                  key: state.pageKey,
+                  child: LeagueSummary(leagueID: state.extra! as String,),
+                  transitionDuration: const Duration(milliseconds: 301),
+                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                    return const FadeUpwardsPageTransitionsBuilder().buildTransitions(
+                      MaterialPageRoute(builder: (context) => Container()),
+                      context,
+                      animation,
+                      secondaryAnimation,
+                      child,
+                    );
+                  },
+                );
+              },
+              routes: <RouteBase>[
+                // The history screen to display stacked on the inner Navigator.
+                // This will cover profile screen but not the application shell.
+                GoRoute(
+                  path: 'history',
+                  // builder: (BuildContext context, GoRouterState state) {
+                  //   return HistoryScreen();
+                  // },
+                  pageBuilder: (BuildContext context, GoRouterState state) {
+                    return CustomTransitionPage<void>(
+                      key: state.pageKey,
+                      child: HistoryScreen(userID: state.extra! as String,),
+                      transitionDuration: const Duration(milliseconds: 301),
+                      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                        return const FadeUpwardsPageTransitionsBuilder().buildTransitions(
+                          MaterialPageRoute(builder: (context) => Container()),
+                          context,
+                          animation,
+                          secondaryAnimation,
+                          child,
+                        );
+                      },
+                    );
+                  },
+                ),
+              ],
+            ),
+            /// Same as "/profile/history", but displayed on the root Navigator
+            /// by specifying [parentNavigatorKey]. This will cover both events
+            /// screen and the application shell.
+          ],
         ),
 
         /// fourth navbar screen

@@ -27,6 +27,7 @@ class League {
 List<League> englishLeagues = [
   League(name: 'Premier League', svgPath: 'lib/assets/images/league_logos/premier_league.svg', id: 'football_39'),
 ];
+
 List<League> internationalLeagues = [
   League(name: 'Friendlies', svgPath: 'lib/assets/images/league_logos/Friendlies.svg', id: 'football_10'),
 ];
