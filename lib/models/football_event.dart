@@ -67,6 +67,5 @@ class FootballEvent {
         "homeodds": homeodds,
         "referee": referee,
         "tieodds": tieodds,
-        "matchRef": matchRef,
       };
 }

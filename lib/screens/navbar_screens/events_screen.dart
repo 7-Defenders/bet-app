@@ -130,9 +130,10 @@ class EventsScreenState extends State<EventsScreen> {
     try {
     final response = await http.get(
       Uri.parse(
-        'https://bet-app-e520a.ew.r.appspot.com/v1/v1/competitions/$league',
+        'https://bet-app-e520a.ew.r.appspot.com/v1/competitions/$league',
       ),
     );
+    print('https://bet-app-e520a.ew.r.appspot.com/v1/competitions/$league');
     print(response.body);
 
     displayedMatches.clear();
@@ -209,9 +210,7 @@ class EventsScreenState extends State<EventsScreen> {
     });
     } finally {
       if (mounted) {
-        if (Navigator.of(context, rootNavigator: true).canPop()){
-          Navigator.of(context, rootNavigator: true).pop();
-        }
+        Navigator.of(context).pop();
       }
     }
   }
