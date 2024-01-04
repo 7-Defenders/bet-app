@@ -28,6 +28,78 @@ class BetPreviewWidget extends StatefulWidget {
 class _BetPreviewWidgetState extends State<BetPreviewWidget> {
   String? _selectedOption;
 
+  Row buildBetSelection(double maxWidth){
+    return Row(
+      children: [
+        CustomPaint(
+          painter: CustomBetShape('1'),
+          child: Center(
+            child: Transform.translate(
+              offset: const Offset(15, 0),
+              child: const Icon(
+                Icons.send,
+                size: 40,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+        CustomPaint(
+          painter: CustomBetShape('1X'),
+          child: Center(
+            child: Transform.translate(
+              offset: const Offset(15, 0),
+              child: const Icon(
+                Icons.send,
+                size: 40,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+        CustomPaint(
+          painter: CustomBetShape('X'),
+          child: Center(
+            child: Transform.translate(
+              offset: const Offset(15, 0),
+              child: const Icon(
+                Icons.send,
+                size: 40,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+        CustomPaint(
+          painter: CustomBetShape('X2'),
+          child: Center(
+            child: Transform.translate(
+              offset: const Offset(15, 0),
+              child: const Icon(
+                Icons.send,
+                size: 40,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+        CustomPaint(
+          painter: CustomBetShape('2'),
+          child: Center(
+            child: Transform.translate(
+              offset: const Offset(15, 0),
+              child: const Icon(
+                Icons.send,
+                size: 40,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -160,13 +232,7 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
                   }).toList(),
                 ),
                 const SizedBox(height: 4),
-                Row(children: [
-                  Button1(onTap: (){print('1');}, width: oneWidth, height: 50),
-                  Button1X(onTap: (){print('1X');}, width: oneWidth, height: 50),
-                  ButtonX(onTap: (){print('X');}, width: oneWidth, height: 50),
-                  ButtonX2(onTap: (){print('X2');}, width: oneWidth, height: 50),
-                  Button2(onTap: (){print('2');}, width: oneWidth, height: 50),
-                ],),
+                buildBetSelection(100),
                 ],),
               ],
             ),
@@ -175,307 +241,69 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
   }
 }
 
-class Button1 extends StatelessWidget {
-  double width;
-  double height;
+class CustomBetShape extends CustomPainter {
+  final String shape;
+  final bool isSelected;
 
-  Button1({super.key, required this.onTap, required this.width, required this.height});
-  final VoidCallback onTap;
+  CustomBetShape(this.shape, {this.isSelected=false});
 
-  @override
-  Widget build(BuildContext context) {
-
-    return GestureDetector(
-      onTap: onTap,
-      child: SizedBox(
-        width: width,
-        height: height,
-        child: CustomPaint(
-          painter: Shape1(),
-          child: Center(
-            child: Transform.translate(
-              offset: const Offset(15, 0),
-              child: const Icon(
-                Icons.send,
-                size: 40,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class Button1X extends StatelessWidget {
-  double width;
-  double height;
-
-  Button1X({super.key, required this.onTap, required this.width, required this.height});
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-
-    return GestureDetector(
-      onTap: onTap,
-      child: SizedBox(
-        width: width,
-        height: height,
-        child: CustomPaint(
-          painter: Shape1X(),
-          child: Center(
-            child: Transform.translate(
-              offset: const Offset(15, 0),
-              child: const Icon(
-                Icons.send,
-                size: 40,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class ButtonX extends StatelessWidget {
-  double width;
-  double height;
-
-  ButtonX({super.key, required this.onTap, required this.width, required this.height});
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-
-    return GestureDetector(
-      onTap: onTap,
-      child: SizedBox(
-        width: width,
-        height: height,
-        child: CustomPaint(
-          painter: ShapeX(),
-          child: Center(
-            child: Transform.translate(
-              offset: const Offset(15, 0),
-              child: const Icon(
-                Icons.send,
-                size: 40,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class ButtonX2 extends StatelessWidget {
-  double width;
-  double height;
-
-  ButtonX2({super.key, required this.onTap, required this.width, required this.height});
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-
-    return GestureDetector(
-      onTap: onTap,
-      child: SizedBox(
-        width: width,
-        height: height,
-        child: CustomPaint(
-          painter: ShapeX2(),
-          child: Center(
-            child: Transform.translate(
-              offset: const Offset(15, 0),
-              child: const Icon(
-                Icons.send,
-                size: 40,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class Button2 extends StatelessWidget {
-  double width;
-  double height;
-
-  Button2({super.key, required this.onTap, required this.width, required this.height});
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-
-    return GestureDetector(
-      onTap: onTap,
-      child: SizedBox(
-        width: width,
-        height: height,
-        child: CustomPaint(
-          painter: Shape2(),
-          child: Center(
-            child: Transform.translate(
-              offset: const Offset(15, 0),
-              child: const Icon(
-                Icons.send,
-                size: 40,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class Shape1 extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint();
-    paint.color = Colors.pink.shade400;
-    paint.style = PaintingStyle.fill;
-    paint.strokeWidth = 1;
+    final path = Path();
     
     const angle = math.pi / 8;
     final fillWidth = size.height * math.tan(angle);
 
-    final path = Path();
-    path.moveTo(0, 0);
-    path.lineTo(size.width, 0);
-    path.lineTo(size.width - fillWidth, size.height);
-    path.lineTo(0, size.height);
-    path.lineTo(0, 0);
-    
-    path.close();
-
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
-  }
-}
-
-class Shape1X extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint();
-    paint.color = Colors.pink.shade400;
     paint.style = PaintingStyle.fill;
     paint.strokeWidth = 1;
-    
-    const angle = math.pi / 8;
-    final fillWidth = size.height * math.tan(angle);
 
-    final path = Path();
-    path.moveTo(fillWidth, 0);
-    path.lineTo(size.width, 0);
-    path.lineTo(size.width - fillWidth, size.height);
-    path.lineTo(0, size.height);
-    path.lineTo(fillWidth, 0);
-    
-    path.close();
+    switch (shape){
+      case '1':
+        paint.color = isSelected ? const Color.fromARGB(255, 96, 179, 255) : const Color.fromARGB(255, 251, 165, 28);
+        path.moveTo(0, 0);
+        path.lineTo(size.width, 0);
+        path.lineTo(size.width - fillWidth, size.height);
+        path.lineTo(0, size.height);
+        path.lineTo(0, 0);
 
-    canvas.drawPath(path, paint);
-  }
+      case '1X':
+        paint.color = isSelected ? const Color.fromARGB(255, 96, 179, 255) : const Color.fromARGB(255, 255, 186, 75);
+        path.moveTo(fillWidth, 0);
+        path.lineTo(size.width, 0);
+        path.lineTo(size.width - fillWidth, size.height);
+        path.lineTo(0, size.height);
+        path.lineTo(fillWidth, 0);
 
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
-  }
-}
+      case 'X':
+        paint.color = isSelected ? const Color.fromARGB(255, 96, 179, 255) : const Color.fromARGB(255, 251, 165, 28);
+        path.moveTo(fillWidth, 0);
+        path.lineTo(size.width - fillWidth, 0);
+        path.lineTo(size.width, size.height);
+        path.lineTo(0, size.height);
+        path.lineTo(fillWidth, 0);
 
-class ShapeX extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint();
-    paint.color = Colors.pink.shade400;
-    paint.style = PaintingStyle.fill;
-    paint.strokeWidth = 1;
-    
-    const angle = math.pi / 8;
-    final fillWidth = size.height * math.tan(angle);
+      case 'X2':
+        paint.color = isSelected ? const Color.fromARGB(255, 96, 179, 255) : const Color.fromARGB(255, 255, 186, 75);
+        path.moveTo(0, 0);
+        path.lineTo(size.width - fillWidth, 0);
+        path.lineTo(size.width, size.height);
+        path.lineTo(fillWidth, size.height);
+        path.lineTo(0, 0);
 
-    final path = Path();
-    path.moveTo(fillWidth, 0);
-    path.lineTo(size.width - fillWidth, 0);
-    path.lineTo(size.width, size.height);
-    path.lineTo(0, size.height);
-    path.lineTo(fillWidth, 0);
-    
-    path.close();
+      case '2':
+        paint.color = isSelected ? const Color.fromARGB(255, 96, 179, 255) : const Color.fromARGB(255, 255, 205, 128);
+        path.moveTo(0, 0);
+        path.lineTo(size.width, 0);
+        path.lineTo(size.width, size.height);
+        path.lineTo(fillWidth, size.height);
+        path.lineTo(0, 0);
 
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
-  }
-}
-
-class ShapeX2 extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint();
-    paint.color = Colors.pink.shade400;
-    paint.style = PaintingStyle.fill;
-    paint.strokeWidth = 1;
-    
-    const angle = math.pi / 8;
-    final fillWidth = size.height * math.tan(angle);
-
-    final path = Path();
-    path.moveTo(0, 0);
-    path.lineTo(size.width - fillWidth, 0);
-    path.lineTo(size.width, size.height);
-    path.lineTo(fillWidth, size.height);
-    path.lineTo(0, 0);
+      default:
+        throw Exception('Invalid shape');
+    }
     
     path.close();
-
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
-  }
-}
-
-class Shape2 extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint();
-    paint.color = Colors.pink.shade400;
-    paint.style = PaintingStyle.fill;
-    paint.strokeWidth = 1;
-    
-    const angle = math.pi / 8;
-    final fillWidth = size.height * math.tan(angle);
-
-    final path = Path();
-    path.moveTo(0, 0);
-    path.lineTo(size.width, 0);
-    path.lineTo(size.width, size.height);
-    path.lineTo(fillWidth, size.height);
-    path.lineTo(0, 0);
-    
-    path.close();
-
     canvas.drawPath(path, paint);
   }
 
