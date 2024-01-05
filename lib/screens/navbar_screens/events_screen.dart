@@ -128,86 +128,87 @@ class EventsScreenState extends State<EventsScreen> {
     );
 
     try {
-    final response = await http.get(
-      Uri.parse(
-        'https://bet-app-e520a.ew.r.appspot.com/v1/competitions/$league',
-      ),
-    );
-    print('https://bet-app-e520a.ew.r.appspot.com/v1/competitions/$league');
-    print(response.body);
-
-    displayedMatches.clear();
-
-    setState(() {
-      final buttonStatesProvider = context.read<ButtonStatesProvider>();
-
-      footballEventFromJson(response.body).forEach(
-        (element) => displayedMatches.add(
-          BetPreviewWidget(
-            eventName: '${element.homename} - ${element.awayname}',
-            eventDetails: element.date,
-            bets: {
-              '1': element.homeodds,
-              '1X': element.homedrawodds,
-              'X': element.tieodds,
-              'X2': element.drawawayodds,
-              '2': element.awayodds,
-            },
-            onOptionSelected: (String? selectedOption) {
-              final String key = '${element.homename} - ${element.awayname}';
-              final double odds;
-              final String matchRef = element.matchRef;
-
-              switch (selectedOption) {
-                case '1':
-                  odds = element.homeodds;
-                case 'X':
-                  odds = element.tieodds;
-                case '2':
-                  odds = element.awayodds;
-                case '1X':
-                  odds = element.homedrawodds;
-                case 'X2':
-                  odds = element.drawawayodds;
-                default:
-                  odds = 0;
-              }
-              //replace this with proper way to fetch odds
-
-              //print("Selected option: $selectedOption" + " key: $key");
-
-              //print selectedOption and buttonStatesProvider.buttonStates[key]
-              // print("Selected option: $selectedOption" +
-              //     " buttonStatesProvider.buttonStates[key]: " +
-              //     "${buttonStatesProvider.buttonStates[key]}");
-
-              final currentOptionAndOdds =
-                  buttonStatesProvider.buttonStates[key]?.split(',');
-              final currentOption =
-                  currentOptionAndOdds != null ? currentOptionAndOdds[0] : null;
-
-              //print("Current option: $currentOption");
-
-              if (buttonStatesProvider.buttonStates.containsKey(key) &&
-                  selectedOption == currentOption) {
-                buttonStatesProvider.removeButtonState(key);
-              } else {
-                buttonStatesProvider.updateButtonState(
-                  key,
-                  '$selectedOption,$odds,$matchRef',
-                );
-              }
-              //print(
-              //"ButtonStatesProvider values: ${buttonStatesProvider.buttonStates}");
-              //print whole map
-            },
-            initialSelection: buttonStatesProvider
-                .buttonStates['${element.homename} - ${element.awayname}']
-                ?.split(',')[0],
-          ),
+      final response = await http.get(
+        Uri.parse(
+          'https://bet-app-e520a.ew.r.appspot.com/v1/competitions/$league',
         ),
       );
-    });
+      print('https://bet-app-e520a.ew.r.appspot.com/v1/competitions/$league');
+      print(response.body);
+
+      displayedMatches.clear();
+
+      setState(() {
+        final buttonStatesProvider = context.read<ButtonStatesProvider>();
+
+        footballEventFromJson(response.body).forEach(
+          (element) => displayedMatches.add(
+            BetPreviewWidget(
+              eventName: '${element.homename} - ${element.awayname}',
+              eventDetails: element.date,
+              bets: {
+                '1': element.homeodds,
+                '1X': element.homedrawodds,
+                'X': element.tieodds,
+                'X2': element.drawawayodds,
+                '2': element.awayodds,
+              },
+              onOptionSelected: (String? selectedOption) {
+                final String key = '${element.homename} - ${element.awayname}';
+                final double odds;
+                final String matchRef = element.matchRef;
+
+                switch (selectedOption) {
+                  case '1':
+                    odds = element.homeodds;
+                  case 'X':
+                    odds = element.tieodds;
+                  case '2':
+                    odds = element.awayodds;
+                  case '1X':
+                    odds = element.homedrawodds;
+                  case 'X2':
+                    odds = element.drawawayodds;
+                  default:
+                    odds = 0;
+                }
+                //replace this with proper way to fetch odds
+
+                //print("Selected option: $selectedOption" + " key: $key");
+
+                //print selectedOption and buttonStatesProvider.buttonStates[key]
+                // print("Selected option: $selectedOption" +
+                //     " buttonStatesProvider.buttonStates[key]: " +
+                //     "${buttonStatesProvider.buttonStates[key]}");
+
+                final currentOptionAndOdds =
+                    buttonStatesProvider.buttonStates[key]?.split(',');
+                final currentOption = currentOptionAndOdds != null
+                    ? currentOptionAndOdds[0]
+                    : null;
+
+                //print("Current option: $currentOption");
+
+                if (buttonStatesProvider.buttonStates.containsKey(key) &&
+                    selectedOption == currentOption) {
+                  buttonStatesProvider.removeButtonState(key);
+                } else {
+                  buttonStatesProvider.updateButtonState(
+                    key,
+                    '$selectedOption,$odds,$matchRef',
+                  );
+                }
+                //print(
+                //"ButtonStatesProvider values: ${buttonStatesProvider.buttonStates}");
+                //print whole map
+              },
+              initialSelection: buttonStatesProvider
+                  .buttonStates['${element.homename} - ${element.awayname}']
+                  ?.split(',')[0],
+            ),
+          ),
+        );
+      });
     } finally {
       if (mounted) {
         Navigator.of(context).pop();
@@ -423,7 +424,7 @@ class EventsScreenState extends State<EventsScreen> {
                           amount, // Replace with actual amount
                           betType, // Replace with actual bet type
                           odds, // Replace with actual bet odds
-                          matchRef, // Replace with actual game reference
+                          matchRef, // Replace with actual game referenc
                         );
 
                         showDialog(
@@ -595,27 +596,28 @@ class EventsScreenState extends State<EventsScreen> {
         ],
       ),
       floatingActionButton: ValueListenableBuilder(
-        valueListenable: context.watch<ButtonStatesProvider>().buttonStatesNotifier,
+        valueListenable:
+            context.watch<ButtonStatesProvider>().buttonStatesNotifier,
         builder: (context, Map<String, String> value, child) {
           return value.isNotEmpty
-            ? Padding(
-              padding: const EdgeInsets.all(15),
-              child: SizedBox(
-                width: 65,
-                height: 65,
-                child: FloatingActionButton(
-                  elevation: 10,
-                  onPressed: onMakeBetPressed,
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  child: Icon(
-                    Icons.keyboard_arrow_up_rounded,
-                    size: 40,
-                    color: Theme.of(context).colorScheme.background,
+              ? Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: SizedBox(
+                    width: 65,
+                    height: 65,
+                    child: FloatingActionButton(
+                      elevation: 10,
+                      onPressed: onMakeBetPressed,
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      child: Icon(
+                        Icons.keyboard_arrow_up_rounded,
+                        size: 40,
+                        color: Theme.of(context).colorScheme.background,
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            )
-            : const SizedBox.shrink();
+                )
+              : const SizedBox.shrink();
         },
       ),
     );
