@@ -6,6 +6,7 @@ import 'package:app/screens/achievements_screen.dart';
 import 'package:app/screens/auth_screens/login_or_register_screen.dart';
 import 'package:app/screens/history_screen.dart';
 import 'package:app/screens/navbar_screens/events_screen.dart';
+import 'package:app/screens/navbar_screens/home_screen.dart';
 import 'package:app/screens/navbar_screens/leagues_screen.dart';
 import 'package:app/screens/navbar_screens/profile_screen.dart';
 import 'package:app/screens/navbar_screens/shop_screen.dart';
@@ -91,19 +92,21 @@ final _router = GoRouter(
           ],
         ),
 
-        /// second navbar screen
         GoRoute(
           path: '/events',
           pageBuilder: fadePageBuilder(const EventsScreen()),
         ),
 
-        /// third navbar screen
+        GoRoute(
+          path: '/home',
+          pageBuilder: fadePageBuilder(const HomeScreen()),
+        ),
+
         GoRoute(
           path: '/leagues',
           pageBuilder: fadePageBuilder(const LeaguesScreen()),
         ),
 
-        /// fourth navbar screen
         GoRoute(
           path: '/shop',
           pageBuilder: fadePageBuilder(const ShopScreen()),
