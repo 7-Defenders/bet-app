@@ -95,4 +95,5 @@ flutter:
     - lib/assets/images/
     - lib/assets/images/league_logos/
     - lib/assets/images/country_flags/
+    - lib/assets/images/bet_widget/
     - .env
