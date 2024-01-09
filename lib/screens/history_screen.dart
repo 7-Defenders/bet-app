@@ -4,7 +4,6 @@ import 'package:app/models/bet.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:provider/provider.dart';
 
 class HistoryScreen extends StatefulWidget {
   final String? userID;
@@ -19,8 +18,8 @@ class HistoryScreen extends StatefulWidget {
 
 class _HistoryScreenState extends State<HistoryScreen> {
 
-  void goToProfile() {
-
+  void goBack() {
+    Navigator.of(context).pop();
   }
 
 
@@ -95,7 +94,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
     // return PopScope(
       // canPop: false,
       // onPopInvoked: (didPop) {
-      //   goToProfile();
+      //   goBack();
       // },
       // child: Scaffold(
         backgroundColor: Theme.of(context).colorScheme.background,
@@ -126,7 +125,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                           children: [
                             IconButton(
                               onPressed: () {
-                                goToProfile();
+                                goBack();
                               },
                               icon: Icon(
                                 Icons.arrow_back_rounded,

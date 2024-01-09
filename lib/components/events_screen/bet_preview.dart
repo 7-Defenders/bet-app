@@ -38,12 +38,8 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
 
 void onItemTapped(String? option) {
   setState(() {
-    if (option == _selectedOption) {
-      _selectedOption = null;
-    } else {
-      _selectedOption = option;
-      widget.onOptionSelected!(option!);
-    }
+    _selectedOption = option == _selectedOption ? null : option;
+    widget.onOptionSelected!(option!);
   });
 }
   
