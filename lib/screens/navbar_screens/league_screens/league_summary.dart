@@ -82,22 +82,24 @@ class _LeagueSummaryState extends State<LeagueSummary> {
   Widget build(BuildContext context) {
     final List<Widget> leadingWidgets = ranks.map(
       (e) => 
-      CircleAvatar(
-        backgroundColor: () {
-          switch (e.split('/')[0]) {
-            case '1':
-              return const Color.fromARGB(255, 202, 165, 1);
-            case '2':
-              return const Color.fromARGB(255, 170, 170, 170);
-            case '3':
-              return const Color.fromARGB(255, 168, 92, 62);
-            default:
-              return Colors.blue;
-          }
-        }(),
-        child: Text(e),
-        ),
-      ).toList();
+      ClipRRect(
+        borderRadius: BorderRadius.circular(4),
+        child: Container(
+          color: Color.fromARGB(255, 211, 91, 91),
+          width: 40,
+          height: 20,
+          child: Center(
+            child: Text(
+              e,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+              ),
+            ),
+          ),
+        )
+      ),
+    ).toList();
 
     return Scaffold(
       body: Column(
@@ -153,10 +155,11 @@ class _LeagueSummaryState extends State<LeagueSummary> {
           ),  
           const SizedBox(height: 80,),
           LeagueListWidget(
+            header: "Standings",
             leadingWidgets: leadingWidgets,
             titles: usernames,
             // addons: points,
-            icon: Icons.arrow_forward_ios,
+            trailingWidgets: points.map((e) => Text(e.toString())).toList(),
             onTap: (index) {moveToHistory(context, index);},
             height: 300,
           ),

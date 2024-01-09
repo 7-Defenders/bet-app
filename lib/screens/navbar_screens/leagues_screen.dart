@@ -19,9 +19,9 @@ class LeaguesScreen extends StatefulWidget {
 class _LeaguesScreenState extends State<LeaguesScreen> {
   final String uid = FirebaseAuth.instance.currentUser!.uid;
   
-  List<String> rank = [];
-  List<String> names = [];
-  List<String> leagueIDs = [];
+  List<String> rank = ["1", "2"];
+  List<String> names = ["League 1", "League 2"];
+  List<String> leagueIDs = ["0", "1"];
 
   final List<bool> _selected = [true, false];
 
@@ -77,22 +77,24 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
   Widget build(BuildContext context) {
     final List<Widget> leadingWidgets = rank.map(
       (e) => 
-      CircleAvatar(
-        backgroundColor: () {
-          switch (e.split('/')[0]) {
-            case '1':
-              return const Color.fromARGB(255, 202, 165, 1);
-            case '2':
-              return const Color.fromARGB(255, 170, 170, 170);
-            case '3':
-              return const Color.fromARGB(255, 168, 92, 62);
-            default:
-              return Colors.blue;
-          }
-        }(),
-        child: Text(e),
-        ),
-      ).toList();
+      ClipRRect(
+        borderRadius: BorderRadius.circular(4),
+        child: Container(
+          color: Color.fromARGB(255, 211, 91, 91),
+          width: 50,
+          height: 20,
+          child: Center(
+            child: Text(
+              e,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+              ),
+            ),
+          ),
+        )
+      ),
+    ).toList();
 
     return Column(
       children: 
@@ -124,10 +126,11 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
     
         const SizedBox(height: 120,),
         LeagueListWidget(
+          header: "Your leagues",
           leadingWidgets: leadingWidgets,
           titles: names,
-          addons: leagueIDs,
-          icon: Icons.arrow_forward_ios,
+          // addons: null,
+          trailingWidgets: List.generate(rank.length, (index) => const Icon(Icons.arrow_forward_ios_rounded, color: Colors.red,)),
           onTap: (int index) {
             goToLeagueSummary(context, index);
           },
