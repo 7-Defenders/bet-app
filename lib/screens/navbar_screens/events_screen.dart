@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:app/components/events_screen/bet_maker.dart';
 import 'package:app/components/events_screen/bet_preview.dart';
 import 'package:app/components/other/nunito_text.dart';
 import 'package:app/models/football_event.dart';
@@ -378,138 +379,20 @@ class EventsScreenState extends State<EventsScreen> {
                 () => TextEditingController(),
               );
 
-              return ListTile(
-                title: Text('Match: $gameName'),
-                subtitle: Row(
-                  children: [
-                    Expanded(
-                      child: Text('Option: $betType'),
-                    ),
-                    Text('Odds: $odds'),
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () {
-                        final matchId = entry.key;
-
-                        //print ("matchId: $matchId");
-
-                        //print ("matchId: $matchId");
-
-                        chosenMatches.removeWhere(
-                          (element) => element.eventName == matchId,
-                        );
-
-                        buttonStatesProvider
-                            .removeButtonStateAndRefresh(matchId);
-
-                        //setState(() {});
-                        rebuild();
-                      },
-                    ),
-                    Expanded(
-                      child: TextField(
-                        keyboardType: TextInputType.number,
-                        controller: amountController,
-                        decoration: const InputDecoration(
-                          hintText: 'Amount',
-                        ),
-
-                        // Configure your TextField here.
-                      ),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        final int amount = int.parse(amountController.text);
-                        final Future<bool> betFuture = createBet(
-                          amount, // Replace with actual amount
-                          betType, // Replace with actual bet type
-                          odds, // Replace with actual bet odds
-                          matchRef, // Replace with actual game referenc
-                        );
-
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return FutureBuilder<bool>(
-                              future: betFuture,
-                              builder: (
-                                BuildContext context,
-                                AsyncSnapshot<bool> snapshot,
-                              ) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return const AlertDialog(
-                                    title: Text('Placing bet...'),
-                                    content: CircularProgressIndicator(),
-                                  );
-                                } else if (snapshot.hasError) {
-                                  return AlertDialog(
-                                    title: const Text('Error'),
-                                    content:
-                                        const Text('Failed to create bet.'),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        child: const Text('OK'),
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                      ),
-                                    ],
-                                  );
-                                } else {
-                                  final bool success = snapshot.data ?? false;
-                                  return AlertDialog(
-                                    title: const Text('Bet Status'),
-                                    content: Text(
-                                      success
-                                          ? 'Bet created successfully.'
-                                          : 'Failed to create bet.',
-                                    ),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        child: const Text('OK'),
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                      ),
-                                    ],
-                                  );
-                                }
-                              },
-                            );
-                          },
-                        );
-                      },
-                      child: const Text('Place bet'),
-                      // onPressed: () async {
-                      // final int amount = int.parse(amountController.text);
-                      // final bool success = await createBet(
-                      //   amount,
-                      //   betType,
-                      //   odds,
-                      //   matchRef,
-                      // );
-
-                      // if (success) {
-                      //   chosenMatches.removeWhere(
-                      //     (element) => element.eventName == gameName,
-                      //   );
-
-                      //   print("gameName: $gameName");
-                      //   print("chosenMatches: $chosenMatches");
-
-                      //   buttonStatesProvider
-                      //       .removeButtonStateAndRefresh(gameName);
-                      //   rebuild();
-                      // } else {
-                      //   print('Failed to create bet.');
-                      // }
-
-                      //   },
-                      //   child: const Text('Place bet'),
-                    ),
-                  ],
-                ),
+              return BetMaker(
+                gameName: gameName,
+                betType: betType,
+                odds: odds,
+                matchRef: matchRef,
+                amountController: amountController,
+                onRemove: () {
+                  final matchId = entry.key;
+                  chosenMatches
+                      .removeWhere((element) => element.eventName == matchId);
+                  buttonStatesProvider.removeButtonStateAndRefresh(matchId);
+                  rebuild();
+                },
+                createBet: createBet,
               );
             },
           ),
