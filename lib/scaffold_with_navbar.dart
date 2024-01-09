@@ -32,7 +32,6 @@ class ScaffoldWithNavBar extends StatelessWidget {
         _calculateSelectedIndex(context),
         (int idx) => _onItemTapped(idx, context),
       ),
-      extendBody: true,
     );
   }
 
