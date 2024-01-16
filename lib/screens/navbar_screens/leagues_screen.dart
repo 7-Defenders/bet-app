@@ -23,8 +23,6 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
   List<String> names = ["League 1", "League 2"];
   List<String> leagueIDs = ["0", "1"];
 
-  final List<bool> _selected = [true, false];
-
   @override
   void initState() {
     super.initState();
@@ -99,28 +97,6 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
     return Column(
       children: 
       [
-        const SizedBox(height: 40,),
-          ToggleButtons(
-            onPressed: (int index) {
-              setState(() {
-                final int other = (index+1)%2;
-                _selected[index] = true;
-                _selected[other] = false;
-              });
-            },
-            borderRadius: const BorderRadius.all(Radius.circular(8)),
-            selectedBorderColor: Colors.red[700],
-            selectedColor: Colors.white,
-            fillColor: Colors.red[200],
-            color: Colors.red[400],
-            constraints: const BoxConstraints(
-              minHeight: 30.0,
-              minWidth: 120.0,
-            ),
-            isSelected: _selected,
-            children: const [Text('Private'), Text('Public')],
-          ),
-    
         const SizedBox(height: 40,),
         JoinLeagueWidget(),
     
