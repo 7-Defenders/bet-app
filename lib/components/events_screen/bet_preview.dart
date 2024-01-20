@@ -44,7 +44,7 @@ void onItemTapped(String? option) {
 }
   
 Widget buildBetItem(String? option, Function(String?) onItemTapped, BuildContext context, {Color color = Colors.transparent,}) {
-  final Color textColor = option==_selectedOption ? const Color.fromARGB(255, 251, 165, 28) : Colors.white;
+  const Color textColor = Colors.white;
   
   final width =  MediaQuery.of(context).size.width * 0.2 * 0.9;
   final translationMultiplier = width * 0.1;
@@ -152,8 +152,8 @@ Stack krzeminBetWidget(
   @override
   Widget build(BuildContext context) {
     //final buttonStatesProvider = Provider.of<ButtonStatesProvider>(context);
-    final double containerWidth = MediaQuery.of(context).size.width * 0.9;
-    const double padding = 8.0;
+    // final double containerWidth = MediaQuery.of(context).size.width * 0.9;
+    // const double padding = 8.0;
     
     return krzeminBetWidget(context, (p0) => onItemTapped(p0), option: _selectedOption);
   }
