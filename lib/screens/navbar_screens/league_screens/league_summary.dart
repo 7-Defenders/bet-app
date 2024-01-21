@@ -1,4 +1,5 @@
 import 'package:app/components/league_screen/league_widget.dart';
+import 'package:app/components/other/nunito_text.dart';
 import 'package:app/models/player_league_summary.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -38,6 +39,53 @@ class _LeagueSummaryState extends State<LeagueSummary> {
 
   void moveToHistory(BuildContext context, int index) {
     context.go("/leagues/summary/history", extra: ids[index]);
+  }
+
+  Widget leagueInfoPopup({double height=150.0, double width=300.0}){
+    final subWidth = width * 0.4;
+    return SizedBox(
+      height: height,
+      width: width,
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              SizedBox(
+                width: subWidth,
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: nunitoText('Entry fee', 16, FontWeight.normal, Colors.black),
+                ),
+              ),
+              
+              SizedBox(
+                width: subWidth,
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: nunitoText(entryCost == null ? 'N/A' : entryCost.toString(), 16, FontWeight.bold, Colors.black),
+                ),
+              ),
+            ],
+          ),
+          // Row(
+          //   children: [
+          //     nunitoText('Entry fee', 16, FontWeight.normal, Colors.black),
+          //     nunitoText(entryCost == null ? 'N/A' : entryCost.toString(), 16, FontWeight.bold, Colors.black),
+          //   ],
+          // ),
+          const Spacer(),
+          
+          ElevatedButton(
+            onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color.fromARGB(255, 96, 179, 255),
+            ),
+            child: nunitoText('Close', 14, FontWeight.bold, Colors.white),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> fetchLeagueData() async {
@@ -101,48 +149,63 @@ class _LeagueSummaryState extends State<LeagueSummary> {
       ),
     ).toList();
 
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black,),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.info_outline, color: Colors.black,),
+            onPressed: () async {
+              await showDialog<void>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  content: leagueInfoPopup(),
+                ),
+              );
+            },
+          ),
+        ],
+        title: nunitoText(leagueName == null ? 'League Name' : leagueName!, 24, FontWeight.bold, Colors.black),
+        centerTitle: true,
+      ),
       body: Column(
         children: 
         [
           const SizedBox(height: 40,),
-          Center(
-            child: Text(
-              leagueName == null ? 'League Name' : leagueName!,
-              style: const TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
+          GestureDetector(
+            onTap: () {
+              Clipboard.setData(
+                ClipboardData(
+                  text: leagueCode!,
+                ),
+              );
+              
+              final snackBar = SnackBar(
+                backgroundColor: const Color.fromARGB(255, 96, 179, 255),
+                content: nunitoText('Copied league code to clipboard.', 16, FontWeight.normal, Colors.white),
+              );
+
+              scaffoldMessenger.showSnackBar(snackBar)
+                .closed.then((value) => scaffoldMessenger.clearSnackBars());
+            },
+            child: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  nunitoText(leagueCode == null ? 'League Name' : leagueCode!, 25, FontWeight.bold, Colors.black),
+                  const SizedBox(width: 10,),
+                  const Icon(Icons.copy),
+                ],
               ),
             ),
           ),
-          const SizedBox(height: 40,),
-          Material(
-            child: InkWell(
-              onTap: () {
-                Clipboard.setData(
-                  ClipboardData(
-                    text: leagueCode!,
-                  ),
-                );
-              },
-              child: Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      leagueCode == null ? 'League Name' : leagueCode!,
-                      style: const TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(width: 10,),
-                    const Icon(Icons.copy),
-                  ],
-                ),
-              ),
-            ),
-          ),      
           const SizedBox(height: 25,),
           Center(
             child: Text(
