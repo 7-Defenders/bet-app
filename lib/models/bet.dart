@@ -67,23 +67,23 @@ class Game {
         awayname: json["awayname"] as String,
         awayodds: json["awayodds"] != null
             ? double.parse(json["awayodds"].toString())
-            : 0.0,
+            : null,
         // competition: json["competition"]  as String,
         date: json["date"] as String,
         drawawayodds: json["drawawayodds"] != null
             ? double.parse(json["drawawayodds"].toString())
-            : 0.0,
+            : null,
         homedrawodds: json["homedrawodds"] != null
             ? double.parse(json["homedrawodds"].toString())
-            : 0.0,
+            : null,
         homename: json["homename"] as String,
         homeodds: json["homeodds"] != null
             ? double.parse(json["homeodds"].toString())
-            : 0.0,
+            : null,
         referee: json["referee"] as String?,
         tieodds: json["tieodds"] != null
             ? double.parse(json["tieodds"].toString())
-            : 0.0,
+            : null,
       );
 
   Map<String, dynamic> toJson() => {
