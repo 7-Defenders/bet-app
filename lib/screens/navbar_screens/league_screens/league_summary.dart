@@ -1,4 +1,5 @@
 import 'package:app/components/league_screen/league_widget.dart';
+import 'package:app/components/other/nunito_text.dart';
 import 'package:app/models/player_league_summary.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -66,7 +67,7 @@ class _LeagueSummaryState extends State<LeagueSummary> {
       final int playerCount = users.length;
 
       users.asMap().forEach((index, element) {
-        ranks.add('${index+1}/$playerCount');
+        ranks.add('${index+1}');
         usernames.add(element.username!);
         points.add(element.points!);
         ids.add(element.userID!);
@@ -83,11 +84,11 @@ class _LeagueSummaryState extends State<LeagueSummary> {
     final List<Widget> leadingWidgets = ranks.map(
       (e) => 
       ClipRRect(
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(8),
         child: Container(
-          color: Color.fromARGB(255, 211, 91, 91),
+          color: Color.fromRGBO(255, 115, 115, 1),
           width: 40,
-          height: 20,
+          height: 18,
           child: Center(
             child: Text(
               e,
@@ -155,7 +156,7 @@ class _LeagueSummaryState extends State<LeagueSummary> {
           ),  
           const SizedBox(height: 80,),
           LeagueListWidget(
-            header: "Standings",
+            header: nunitoText("Your leagues", 20, FontWeight.bold, Color.fromRGBO(30, 30, 27, 1)),
             leadingWidgets: leadingWidgets,
             titles: usernames,
             // addons: points,
