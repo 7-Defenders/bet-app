@@ -1,29 +1,38 @@
 import 'dart:convert';
 
-import 'package:app/models/structure.dart';
-
 class LeagueSummaryModel{
   int? entryCost;
   String? leagueCode;
   String? leagueName;
   int? playerCount;
   List<PlayerSummaryModel>? users;
+  List<String>? competitionsIncluded;
+  bool? private;
 
   LeagueSummaryModel(
       {this.entryCost,
       this.leagueCode,
       this.leagueName,
       this.playerCount,
-      this.users,});
+      this.users,
+      this.competitionsIncluded,
+      this.private,});
 
   LeagueSummaryModel.fromJson(Map<String, dynamic> json) {
     entryCost = json['entryCost'] as int;
     leagueCode = json['leagueCode'] as String;
     leagueName = json['leagueName'] as String;
     playerCount = json['playerCount'] as int;
+    private = json['private'] as bool?;
     if (json['users'] != null) {
       users = playerSummaryFromJson(jsonEncode(json['users']));
     }
+
+    competitionsIncluded = [];
+    for (final elem in json['competitionsIncluded'] as List) {
+      competitionsIncluded!.add(elem['competitionRef'].toString());
+    }
+
   }
 
   Map<String, dynamic> toJson() {

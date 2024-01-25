@@ -1,6 +1,7 @@
 import 'package:app/blocs/league_joining_bloc/league_joining_bloc.dart';
 import 'package:app/components/league_screen/join_league_widget.dart';
 import 'package:app/components/league_screen/league_widget.dart';
+import 'package:app/components/other/nunito_text.dart';
 import 'package:app/models/league_preview.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -19,9 +20,9 @@ class LeaguesScreen extends StatefulWidget {
 class _LeaguesScreenState extends State<LeaguesScreen> {
   final String uid = FirebaseAuth.instance.currentUser!.uid;
   
-  List<String> rank = ["1", "2"];
-  List<String> names = ["League 1", "League 2"];
-  List<String> leagueIDs = ["0", "1"];
+  List<String> rank = [];
+  List<String> names = [];
+  List<String> leagueIDs = [];
 
   @override
   void initState() {
@@ -76,11 +77,11 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
     final List<Widget> leadingWidgets = rank.map(
       (e) => 
       ClipRRect(
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(8),
         child: Container(
-          color: Color.fromARGB(255, 211, 91, 91),
-          width: 50,
-          height: 20,
+          color: Color.fromRGBO(255, 115, 115, 1),
+          width: 40,
+          height: 18,
           child: Center(
             child: Text(
               e,
@@ -102,7 +103,7 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
     
         const SizedBox(height: 120,),
         LeagueListWidget(
-          header: "Your leagues",
+          header: nunitoText("Your leagues", 20, FontWeight.bold, Color.fromRGBO(30, 30, 27, 1)),
           leadingWidgets: leadingWidgets,
           titles: names,
           // addons: null,

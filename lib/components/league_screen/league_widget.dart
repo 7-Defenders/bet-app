@@ -1,7 +1,8 @@
+import 'package:app/components/other/nunito_text.dart';
 import 'package:flutter/material.dart';
 
 class LeagueListWidget extends StatelessWidget {
-  final String? header;
+  final Widget? header;
   final List<Widget> leadingWidgets;
   final List<String> titles;
   // final List<Object?>? addons;
@@ -32,10 +33,10 @@ class LeagueListWidget extends StatelessWidget {
     return Container(
       width: MediaQuery.of(context).size.width * 0.8,
       height: height,
-      padding: const EdgeInsets.symmetric(horizontal: 3.0, vertical: 0),
+      padding: const EdgeInsets.symmetric(horizontal: 3.0),
       decoration: BoxDecoration(
-        color: Colors.red[50],
-        borderRadius: BorderRadius.circular(8),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
             color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
@@ -55,57 +56,53 @@ class LeagueListWidget extends StatelessWidget {
         if (header != null) ...[
           Padding(
             padding: const EdgeInsets.only(top: 8.0),
-            child: Text(
-              header!,
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            child: header,
           ),
-          // const Divider(height: 1, color: Colors.grey),
         ],
         Expanded(
-          child: ListView.separated(
-            shrinkWrap: true,
-            padding: EdgeInsets.symmetric(horizontal: 0, vertical: 3),
-            physics: const ClampingScrollPhysics(),
-            itemCount: leadingWidgets.length,
-            separatorBuilder: (context, index) => const Divider(height: 1, color: Colors.grey),
-            itemBuilder: (context, index) {
-              Color backgroundColor = index.isOdd 
-                ? Color.fromRGBO(255, 186, 75, 1)
-                : Color.fromRGBO(250, 222, 176, 1);
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 3), 
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(15),
+              child: ListView.separated(
+                shrinkWrap: true,
+                padding: EdgeInsets.symmetric(horizontal: 0, vertical: 3),
+                physics: const ClampingScrollPhysics(),
+                itemCount: leadingWidgets.length,
+                separatorBuilder: (context, index) => SizedBox.shrink(),
+                itemBuilder: (context, index) {
+                  Color backgroundColor = index.isEven
+                    ? Color.fromRGBO(255, 186, 75, 1)
+                    : Color.fromRGBO(255, 255, 255, 1);
+                  Color textColor = index.isEven
+                    ? Color.fromRGBO(255, 255, 255, 1)
+                    : Color.fromRGBO(30, 30, 27, 1);
 
-              return Material(
-                color: backgroundColor,
-                borderRadius: BorderRadius.circular(5),
-                child: InkWell(
-                  onTap: () => onTap(index),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        leadingWidgets[index],
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 8), 
-                            child: Text(
-                              titles[index],
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.onBackground,
+                  return Material(
+                    color: backgroundColor,
+                    child: InkWell(
+                      onTap: () => onTap(index),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            leadingWidgets[index],
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 8), 
+                                child: nunitoText(titles[index], 16, FontWeight.normal, textColor)
                               ),
                             ),
-                          ),
+                            trailingWidgets[index],
+                          ],
                         ),
-                        trailingWidgets[index],
-                      ],
+                      ),
                     ),
-                  ),
-                ),
-              );
-            },
+                  );
+                },
+              ),
+            ),
           ),
         ),
       ],

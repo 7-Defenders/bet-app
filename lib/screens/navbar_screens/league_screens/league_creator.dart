@@ -53,8 +53,6 @@ class _LeagueCreatorState extends State<LeagueCreator> {
     }
   }
 
-
-
   Future<void> createLeague() async{
     showDialog(
       context: context,
@@ -153,8 +151,7 @@ class _LeagueCreatorState extends State<LeagueCreator> {
       'private': _selected[0] ? null : _selected[1],
     });
 
-    print(body);
-
+    // print(body);
     final response = await http.post(
       Uri.parse('https://bet-app-e520a.ew.r.appspot.com/v1/leagues'),
       headers: <String, String>{
@@ -167,6 +164,24 @@ class _LeagueCreatorState extends State<LeagueCreator> {
 
     if (mounted){
       Navigator.of(context).pop();
+    }
+
+    switch(response.statusCode){
+      case 400:
+        await showDialog<void>(
+          context: context,
+          builder: (context) => AlertDialog(
+            content: resultPopup("Bad request", subtext: "Incorrect data"),
+          ),
+        );
+      case 500:
+        await showDialog<void>(
+          context: context,
+          builder: (context) => AlertDialog(
+            content: resultPopup("Server error", subtext: "There was an error on our side. Sorry!"),
+          ),
+        );
+      case 200:
     }
   }
 

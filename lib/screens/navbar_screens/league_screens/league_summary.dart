@@ -1,4 +1,5 @@
 import 'package:app/components/league_screen/league_widget.dart';
+import 'package:app/components/other/nunito_text.dart';
 import 'package:app/models/player_league_summary.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,10 +24,12 @@ class _LeagueSummaryState extends State<LeagueSummary> {
   List<int> points = [];
   List<String> usernames = [];
   List<String> ids = [];
+  List<String>? competitionRefs = [];
 
   String? leagueName;
   String? leagueCode;
   int? entryCost;
+  bool? private;
 
   @override
   void initState() {
@@ -38,6 +41,90 @@ class _LeagueSummaryState extends State<LeagueSummary> {
 
   void moveToHistory(BuildContext context, int index) {
     context.go("/leagues/summary/history", extra: ids[index]);
+  }
+
+  Widget leagueInfoPopup({double height=300.0, double width=300.0}){
+    final subWidth = width * 0.4;
+    return SizedBox(
+      height: height,
+      width: width,
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              SizedBox(
+                width: subWidth,
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: nunitoText('Entry fee', 16, FontWeight.normal, Colors.black),
+                ),
+              ),
+              
+              SizedBox(
+                width: subWidth,
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: nunitoText(entryCost == null ? 'N/A' : entryCost.toString(), 16, FontWeight.bold, Colors.black),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8,),
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              SizedBox(
+                width: subWidth,
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: nunitoText('League type', 16, FontWeight.normal, Colors.black),
+                ),
+              ),
+              
+              SizedBox(
+                width: subWidth,
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: nunitoText(private == null ? 'Friend' : private! ? 'Private' : 'Public', 16, FontWeight.bold, Colors.black),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8,),
+
+          SizedBox(
+            height: height * 0.5,
+            width: width,
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: competitionRefs == null ? 0 : competitionRefs!.length,
+              itemBuilder: (BuildContext context, int index) {
+                return ExpansionTile(
+                  title: nunitoText('Competitions included', 16, FontWeight.normal, Colors.black),
+                  children: competitionRefs!.map((league) {
+                    return ListTile(
+                      title: nunitoText(competitionRefs![index], 16, FontWeight.bold, Colors.black),
+                    );
+                  }).toList(),
+                );
+              },
+            ),
+          ),
+    
+          const Spacer(),
+          
+          ElevatedButton(
+            onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color.fromARGB(255, 96, 179, 255),
+            ),
+            child: nunitoText('Close', 14, FontWeight.bold, Colors.white),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> fetchLeagueData() async {
@@ -56,17 +143,19 @@ class _LeagueSummaryState extends State<LeagueSummary> {
     // print(response.body);
     setState((){
       final body = leagueSummaryFromJson(response.body);
-      print(body);
+      // print(body.competitionsIncluded);
 
       leagueName = body.leagueName;
       leagueCode = body.leagueCode;
       entryCost = body.entryCost;
+      competitionRefs = body.competitionsIncluded;
+      private = body.private;
 
       final users = body.users!;
       final int playerCount = users.length;
 
       users.asMap().forEach((index, element) {
-        ranks.add('${index+1}/$playerCount');
+        ranks.add('${index+1}');
         usernames.add(element.username!);
         points.add(element.points!);
         ids.add(element.userID!);
@@ -83,11 +172,11 @@ class _LeagueSummaryState extends State<LeagueSummary> {
     final List<Widget> leadingWidgets = ranks.map(
       (e) => 
       ClipRRect(
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(8),
         child: Container(
-          color: Color.fromARGB(255, 211, 91, 91),
+          color: Color.fromRGBO(255, 115, 115, 1),
           width: 40,
-          height: 20,
+          height: 18,
           child: Center(
             child: Text(
               e,
@@ -101,68 +190,82 @@ class _LeagueSummaryState extends State<LeagueSummary> {
       ),
     ).toList();
 
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black,),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.info_outline, color: Colors.black,),
+            onPressed: () async {
+              await showDialog<void>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  content: leagueInfoPopup(),
+                ),
+              );
+            },
+          ),
+        ],
+        title: nunitoText(leagueName == null ? 'League Name' : leagueName!, 24, FontWeight.bold, Colors.black),
+        centerTitle: true,
+      ),
       body: Column(
         children: 
         [
-          const SizedBox(height: 40,),
-          Center(
-            child: Text(
-              leagueName == null ? 'League Name' : leagueName!,
-              style: const TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
+          const SizedBox(height: 20,),
+          GestureDetector(
+            onTap: () {
+              Clipboard.setData(
+                ClipboardData(
+                  text: leagueCode!,
+                ),
+              );
+              
+              final snackBar = SnackBar(
+                backgroundColor: const Color.fromARGB(255, 96, 179, 255),
+                content: nunitoText('Copied league code to clipboard.', 16, FontWeight.normal, Colors.white),
+              );
+
+              scaffoldMessenger.showSnackBar(snackBar)
+                .closed.then((value) => scaffoldMessenger.clearSnackBars());
+            },
+            child: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  nunitoText(leagueCode == null ? 'League Name' : leagueCode!, 25, FontWeight.bold, Colors.black),
+                  const SizedBox(width: 10,),
+                  const Icon(Icons.copy),
+                ],
               ),
             ),
           ),
           const SizedBox(height: 40,),
-          Material(
-            child: InkWell(
-              onTap: () {
-                Clipboard.setData(
-                  ClipboardData(
-                    text: leagueCode!,
-                  ),
-                );
-              },
-              child: Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      leagueCode == null ? 'League Name' : leagueCode!,
-                      style: const TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(width: 10,),
-                    const Icon(Icons.copy),
-                  ],
-                ),
-              ),
-            ),
-          ),      
-          const SizedBox(height: 25,),
-          Center(
-            child: Text(
-              'Entry cost - ${entryCost == null ? 'N/A' : entryCost!}',
-              style: const TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),  
-          const SizedBox(height: 80,),
           LeagueListWidget(
-            header: "Standings",
+            header: nunitoText("Your leagues", 20, FontWeight.bold, Color.fromRGBO(30, 30, 27, 1)),
             leadingWidgets: leadingWidgets,
             titles: usernames,
             // addons: points,
             trailingWidgets: points.map((e) => Text(e.toString())).toList(),
             onTap: (index) {moveToHistory(context, index);},
-            height: 300,
+            height: MediaQuery.of(context).size.height * 0.5,
           ),
+          const Spacer(),
+          ElevatedButton(
+            onPressed: () {},
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+            ),
+            child: nunitoText('Leave the league', 14, FontWeight.bold, Colors.white),
+          ),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.05,),
         ],
       ),
     );
