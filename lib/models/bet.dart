@@ -20,7 +20,9 @@ class Bet {
     amount = json['amount'] as int?;
     bet = json['bet'] as String?;
     betodds = json['betodds'] as double?;
-    game = json['game'] != null ? Game.fromJson(json['game'] as Map<String, dynamic>) : null;
+    game = json['game'] != null
+        ? Game.fromJson(json['game'] as Map<String, dynamic>)
+        : null;
     madeAt = json['madeAt'] as String?;
     result = json['result'] as int?;
   }
@@ -63,31 +65,41 @@ class Game {
 
   factory Game.fromJson(Map<String, dynamic> json) => Game(
         awayname: json["awayname"] as String,
-        awayodds: double.parse(json["awayodds"].toString()),
+        awayodds: json["awayodds"] != null
+            ? double.parse(json["awayodds"].toString())
+            : null,
         // competition: json["competition"]  as String,
         date: json["date"] as String,
-        drawawayodds: double.parse(json["drawawayodds"].toString()),
-        homedrawodds: double.parse(json["homedrawodds"].toString()),
+        drawawayodds: json["drawawayodds"] != null
+            ? double.parse(json["drawawayodds"].toString())
+            : null,
+        homedrawodds: json["homedrawodds"] != null
+            ? double.parse(json["homedrawodds"].toString())
+            : null,
         homename: json["homename"] as String,
-        homeodds: double.parse(json["homeodds"].toString()),
+        homeodds: json["homeodds"] != null
+            ? double.parse(json["homeodds"].toString())
+            : null,
         referee: json["referee"] as String?,
-        tieodds: double.parse(json["tieodds"].toString()),
-  );
+        tieodds: json["tieodds"] != null
+            ? double.parse(json["tieodds"].toString())
+            : null,
+      );
 
-  Map<String, dynamic> toJson()  => {
-      "awayname": awayname,
-      "awayodds": awayodds,
-      "date": date,
-      "drawawayodds": drawawayodds,
-      "homedrawodds": homedrawodds,
-      "homename": homename,
-      "homeodds": homeodds,
-      "referee": referee,
-      "tieodds": tieodds,
-  };
+  Map<String, dynamic> toJson() => {
+        "awayname": awayname,
+        "awayodds": awayodds,
+        "date": date,
+        "drawawayodds": drawawayodds,
+        "homedrawodds": homedrawodds,
+        "homename": homename,
+        "homeodds": homeodds,
+        "referee": referee,
+        "tieodds": tieodds,
+      };
 }
 
-List<Bet> betFromJson(String str){
+List<Bet> betFromJson(String str) {
   final jsonData = json.decode(str);
   final List<Bet> data = [];
 

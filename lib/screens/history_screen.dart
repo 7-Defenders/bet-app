@@ -1,12 +1,14 @@
 import 'package:app/components/history_screen/history_bet_widget.dart';
 import 'package:app/components/other/nunito_text.dart';
 import 'package:app/models/bet.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class HistoryScreen extends StatefulWidget {
-  final String? userID;
+  String? userID;
   HistoryScreen({super.key, this.userID});
   List<Bet> betList = [];
   final List<HistoryBetWidget> betWidgets = [];
@@ -17,36 +19,42 @@ class HistoryScreen extends StatefulWidget {
 }
 
 class _HistoryScreenState extends State<HistoryScreen> {
-
   void goBack() {
     Navigator.of(context).pop();
   }
 
-
   Future<void> getBetList() async {
     widget.betList.clear();
-    
+
     showDialog(
       context: context,
       builder: (context) {
         return Center(
-          child: LoadingAnimationWidget.hexagonDots(color: Theme.of(context).colorScheme.primary, size: 55,),
+          child: LoadingAnimationWidget.hexagonDots(
+            color: Theme.of(context).colorScheme.primary,
+            size: 55,
+          ),
         );
       },
       barrierDismissible: false,
       useRootNavigator: false,
     );
 
-    final response = await http.get(Uri.parse('https://bet-app-e520a.ew.r.appspot.com/v1/bets/${widget.userID}'));
+    final String userID = FirebaseAuth.instance.currentUser!.uid;
+    print('userID: $userID');
+    print(widget.userID);
 
-    setState((){
-      // print(response.body);
+    final response = await http.get(Uri.parse(
+        'https://bet-app-e520a.ew.r.appspot.com/v1/bets/${widget.userID}'));
+
+    setState(() {
+      print(response.body);
       widget.betList = betFromJson(response.body);
     });
 
-      if (mounted){
-        Navigator.of(context).pop();
-      }
+    if (mounted) {
+      Navigator.of(context).pop();
+    }
     // // fill betList with data from Firestore
     // final FirebaseFirestore firestore = FirebaseFirestore.instance;
     // final FirebaseAuth auth = FirebaseAuth.instance;
@@ -79,85 +87,86 @@ class _HistoryScreenState extends State<HistoryScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_){
+    widget.userID = FirebaseAuth.instance.currentUser!.uid;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       getBetList();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-
     final double vw = MediaQuery.of(context).size.width / 100;
     final double vh = MediaQuery.of(context).size.height / 100;
 
     return Scaffold(
-    // return PopScope(
+      // return PopScope(
       // canPop: false,
       // onPopInvoked: (didPop) {
       //   goBack();
       // },
       // child: Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.background,
-        body: Column(
-          children: [
-            Column(
-              children: [
-                Container(
-                  color: Theme.of(context).colorScheme.primary,
-                  height: 5* vh, // artificial padding for 'History' text that makes color go under the notch
-                  //TODO: check if theres a way to get safe area height
-                ),
-                Container(
-                  height: 10* vh,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primary,
-                    // color: Colors.red,
-                    borderRadius: const BorderRadius.only(
-                      bottomLeft: Radius.circular(30),
-                      bottomRight: Radius.circular(30),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Row(
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                goBack();
-                              },
-                              icon: Icon(
-                                Icons.arrow_back_rounded,
-                                size: vw * 8,
-                                color: Theme.of(context).colorScheme.background,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      nunitoText(
-                        'History',
-                        30,
-                        FontWeight.bold,
-                        Theme.of(context).colorScheme.background,
-                      ),
-                      const Spacer(),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            Expanded(
-              child: ListView(
-                children: widget.betList
-                    .map((bet) => HistoryBetWidget(bet: bet))
-                    .toList(),
+      backgroundColor: Theme.of(context).colorScheme.background,
+      body: Column(
+        children: [
+          Column(
+            children: [
+              Container(
+                color: Theme.of(context).colorScheme.primary,
+                height: 5 *
+                    vh, // artificial padding for 'History' text that makes color go under the notch
+                //TODO: check if theres a way to get safe area height
               ),
+              Container(
+                height: 10 * vh,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primary,
+                  // color: Colors.red,
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(30),
+                    bottomRight: Radius.circular(30),
+                  ),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Row(
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              goBack();
+                            },
+                            icon: Icon(
+                              Icons.arrow_back_rounded,
+                              size: vw * 8,
+                              color: Theme.of(context).colorScheme.background,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    nunitoText(
+                      'History',
+                      30,
+                      FontWeight.bold,
+                      Theme.of(context).colorScheme.background,
+                    ),
+                    const Spacer(),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          Expanded(
+            child: ListView(
+              children: widget.betList
+                  .map((bet) => HistoryBetWidget(bet: bet))
+                  .toList(),
             ),
-          ],
-        ),
-      );
+          ),
+        ],
+      ),
+    );
     //   ),
     // );
   }

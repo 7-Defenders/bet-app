@@ -152,7 +152,7 @@ class _LeagueCreatorState extends State<LeagueCreator> {
     });
 
     // print(body);
-
+    
     final response = await http.post(
       Uri.parse('https://bet-app-e520a.ew.r.appspot.com/v1/leagues'),
       headers: <String, String>{
@@ -160,6 +160,8 @@ class _LeagueCreatorState extends State<LeagueCreator> {
       },
       body: body,
     );
+
+    print("${response.statusCode}, ${response.body}");
 
     if (mounted){
       Navigator.of(context).pop();
