@@ -1,6 +1,7 @@
 import 'package:app/components/league_screen/league_widget.dart';
 import 'package:app/components/other/nunito_text.dart';
 import 'package:app/models/player_league_summary.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -9,6 +10,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class LeagueSummary extends StatefulWidget {
   final String leagueID;
+  
   const LeagueSummary({
     super.key,
     required this.leagueID,
@@ -41,6 +43,55 @@ class _LeagueSummaryState extends State<LeagueSummary> {
 
   void moveToHistory(BuildContext context, int index) {
     context.go("/leagues/summary/history", extra: ids[index]);
+  }
+
+    Widget confirmLeaving(){
+    final height = MediaQuery.of(context).size.height * 0.2;
+    final width = MediaQuery.of(context).size.width * 0.75;
+    return SizedBox(
+      height: height,
+      width: width,
+      child: Column(
+        children: [
+          nunitoText("Are you sure?", 22, FontWeight.bold, Colors.black),
+          nunitoText("You will use your league points forever.", 16, FontWeight.normal, Colors.black),
+          const Spacer(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+                ElevatedButton(
+                onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                ),
+                child: nunitoText('No, stay', 14, FontWeight.normal, Colors.white),
+              ),
+
+              ElevatedButton(
+                onPressed: () async {
+                  final scaffoldMessenger = ScaffoldMessenger.of(context);
+                  Navigator.of(context).pop();
+                  Navigator.of(context, rootNavigator: true).pop();
+                  await leaveLeague();
+                  
+                  final snackBar = SnackBar(
+                    backgroundColor: const Color.fromARGB(255, 96, 179, 255),
+                    content: nunitoText('Successfully left $leagueName.', 16, FontWeight.normal, Colors.white),
+                  );
+                  
+                  scaffoldMessenger.showSnackBar(snackBar)
+                    .closed.then((value) => scaffoldMessenger.clearSnackBars());
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                ),
+                child: nunitoText('Yes, leave', 14, FontWeight.bold, Colors.white),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
   Widget leagueInfoPopup({double height=300.0, double width=300.0}){
@@ -125,6 +176,11 @@ class _LeagueSummaryState extends State<LeagueSummary> {
         ],
       ),
     );
+  }
+
+  Future<void> leaveLeague() async {
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+    await http.delete(Uri.parse('https://bet-app-e520a.ew.r.appspot.com/v1/users/$uid/leagues/${widget.leagueID}'));
   }
 
   Future<void> fetchLeagueData() async {
@@ -259,7 +315,14 @@ class _LeagueSummaryState extends State<LeagueSummary> {
           ),
           const Spacer(),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () async {
+              await showDialog<void>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  content: confirmLeaving(),
+                ),
+              );
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.red,
             ),
