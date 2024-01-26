@@ -41,7 +41,10 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
       context: context,
       builder: (context) {
         return Center(
-          child: LoadingAnimationWidget.hexagonDots(color: Theme.of(context).colorScheme.primary, size: 55,),
+          child: LoadingAnimationWidget.hexagonDots(
+            color: Theme.of(context).colorScheme.primary,
+            size: 55,
+          ),
         );
       },
       barrierDismissible: false,
@@ -59,7 +62,7 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
         );
     });
 
-    if (mounted){
+    if (mounted) {
       Navigator.of(context).pop();
     }
   }

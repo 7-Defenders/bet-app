@@ -1,7 +1,6 @@
 import 'package:app/components/shop_screen/add_points_widget.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ShopScreen extends StatefulWidget {
   const ShopScreen({super.key});
@@ -18,7 +17,7 @@ class _ShopScreenState extends State<ShopScreen> {
       backgroundColor: Theme.of(context).colorScheme.background,
       body: Container(
         width: MediaQuery.of(context).size.width,
-        child: const Column(
+        child: Column(
           children: [
             Expanded(
               child: Column(
