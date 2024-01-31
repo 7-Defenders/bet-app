@@ -1,5 +1,6 @@
 import 'package:app/components/other/nunito_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 
 class BetMaker extends StatefulWidget {
@@ -249,7 +250,7 @@ class _BetMakerState extends State<BetMaker> {
                   ],
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(7, 10, 12, 10),
+                  padding: const EdgeInsets.fromLTRB(7, 10, 12, 0),
                   child: Column(
                     children: [
                       Row(
@@ -260,7 +261,7 @@ class _BetMakerState extends State<BetMaker> {
                             width: 30,
                           ),
                           const SizedBox(
-                            width: 5,
+                            width: 10, //separating ball and text
                           ), // Adjust size as needed
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -285,8 +286,180 @@ class _BetMakerState extends State<BetMaker> {
                           ),
                         ],
                       ),
-                      const Row(
-                        children: [],
+                      const SizedBox(
+                        height: 7, //separating rows
+                      ),
+                      Row(
+                        children: [
+                          Container(
+                            width: 120,
+                            height: 34,
+                            padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                            decoration: BoxDecoration(
+                              border:
+                                  Border.all(color: Colors.black, width: 0.5),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Stack(
+                              children: [
+                                const Positioned(
+                                  top: 0,
+                                  left: 0,
+                                  child: Text(
+                                    'Amount',
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 8,
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  top: 12, // Adjust this value as needed
+                                  child: SizedBox(
+                                    width: 100, // Provide a finite width
+                                    height: 20,
+
+                                    child: TextField(
+                                      controller: widget.amountController,
+                                      keyboardType: TextInputType.number,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.black,
+                                        fontFamily: 'Nunito',
+                                      ),
+                                      inputFormatters: <TextInputFormatter>[
+                                        FilteringTextInputFormatter.digitsOnly,
+                                      ], // Only numbers can be entered
+                                      decoration: const InputDecoration(
+                                        border: InputBorder.none,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 12, //separating amount and button
+                          ),
+                          Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              SvgPicture.asset(
+                                'lib/assets/images/odds_trapeze.svg',
+                                height: 30,
+                              ), // Adjust size as needed
+                              nunitoText(
+                                '${widget.odds}',
+                                15,
+                                FontWeight.w700,
+                                const Color(0xFFFFFFFF),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            width: 4, //separating button and type
+                          ),
+                          nunitoText(
+                            widget.betType,
+                            15,
+                            FontWeight.w700,
+                            const Color.fromARGB(255, 38, 32, 32),
+                          ),
+                          const Spacer(),
+                          SizedBox(
+                            width: 80,
+                            height: 34,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    const Color.fromRGBO(96, 179, 255, 1),
+                                padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              onPressed: () {
+                                {
+                                  final int amount =
+                                      int.parse(widget.amountController.text);
+                                  final Future<bool> betFuture =
+                                      widget.createBet(
+                                    amount,
+                                    widget.betType,
+                                    widget.odds,
+                                    widget.matchRef,
+                                  );
+
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return FutureBuilder<bool>(
+                                        future: betFuture,
+                                        builder: (
+                                          BuildContext context,
+                                          AsyncSnapshot<bool> snapshot,
+                                        ) {
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.waiting) {
+                                            return const AlertDialog(
+                                              title: Text('Placing bet...'),
+                                              content:
+                                                  CircularProgressIndicator(),
+                                            );
+                                          } else if (snapshot.hasError) {
+                                            return AlertDialog(
+                                              title: const Text('Error'),
+                                              content: const Text(
+                                                'Failed to create bet.',
+                                              ),
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  child: const Text('OK'),
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                ),
+                                              ],
+                                            );
+                                          } else {
+                                            final bool success =
+                                                snapshot.data ?? false;
+                                            if (success) {
+                                              widget.onRemove();
+                                            }
+                                            return AlertDialog(
+                                              title: const Text('Bet Status'),
+                                              content: Text(
+                                                success
+                                                    ? 'Bet created successfully.'
+                                                    : 'Failed to create bet.',
+                                              ),
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  child: const Text('OK'),
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                ),
+                                              ],
+                                            );
+                                          }
+                                        },
+                                      );
+                                    },
+                                  );
+                                }
+                              },
+                              child: nunitoText(
+                                'Place Bet',
+                                14,
+                                FontWeight.w700,
+                                const Color(0xFFFFFFFF),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
