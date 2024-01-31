@@ -250,41 +250,57 @@ class _BetMakerState extends State<BetMaker> {
                   ],
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(7, 10, 12, 0),
+                  padding: const EdgeInsets.fromLTRB(4, 2, 4, 2),
                   child: Column(
                     children: [
-                      Row(
-                        children: [
-                          SvgPicture.asset(
-                            'lib/assets/images/futbol-regular.svg',
-                            height: 30,
-                            width: 30,
+                      Container(
+                        decoration: const ShapeDecoration(
+                          color: Color.fromARGB(251, 44, 81,
+                              202), //TODO: change color BECAUSE IM BLIND AND CANT SEE GREY ON WHITE BACKGROUND
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(8),
+                              bottomLeft: Radius.circular(8),
+                              bottomRight: Radius.circular(8),
+                            ),
                           ),
-                          const SizedBox(
-                            width: 10, //separating ball and text
-                          ), // Adjust size as needed
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(10, 4, 10, 4),
+                          child: Row(
                             children: [
-                              SizedBox(
-                                child: nunitoText(
-                                  widget.gameName,
-                                  14,
-                                  FontWeight.w700,
-                                  const Color(0xFF1E1E1B),
-                                ),
+                              SvgPicture.asset(
+                                'lib/assets/images/futbol-regular.svg',
+                                height: 30,
+                                width: 30,
                               ),
-                              SizedBox(
-                                child: nunitoText(
-                                  'Date of the match TBA', // TODO: Replace with actual date
-                                  12,
-                                  FontWeight.w400,
-                                  const Color(0xFF1E1E1B),
-                                ),
+                              const SizedBox(
+                                width: 10, //separating ball and text
+                              ), // Adjust size as needed
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    child: nunitoText(
+                                      widget.gameName,
+                                      14,
+                                      FontWeight.w700,
+                                      const Color(0xFF1E1E1B),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    child: nunitoText(
+                                      'Date of the match TBA', // TODO: Replace with actual date
+                                      12,
+                                      FontWeight.w400,
+                                      const Color(0xFF1E1E1B),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
-                        ],
+                        ),
                       ),
                       const SizedBox(
                         height: 7, //separating rows
