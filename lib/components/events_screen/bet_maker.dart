@@ -213,7 +213,12 @@ class _BetMakerState extends State<BetMaker> {
     //   ),
     // );
     return Padding(
-      padding: const EdgeInsets.fromLTRB(12, 12, 12, 15),
+      padding: const EdgeInsets.fromLTRB(
+        12,
+        12,
+        12,
+        0,
+      ),
       child: SizedBox(
         height: 110,
         child: Row(
@@ -221,28 +226,30 @@ class _BetMakerState extends State<BetMaker> {
           children: [
             Expanded(
               child: Container(
-                  height: 100,
-                  decoration: ShapeDecoration(
-                    color: Theme.of(context).colorScheme.secondary,
-                    shape: const RoundedRectangleBorder(
-                      side: BorderSide(
-                        width: 4,
-                        color: Color(0xFFEFB566),
-                      ),
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(15),
-                        bottomLeft: Radius.circular(15),
-                        bottomRight: Radius.circular(15),
-                      ),
+                height: 100,
+                decoration: ShapeDecoration(
+                  color: Theme.of(context).colorScheme.secondary,
+                  shape: const RoundedRectangleBorder(
+                    side: BorderSide(
+                      width: 4,
+                      color: Color(0xFFEFB566),
                     ),
-                    shadows: const [
-                      BoxShadow(
-                        color: Color(0x3F000000),
-                        blurRadius: 4,
-                        offset: Offset(0, 4),
-                      ),
-                    ],
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(15),
+                      bottomLeft: Radius.circular(15),
+                      bottomRight: Radius.circular(15),
+                    ),
                   ),
+                  shadows: const [
+                    BoxShadow(
+                      color: Color(0x3F000000),
+                      blurRadius: 4,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(7, 10, 12, 10),
                   child: Column(
                     children: [
                       Row(
@@ -251,29 +258,40 @@ class _BetMakerState extends State<BetMaker> {
                             'lib/assets/images/futbol-regular.svg',
                             height: 30,
                             width: 30,
+                          ),
+                          const SizedBox(
+                            width: 5,
                           ), // Adjust size as needed
                           Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SizedBox(
-                                child: nunitoText(widget.gameName, 14,
-                                    FontWeight.w700, Color(0xFF1E1E1B)),
+                                child: nunitoText(
+                                  widget.gameName,
+                                  14,
+                                  FontWeight.w700,
+                                  const Color(0xFF1E1E1B),
+                                ),
                               ),
                               SizedBox(
                                 child: nunitoText(
-                                    'Temporary text', // Replace with actual date
-                                    12,
-                                    FontWeight.w400,
-                                    Color(0xFF1E1E1B)),
+                                  'Date of the match TBA', // TODO: Replace with actual date
+                                  12,
+                                  FontWeight.w400,
+                                  const Color(0xFF1E1E1B),
+                                ),
                               ),
                             ],
-                          )
+                          ),
                         ],
                       ),
-                      Row(
+                      const Row(
                         children: [],
-                      )
+                      ),
                     ],
-                  )),
+                  ),
+                ),
+              ),
             ),
             InkWell(
               onTap: () {
