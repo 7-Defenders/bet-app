@@ -312,6 +312,7 @@ class _BetMakerState extends State<BetMaker> {
                             height: 34,
                             padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
                             decoration: BoxDecoration(
+                              color: const Color.fromRGBO(238, 238, 238, 1),
                               border:
                                   Border.all(color: Colors.black, width: 0.5),
                               borderRadius: BorderRadius.circular(4),
