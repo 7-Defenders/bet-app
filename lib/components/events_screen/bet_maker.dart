@@ -255,8 +255,8 @@ class _BetMakerState extends State<BetMaker> {
                     children: [
                       Container(
                         decoration: const ShapeDecoration(
-                          color: Color.fromARGB(251, 44, 81,
-                              202), //TODO: change color BECAUSE IM BLIND AND CANT SEE GREY ON WHITE BACKGROUND
+                          color: Color.fromRGBO(238, 238, 238,
+                              1), //TODO: change color BECAUSE IM BLIND AND CANT SEE GREY ON WHITE BACKGROUND
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(8),
@@ -358,29 +358,61 @@ class _BetMakerState extends State<BetMaker> {
                           const SizedBox(
                             width: 12, //separating amount and button
                           ),
-                          Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              SvgPicture.asset(
-                                'lib/assets/images/odds_trapeze.svg',
-                                height: 30,
-                              ), // Adjust size as needed
-                              nunitoText(
-                                '${widget.odds}',
-                                15,
-                                FontWeight.w700,
-                                const Color(0xFFFFFFFF),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            width: 4, //separating button and type
-                          ),
-                          nunitoText(
-                            widget.betType,
-                            15,
-                            FontWeight.w700,
-                            const Color.fromARGB(255, 38, 32, 32),
+                          Container(
+                            width: 100,
+                            height: 34,
+                            child: Stack(
+                              alignment: Alignment.centerLeft,
+                              children: [
+                                Positioned(
+                                  right: 0,
+                                  child: Stack(
+                                    alignment: Alignment.centerRight,
+                                    children: [
+                                      Container(
+                                          height: 30,
+                                          width: 60,
+                                          // Change this as needed
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(4),
+                                            color: Color.fromRGBO(
+                                                238, 238, 238, 1),
+                                          )),
+                                      Positioned(
+                                        right: 12,
+                                        child: Container(
+                                          width: 20,
+                                          alignment: Alignment.center,
+                                          child: nunitoText(
+                                            widget.betType,
+                                            15,
+                                            FontWeight.w700,
+                                            const Color.fromARGB(
+                                                255, 38, 32, 32),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    SvgPicture.asset(
+                                      'lib/assets/images/odds_trapeze.svg',
+                                      height: 30,
+                                    ), // Adjust size as needed
+                                    nunitoText(
+                                      '${widget.odds}',
+                                      15,
+                                      FontWeight.w700,
+                                      const Color(0xFFFFFFFF),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                           const Spacer(),
                           SizedBox(
