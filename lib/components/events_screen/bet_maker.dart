@@ -426,7 +426,10 @@ class _BetMakerState extends State<BetMaker> {
                                             final bool success =
                                                 snapshot.data ?? false;
                                             if (success) {
-                                              widget.onRemove();
+                                              WidgetsBinding.instance
+                                                  .addPostFrameCallback((_) {
+                                                widget.onRemove();
+                                              });
                                             }
                                             return AlertDialog(
                                               title: const Text('Bet Status'),
