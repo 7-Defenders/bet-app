@@ -290,7 +290,7 @@ class _BetMakerState extends State<BetMaker> {
                                   ),
                                   SizedBox(
                                     child: nunitoText(
-                                      'Date of the match TBA', // TODO: Replace with actual date
+                                      'Date of the match TBAdded', // TODO: Replace with actual date
                                       12,
                                       FontWeight.w400,
                                       const Color(0xFF1E1E1B),
