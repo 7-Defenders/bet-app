@@ -36,9 +36,7 @@ class _ShopScreenState extends State<ShopScreen> {
   }
 
   void showRewardedAd(){
-    print('d');
     if (_rewardedAd != null){
-    print('d');
       _rewardedAd!.fullScreenContentCallback = FullScreenContentCallback(
         onAdDismissedFullScreenContent: (RewardedAd ad) {
           _rewardedAd!.dispose();
@@ -98,15 +96,12 @@ class _ShopScreenState extends State<ShopScreen> {
                 ),
                 SizedBox(
                   height: cardHeight,
-                  child: ListView.builder(
+                  child: ListView(
                     scrollDirection: Axis.horizontal,
                     shrinkWrap: true,
-                    itemCount: itemCount,
-                    itemBuilder: (BuildContext context, int index){
-                      return Padding(
-                        padding: EdgeInsets.fromLTRB(index==0 ? usableWidth / 18 : 8, 8, index==itemCount-1 ? usableWidth / 18 : 8, 8),
-                        child: GestureDetector(
-                          onTap: () => showRewardedAd(),
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(usableWidth / 18, 8, 8, 8),
                           child: Card(
                             elevation: 5,
                             surfaceTintColor: Colors.white,
@@ -115,15 +110,21 @@ class _ShopScreenState extends State<ShopScreen> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  nunitoText(index.toString(), 16, FontWeight.normal, Colors.black),
-                                  SvgPicture.asset('lib/assets/images/futbol-regular.svg', width: cardWidth * 0.5, height: cardHeight * .5,),
+                                  SizedBox(
+                                    width: cardWidth * 0.8,
+                                    child: nunitoText('Watch an ad to get 100 coins', 14, FontWeight.normal, Colors.black, textAlign: TextAlign.center),),
+                                  IconButton(
+                                    onPressed: () => showRewardedAd(),
+                                    highlightColor: const Color.fromARGB(255, 255, 187, 85),
+                                    color: const Color.fromARGB(255, 96, 179, 255),
+                                    icon: Icon(Icons.videocam, size: cardHeight * .5,),
+                                  ),
                                 ],
                               ),
                             ),
                           ),
                         ),
-                      );
-                    },
+                      ],
                   ),
                 ),
 
