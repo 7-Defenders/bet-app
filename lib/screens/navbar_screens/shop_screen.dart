@@ -1,11 +1,14 @@
 import 'dart:io';
+import 'dart:convert';
+import 'dart:async';
 
+import 'package:app/ad_state.dart';
 import 'package:app/components/other/nunito_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:http/http.dart' as http;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:app/ad_state.dart';
-import 'package:provider/provider.dart';
 
 class ShopScreen extends StatefulWidget {
   const ShopScreen({super.key});
@@ -17,6 +20,7 @@ class ShopScreen extends StatefulWidget {
 class _ShopScreenState extends State<ShopScreen> {
 
   RewardedAd? _rewardedAd;
+  final String uid = FirebaseAuth.instance.currentUser!.uid;
 
   @override
   void initState() {
@@ -52,8 +56,22 @@ class _ShopScreenState extends State<ShopScreen> {
         _rewardedAd!.setImmersiveMode(true);
       }
       _rewardedAd!.show(
-        onUserEarnedReward: (ad, reward) 
-          => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: nunitoText('Got the reward', 16, FontWeight.bold, Colors.black))),
+        onUserEarnedReward: (ad, reward) async {
+
+            // awarding coins
+            final response = await http.post(
+              Uri.parse(
+                'https://bet-app-e520a.ew.r.appspot.com/v1/users/$uid/coins',
+              ),
+              headers: <String, String>{
+                'Content-Type': 'application/json; charset=UTF-8',
+              },
+            );
+            
+            // displaying a snackbar
+            // ignore: use_build_context_synchronously
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: nunitoText('100 coins were awarded', 16, FontWeight.bold, Colors.black)));
+          },
       );
       
       
