@@ -1,3 +1,4 @@
+import 'package:app/components/other/navbar/custom_navbar.dart';
 import 'package:app/screens/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -20,51 +21,38 @@ class ScaffoldWithNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: drawer(context, MediaQuery.of(context).size.width/100, MediaQuery.of(context).size.height/100),
+      drawer: drawer(
+        context,
+        MediaQuery.of(context).size.width/100,
+        MediaQuery.of(context).size.height/100,
+      ),
       body: child,
-      bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: Theme.of(context).colorScheme.primary,
-        unselectedItemColor: Theme.of(context).colorScheme.tertiary,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.sports_soccer),
-            label: 'Events',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.accessible_forward),
-            label: 'Leagues',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart),
-            label: 'Shop',
-          ),
-        ],
-        currentIndex: _calculateSelectedIndex(context),
-        onTap: (int idx) => _onItemTapped(idx, context),
+      bottomNavigationBar: customNavbar(
+        context,
+        _calculateSelectedIndex(context),
+        (int idx) => _onItemTapped(idx, context),
       ),
     );
   }
 
   static int _calculateSelectedIndex(BuildContext context) {
-    final String location = GoRouterState.of(context).uri.toString();
-    if (location.startsWith('/profile')) {
-      return 0;
+  final String location = GoRouterState.of(context).uri.toString();
+  final Map<String, int> locationToIndex = {
+    '/profile': 0,
+    '/events': 1,
+    '/home': 2,
+    '/leagues': 3,
+    '/shop': 4,
+  };
+
+  for (final entry in locationToIndex.entries) {
+    if (location.startsWith(entry.key)) {
+      return entry.value;
     }
-    if (location.startsWith('/events')) {
-      return 1;
-    }
-    if (location.startsWith('/leagues')) {
-      return 2;
-    }
-    if (location.startsWith('/shop')){
-      return 3;
-    }
-    return 0;
   }
+
+  return 0;
+}
 
   void _onItemTapped(int index, BuildContext context) {
     switch (index) {
@@ -75,9 +63,12 @@ class ScaffoldWithNavBar extends StatelessWidget {
         GoRouter.of(context).go('/events');
         break;
       case 2:
-        GoRouter.of(context).go('/leagues');
+        GoRouter.of(context).go('/home');
         break;
       case 3:
+        GoRouter.of(context).go('/leagues');
+        break;
+      case 4:
         GoRouter.of(context).go('/shop');
         break;
     }

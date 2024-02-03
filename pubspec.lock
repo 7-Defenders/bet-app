@@ -25,6 +25,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.13.0"
+  animated_svg:
+    dependency: "direct main"
+    description:
+      name: animated_svg
+      sha256: "2e73df0b7e444276172f86df205ada558d482a9c5d16ce5b95b07e33d352c075"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
   args:
     dependency: transitive
     description:

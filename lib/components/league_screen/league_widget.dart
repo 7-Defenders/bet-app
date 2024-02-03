@@ -1,34 +1,42 @@
+import 'package:app/components/other/nunito_text.dart';
 import 'package:flutter/material.dart';
 
 class LeagueListWidget extends StatelessWidget {
+  final Widget? header;
   final List<Widget> leadingWidgets;
   final List<String> titles;
-  final List<Object?>? addons;
-  final IconData icon;
+  // final List<Object?>? addons;
+  final List<Widget> trailingWidgets;
   final Function(int) onTap;
   final double height;
 
   const LeagueListWidget({
+    this.header,
     required this.leadingWidgets,
     required this.titles,
-    this.addons,
-    required this.icon,
+    // this.addons,
+    required this.trailingWidgets,
     required this.onTap,
     required this.height,
   }) : assert(
-    (addons == null ? leadingWidgets.length == titles.length : leadingWidgets.length == titles.length && leadingWidgets.length == addons.length),
-   'The length of addons (optional), leadingWidgets and titles must be the same.',
-   );
+          leadingWidgets.length == titles.length &&
+              leadingWidgets.length == trailingWidgets.length, 
+          'The length of leadingWidgets, titles, and trailingWidgets must be the same.',
+        );
+        // assert(
+        //   addons == null || leadingWidgets.length == addons.length,
+        //   'The length of addons (optional) and leadingWidgets must be the same.',
+        // );
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width * 0.8,
       height: height,
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 3.0),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.background,
-        borderRadius: BorderRadius.circular(10),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
             color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
@@ -43,39 +51,61 @@ class LeagueListWidget extends StatelessWidget {
   }
 
   Widget _buildListView() {
-    return ListView.separated(
-      shrinkWrap: true,
-      physics: const ClampingScrollPhysics(),
-      itemCount: leadingWidgets.length,
-      separatorBuilder: (context, index) => const Divider(height: 1, color: Colors.grey),
-      itemBuilder: (context, index) {
-        return Material(
-          child: InkWell(
-            onTap: () => onTap(index),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                leadingWidgets[index],
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 8), 
-                    child: Text(
-                      titles[index],
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.onBackground,
+    return Column(
+      children: [
+        if (header != null) ...[
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: header,
+          ),
+        ],
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 3), 
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(15),
+              child: ListView.separated(
+                shrinkWrap: true,
+                padding: EdgeInsets.symmetric(horizontal: 0, vertical: 3),
+                physics: const ClampingScrollPhysics(),
+                itemCount: leadingWidgets.length,
+                separatorBuilder: (context, index) => SizedBox.shrink(),
+                itemBuilder: (context, index) {
+                  Color backgroundColor = index.isEven
+                    ? Color.fromRGBO(255, 186, 75, 1)
+                    : Color.fromRGBO(255, 255, 255, 1);
+                  Color textColor = index.isEven
+                    ? Color.fromRGBO(255, 255, 255, 1)
+                    : Color.fromRGBO(30, 30, 27, 1);
+
+                  return Material(
+                    color: backgroundColor,
+                    child: InkWell(
+                      onTap: () => onTap(index),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            leadingWidgets[index],
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 8), 
+                                child: nunitoText(titles[index], 16, FontWeight.normal, textColor)
+                              ),
+                            ),
+                            trailingWidgets[index],
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ),
-                  Icon(icon, size: 16, color: Theme.of(context).colorScheme.primary),
-                ],
+                  );
+                },
               ),
             ),
           ),
-        );
-      },
+        ),
+      ],
     );
   }
 }
