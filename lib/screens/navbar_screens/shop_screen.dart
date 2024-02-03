@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:app/components/other/nunito_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -14,39 +16,52 @@ class ShopScreen extends StatefulWidget {
 
 class _ShopScreenState extends State<ShopScreen> {
 
-  // RewardedAd? _rewardedAd;
+  RewardedAd? _rewardedAd;
 
-  // void loadRewardedAd(){
-  //   final adState = Provider.of<AdState>(context);
-  //   adState.initialization.then((status) =>
-  //     RewardedAd.load(
-  //       adUnitId: adState.bannerAdUnit,
-  //       request: const AdRequest(),
-  //       rewardedAdLoadCallback: RewardedAdLoadCallback(
-  //         onAdLoaded: (RewardedAd ad) => _rewardedAd = ad,
-  //         onAdFailedToLoad: (LoadAdError error) => _rewardedAd = null,
-  //       ),
-  //     ),
-  //   );
-  // }
+  @override
+  void initState() {
+    super.initState();
+    loadRewardedAd();
+  }
+
+  void loadRewardedAd(){
+    RewardedAd.load(
+      adUnitId: AdState.rewardedAdUnit!,
+      request: const AdRequest(),
+      rewardedAdLoadCallback: RewardedAdLoadCallback(
+        onAdLoaded: (RewardedAd ad) => setState(() => _rewardedAd = ad),
+        onAdFailedToLoad: (LoadAdError error) => setState(() => _rewardedAd = null),
+      ),
+    );
+  }
 
   void showRewardedAd(){
-    // if (_rewardedAd != null){
-    //   _rewardedAd!.fullScreenContentCallback = FullScreenContentCallback(
-    //     onAdDismissedFullScreenContent: (RewardedAd ad) {
-    //       _rewardedAd!.dispose();
-    //       loadRewardedAd();
-    //     },
-    //     onAdFailedToShowFullScreenContent: (ad, error) {
-    //       _rewardedAd!.dispose();
-    //       loadRewardedAd();
-    //     },
-    //   );
+    print('d');
+    if (_rewardedAd != null){
+    print('d');
+      _rewardedAd!.fullScreenContentCallback = FullScreenContentCallback(
+        onAdDismissedFullScreenContent: (RewardedAd ad) {
+          _rewardedAd!.dispose();
+          loadRewardedAd();
+        },
+        onAdFailedToShowFullScreenContent: (ad, error) {
+          _rewardedAd!.dispose();
+          loadRewardedAd();
+        },
+      );
 
-    //   _rewardedAd!.setImmersiveMode(true);
-    //   _rewardedAd!.show(onUserEarnedReward: (ad, reward) 
-    //     => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: nunitoText('Got the reward', 16, FontWeight.bold, Colors.black))),);
-    // }
+      if (Platform.isAndroid){
+        _rewardedAd!.setImmersiveMode(true);
+      }
+      _rewardedAd!.show(
+        onUserEarnedReward: (ad, reward) 
+          => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: nunitoText('Got the reward', 16, FontWeight.bold, Colors.black))),
+      );
+      
+      
+      _rewardedAd = null;
+      loadRewardedAd();
+    }
   }
 
   @override
@@ -90,13 +105,13 @@ class _ShopScreenState extends State<ShopScreen> {
                     itemBuilder: (BuildContext context, int index){
                       return Padding(
                         padding: EdgeInsets.fromLTRB(index==0 ? usableWidth / 18 : 8, 8, index==itemCount-1 ? usableWidth / 18 : 8, 8),
-                        child: Card(
-                          elevation: 5,
-                          surfaceTintColor: Colors.white,
-                          child: SizedBox(
-                            width: cardWidth,
-                            child: GestureDetector(
-                              onTap:() => showRewardedAd(),
+                        child: GestureDetector(
+                          onTap: () => showRewardedAd(),
+                          child: Card(
+                            elevation: 5,
+                            surfaceTintColor: Colors.white,
+                            child: SizedBox(
+                              width: cardWidth,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: [
