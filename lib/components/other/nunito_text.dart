@@ -6,6 +6,7 @@ Widget nunitoText(
   double fontSize,
   FontWeight fontWeight,
   Color color,
+  {TextAlign textAlign=TextAlign.start,}
 ) {
   return Text(
     text,
@@ -14,5 +15,6 @@ Widget nunitoText(
       fontWeight: fontWeight,
       color: color,
     ),
+    textAlign: textAlign,
   );
 }
