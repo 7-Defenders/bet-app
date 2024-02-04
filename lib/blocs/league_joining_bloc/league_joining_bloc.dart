@@ -23,7 +23,7 @@ class LeagueJoiningBloc extends Bloc<LeagueJoiningEvent, LeagueJoiningState> {
     on<CheckLeagueJoinPrerequisitesEvent>((event, emit) async {
       emit (LeagueJoiningLoadingState());
       try {
-        print("here1");
+        // print("here1");
         final response = await http.post(
           Uri.parse(dotenv.env['CHECK_LEAGUE_JOIN_PREREQUISITES_URL']!),
           body: {
@@ -31,13 +31,13 @@ class LeagueJoiningBloc extends Bloc<LeagueJoiningEvent, LeagueJoiningState> {
             'leagueCode': event.leagueCode,
           },
         );
-        print("here2");
-        print(response);
-        print(response.body);
-        print("decoding now lesgo: ");
+        // print("here2");
+        // print(response);
+        // print(response.body);
+        // print("decoding now lesgo: ");
         final Map<String, dynamic> data = jsonDecode(response.body) as Map<String, dynamic>;
-        print("PRINTING DATA: ");
-        print(data);
+        // print("PRINTING DATA: ");
+        // print(data);
         if (data.containsKey('error')) {
           emit(LeagueJoiningFailedState(message: data['error'] as String));
         } else {
@@ -56,7 +56,7 @@ class LeagueJoiningBloc extends Bloc<LeagueJoiningEvent, LeagueJoiningState> {
     on<ConfirmJoinLeagueEvent>((event, emit) async {
       emit(LeagueJoiningLoadingState());
       try {
-        print("1");
+        // print("1");
         final response = await http.post(
           Uri.parse(dotenv.env['JOIN_LEAGUE_URL']!),
           body: {
@@ -64,11 +64,11 @@ class LeagueJoiningBloc extends Bloc<LeagueJoiningEvent, LeagueJoiningState> {
             'leagueId': event.leagueId,
           },
         );
-        print("2");
-        print(response.body);
+        // print("2");
+        // print(response.body);
         final Map<String, dynamic> data = jsonDecode(response.body) as Map<String, dynamic>;
-        print("3");
-        print(data);
+        // print("3");
+        // print(data);
         if (data.containsKey('success') && data['success'] == true) {
           emit(LeagueJoiningConfirmationSuccessState());
         } else {
