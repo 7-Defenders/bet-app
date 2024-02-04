@@ -2,14 +2,15 @@ import 'package:app/components/history_screen/history_bet_widget.dart';
 import 'package:app/components/other/nunito_text.dart';
 import 'package:app/models/bet.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class HistoryScreen extends StatefulWidget {
   String? userID;
-  HistoryScreen({super.key, this.userID});
+  HistoryScreen(
+      {super.key, this.userID}
+      );
   List<Bet> betList = [];
   final List<HistoryBetWidget> betWidgets = [];
 
@@ -19,11 +20,21 @@ class HistoryScreen extends StatefulWidget {
 }
 
 class _HistoryScreenState extends State<HistoryScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getBetList();
+    });
+  }
+
   void goBack() {
     Navigator.of(context).pop();
   }
 
   Future<void> getBetList() async {
+    // print(widget.userID);
     widget.betList.clear();
 
     showDialog(
@@ -40,15 +51,18 @@ class _HistoryScreenState extends State<HistoryScreen> {
       useRootNavigator: false,
     );
 
-    final String userID = FirebaseAuth.instance.currentUser!.uid;
-    print('userID: $userID');
-    print(widget.userID);
+    
+    final String userID = widget.userID?? FirebaseAuth.instance.currentUser!.uid;
+    // print('userID: $userID');
 
-    final response = await http.get(Uri.parse(
-        'https://bet-app-e520a.ew.r.appspot.com/v1/bets/${widget.userID}'));
+    final response = await http.get(
+      Uri.parse(
+        'https://bet-app-e520a.ew.r.appspot.com/v1/bets/${userID}',
+      ),
+    );
 
     setState(() {
-      print(response.body);
+      // print(response.body);
       widget.betList = betFromJson(response.body);
     });
 
@@ -82,15 +96,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
     //   }
     // }
     // setState(() {});
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    widget.userID = FirebaseAuth.instance.currentUser!.uid;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      getBetList();
-    });
   }
 
   @override
