@@ -165,6 +165,7 @@ class _LeagueCreatorState extends State<LeagueCreator> {
     if (mounted){
       Navigator.of(context).pop();
     }
+    Navigator.of(context, rootNavigator: true).pop();
 
     switch(response.statusCode){
       case 400:
