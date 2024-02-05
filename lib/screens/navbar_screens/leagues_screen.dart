@@ -98,38 +98,44 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
       ),
     ).toList();
 
-    return Column(
-      children: 
-      [
-        const SizedBox(height: 40,),
-        JoinLeagueWidget(),
-    
-        const SizedBox(height: 120,),
-        LeagueListWidget(
-          header: nunitoText("Your leagues", 20, FontWeight.bold, Color.fromRGBO(30, 30, 27, 1)),
-          leadingWidgets: leadingWidgets,
-          titles: names,
-          // addons: null,
-          trailingWidgets: List.generate(rank.length, (index) => const Icon(Icons.arrow_forward_ios_rounded, color: Colors.red,)),
-          onTap: (int index) {
-            goToLeagueSummary(context, index);
-          },
-          height: 300,
-        ),
-
-        const Spacer(),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color.fromARGB(255, 5, 160, 221),
-          ),
-          onPressed: () => goToLeagueCreator(context),
-          child: const Text(
-            'Create league',
-            style: TextStyle(color: Colors.white),
+    return SingleChildScrollView(
+      physics: const NeverScrollableScrollPhysics(),
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height * 0.8,
+        child: Column(
+          children: 
+          [
+            const SizedBox(height: 40,),
+            JoinLeagueWidget(),
+        
+            const SizedBox(height: 120,),
+            LeagueListWidget(
+              header: nunitoText("Your leagues", 20, FontWeight.bold, Color.fromRGBO(30, 30, 27, 1)),
+              leadingWidgets: leadingWidgets,
+              titles: names,
+              // addons: null,
+              trailingWidgets: List.generate(rank.length, (index) => const Icon(Icons.arrow_forward_ios_rounded, color: Colors.red,)),
+              onTap: (int index) {
+                goToLeagueSummary(context, index);
+              },
+              height: 300,
             ),
+        
+            const Spacer(),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromARGB(255, 5, 160, 221),
+              ),
+              onPressed: () => goToLeagueCreator(context),
+              child: const Text(
+                'Create league',
+                style: TextStyle(color: Colors.white),
+                ),
+          ),
+              const SizedBox(height: 40,),
+        ],),
       ),
-          const SizedBox(height: 40,),
-    ],);
+    );
   }
 
   // @override
