@@ -4,27 +4,33 @@ class Bet {
   int? amount;
   String? bet;
   double? betodds;
+  String? competition;
   Game? game;
   String? madeAt;
   int? result;
+  String? sport;
 
   Bet(
       {this.amount,
       this.bet,
       this.betodds,
+      this.competition,
       this.game,
       this.madeAt,
-      this.result});
+      this.result,
+      this.sport,});
 
   Bet.fromJson(Map<String, dynamic> json) {
     amount = json['amount'] as int?;
     bet = json['bet'] as String?;
     betodds = json['betodds'] as double?;
+    competition = json["competition"] as String?;
     game = json['game'] != null
         ? Game.fromJson(json['game'] as Map<String, dynamic>)
         : null;
     madeAt = json['madeAt'] as String?;
     result = json['result'] as int?;
+    sport = json["sport"] as String?;
   }
 
   Map<String, dynamic> toJson() {
@@ -32,11 +38,13 @@ class Bet {
     data['amount'] = amount;
     data['bet'] = bet;
     data['betodds'] = betodds;
+    data['competition'] = competition;
     if (game != null) {
       data['game'] = game!.toJson();
     }
     data['madeAt'] = madeAt;
     data['result'] = result;
+    data['sport'] = sport;
     return data;
   }
 }
@@ -61,14 +69,13 @@ class Game {
       this.homename,
       this.homeodds,
       this.referee,
-      this.tieodds});
+      this.tieodds,});
 
   factory Game.fromJson(Map<String, dynamic> json) => Game(
         awayname: json["awayname"] as String,
         awayodds: json["awayodds"] != null
             ? double.parse(json["awayodds"].toString())
             : null,
-        // competition: json["competition"]  as String,
         date: json["date"] as String,
         drawawayodds: json["drawawayodds"] != null
             ? double.parse(json["drawawayodds"].toString())
