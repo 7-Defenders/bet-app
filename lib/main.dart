@@ -1,4 +1,3 @@
-import 'package:app/ad_state.dart';
 import 'package:app/blocs/league_joining_bloc/league_joining_bloc.dart';
 import 'package:app/firebase_options.dart';
 import 'package:app/providers/button_states_provider.dart';

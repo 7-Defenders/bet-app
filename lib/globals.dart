@@ -2,7 +2,21 @@ import "dart:io";
 
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
-class AdState {
+// ignore: avoid_classes_with_only_static_members
+class Globals {
+
+  static RewardedAd? rewardedAd;
+
+  static void loadRewardedAd(){
+    RewardedAd.load(
+      adUnitId: rewardedAdUnit!,
+      request: const AdRequest(),
+      rewardedAdLoadCallback: RewardedAdLoadCallback(
+        onAdLoaded: (RewardedAd ad) => rewardedAd = ad,
+        onAdFailedToLoad: (LoadAdError error) => rewardedAd = null,
+      ),
+    );
+  }
 
   static String? get rewardedAdUnit{
     if (Platform.isAndroid){

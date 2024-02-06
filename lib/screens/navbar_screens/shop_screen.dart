@@ -1,14 +1,12 @@
 import 'dart:io';
-import 'dart:convert';
-import 'dart:async';
 
-import 'package:app/ad_state.dart';
 import 'package:app/components/other/nunito_text.dart';
+import 'package:app/globals.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:http/http.dart' as http;
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:http/http.dart' as http;
 
 class ShopScreen extends StatefulWidget {
   const ShopScreen({super.key});
@@ -19,43 +17,33 @@ class ShopScreen extends StatefulWidget {
 
 class _ShopScreenState extends State<ShopScreen> {
 
-  RewardedAd? _rewardedAd;
   final String uid = FirebaseAuth.instance.currentUser!.uid;
 
   @override
   void initState() {
     super.initState();
-    loadRewardedAd();
-  }
-
-  void loadRewardedAd(){
-    RewardedAd.load(
-      adUnitId: AdState.rewardedAdUnit!,
-      request: const AdRequest(),
-      rewardedAdLoadCallback: RewardedAdLoadCallback(
-        onAdLoaded: (RewardedAd ad) => setState(() => _rewardedAd = ad),
-        onAdFailedToLoad: (LoadAdError error) => setState(() => _rewardedAd = null),
-      ),
-    );
+    if (Globals.rewardedAd == null) {
+      setState(() => Globals.loadRewardedAd());
+    }
   }
 
   void showRewardedAd(){
-    if (_rewardedAd != null){
-      _rewardedAd!.fullScreenContentCallback = FullScreenContentCallback(
+    if (Globals.rewardedAd != null){
+      Globals.rewardedAd!.fullScreenContentCallback = FullScreenContentCallback(
         onAdDismissedFullScreenContent: (RewardedAd ad) {
-          _rewardedAd!.dispose();
-          loadRewardedAd();
+          Globals.rewardedAd!.dispose();
+          setState(() => Globals.loadRewardedAd());
         },
         onAdFailedToShowFullScreenContent: (ad, error) {
-          _rewardedAd!.dispose();
-          loadRewardedAd();
+          Globals.rewardedAd!.dispose();
+          setState(() => Globals.loadRewardedAd());
         },
       );
 
       if (Platform.isAndroid){
-        _rewardedAd!.setImmersiveMode(true);
+        Globals.rewardedAd!.setImmersiveMode(true);
       }
-      _rewardedAd!.show(
+      Globals.rewardedAd!.show(
         onUserEarnedReward: (ad, reward) async {
 
             // awarding coins
@@ -75,8 +63,8 @@ class _ShopScreenState extends State<ShopScreen> {
       );
       
       
-      _rewardedAd = null;
-      loadRewardedAd();
+      Globals.rewardedAd = null;
+      Globals.loadRewardedAd();
     }
   }
 
