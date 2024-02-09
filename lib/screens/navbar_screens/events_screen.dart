@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:app/components/events_screen/bet_maker.dart';
 import 'package:app/components/events_screen/bet_preview.dart';
 import 'package:app/components/other/nunito_text.dart';
+import 'package:app/globals.dart';
 import 'package:app/models/football_event.dart';
 import 'package:app/models/structure.dart';
 import 'package:app/providers/button_states_provider.dart';
@@ -129,12 +130,8 @@ class EventsScreenState extends State<EventsScreen> {
     );
 
     try {
-      final response = await http.get(
-        Uri.parse(
-          'https://bet-app-e520a.ew.r.appspot.com/v1/competitions/$league',
-        ),
-      );
-      print('https://bet-app-e520a.ew.r.appspot.com/v1/competitions/$league');
+      final uri = 'https://bet-app-e520a.ew.r.appspot.com/v1/competitions/$league';
+      final response = await Globals.performCall(uri);
       print(response.body);
 
       displayedMatches.clear();

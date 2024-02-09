@@ -1,5 +1,6 @@
 import 'package:app/components/history_screen/history_bet_widget.dart';
 import 'package:app/components/other/nunito_text.dart';
+import 'package:app/globals.dart';
 import 'package:app/models/bet.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 class HistoryScreen extends StatefulWidget {
   String? userID;
   HistoryScreen(
-      {super.key, this.userID}
+      {super.key, this.userID,}
       );
   List<Bet> betList = [];
   final List<HistoryBetWidget> betWidgets = [];
@@ -55,11 +56,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
     final String userID = widget.userID?? FirebaseAuth.instance.currentUser!.uid;
     // print('userID: $userID');
 
-    final response = await http.get(
-      Uri.parse(
-        'https://bet-app-e520a.ew.r.appspot.com/v1/bets/${userID}',
-      ),
-    );
+    final uri = 'https://bet-app-e520a.ew.r.appspot.com/v1/bets/$userID';
+    final response = await Globals.performCall(uri);
 
     setState(() {
       // print(response.body);

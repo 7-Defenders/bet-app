@@ -2,6 +2,7 @@ import 'package:app/blocs/league_joining_bloc/league_joining_bloc.dart';
 import 'package:app/components/league_screen/join_league_widget.dart';
 import 'package:app/components/league_screen/league_widget.dart';
 import 'package:app/components/other/nunito_text.dart';
+import 'package:app/globals.dart';
 import 'package:app/models/league_preview.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -51,7 +52,9 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
       useRootNavigator: false,
     );
 
-    final response = await http.get(Uri.parse('https://bet-app-e520a.ew.r.appspot.com/v1/users/$uid/leagues'));
+    final uri = 'https://bet-app-e520a.ew.r.appspot.com/v1/users/$uid/leagues';
+    final response = await Globals.performCall(uri);
+   
     // print(response.body);
     setState((){
       leaguePreviewFromJson(response.body).forEach((element) {
