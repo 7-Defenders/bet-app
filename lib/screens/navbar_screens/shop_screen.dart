@@ -1,8 +1,7 @@
-import 'package:app/components/other/appbar/custom_appbar.dart';
 import 'package:app/components/other/appbar/balance_widget.dart';
+import 'package:app/components/other/appbar/custom_appbar.dart';
 import 'package:app/components/shop_screen/add_points_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class ShopScreen extends StatefulWidget {
   const ShopScreen({super.key});

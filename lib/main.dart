@@ -6,7 +6,7 @@ import 'package:app/screens/achievements_screen.dart';
 import 'package:app/screens/auth_screens/login_or_register_screen.dart';
 import 'package:app/screens/history_screen.dart';
 import 'package:app/screens/navbar_screens/events_screen.dart';
-import 'package:app/screens/navbar_screens/home_screen.dart';
+import 'package:app/screens/navbar_screens/home_screens/home_screen.dart';
 import 'package:app/screens/navbar_screens/leagues_screen.dart';
 import 'package:app/screens/navbar_screens/profile_screen.dart';
 import 'package:app/screens/navbar_screens/shop_screen.dart';
@@ -17,12 +17,13 @@ import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+
+import 'screens/navbar_screens/home_screens/home_screen_2.dart';
 // import 'package:flutter_localizations/flutter_localizations.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey =
@@ -102,6 +103,12 @@ final _router = GoRouter(
         GoRoute(
           path: '/home',
           pageBuilder: fadePageBuilder(const HomeScreen()),
+          routes: <RouteBase>[
+            GoRoute(
+              path: '2',
+              pageBuilder: fadePageBuilder(const HomeScreen2()),
+            ),
+          ],
         ),
 
         GoRoute(
