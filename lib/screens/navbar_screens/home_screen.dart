@@ -1,3 +1,4 @@
+import 'package:app/components/other/appbar/custom_appbar.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -10,8 +11,14 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Home Screen'),
+    return const Scaffold(
+      appBar: CustomAppbar(
+        56,
+        null,
+        'Home',
+        null,
+      ),
+      body: Center(child: Text('Home Screen')),
     );
   }
 }

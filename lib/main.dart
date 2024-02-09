@@ -26,16 +26,15 @@ import 'package:provider/provider.dart';
 // import 'package:flutter_localizations/flutter_localizations.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey =
-  GlobalKey<NavigatorState>(debugLabel: 'root');
+    GlobalKey<NavigatorState>(debugLabel: 'root');
 final GlobalKey<NavigatorState> _shellNavigatorKey =
-  GlobalKey<NavigatorState>(debugLabel: 'shell');
-
+    GlobalKey<NavigatorState>(debugLabel: 'shell');
 
 final _router = GoRouter(
   initialLocation: '/events',
   navigatorKey: _rootNavigatorKey,
   debugLogDiagnostics: true,
-  routes: <RouteBase> [
+  routes: <RouteBase>[
     // auth flow route
     GoRoute(
       path: '/auth',
@@ -67,8 +66,10 @@ final _router = GoRouter(
                   key: state.pageKey,
                   child: HistoryScreen(),
                   transitionDuration: const Duration(milliseconds: 301),
-                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                    return const FadeUpwardsPageTransitionsBuilder().buildTransitions(
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) {
+                    return const FadeUpwardsPageTransitionsBuilder()
+                        .buildTransitions(
                       MaterialPageRoute(builder: (context) => Container()),
                       context,
                       animation,
@@ -79,6 +80,7 @@ final _router = GoRouter(
                 );
               },
             ),
+
             /// Same as "/profile/history", but displayed on the root Navigator
             /// by specifying [parentNavigatorKey]. This will cover both events
             /// screen and the application shell.

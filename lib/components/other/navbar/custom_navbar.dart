@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-Widget buildNavBarItem(int index, Function(int) onItemTapped, BuildContext context) {
+Widget buildNavBarItem(
+  int index,
+  Function(int) onItemTapped,
+  BuildContext context,
+) {
   return GestureDetector(
     onTap: () => onItemTapped(index),
     child: Container(
       width: MediaQuery.of(context).size.width * 0.2,
-      height: MediaQuery.of(context).size.height * 0.1,
+      height: MediaQuery.of(context).size.height * 0.075,
       color: Colors.transparent,
     ),
   );
@@ -24,7 +28,6 @@ Stack customNavbar(
         'lib/assets/images/navbar/navbar_$selectedIndex.svg',
         fit: BoxFit.cover,
         width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height * 0.1,
       ),
       // on top, invisible buttons to make the navbar items clickable
       Row(

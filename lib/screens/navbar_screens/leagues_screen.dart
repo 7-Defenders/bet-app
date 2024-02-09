@@ -1,6 +1,7 @@
 import 'package:app/components/events_screen/bet_preview.dart';
 import 'package:app/components/league_screen/join_league_widget.dart';
 import 'package:app/components/league_screen/league_widget.dart';
+import 'package:app/components/other/appbar/custom_appbar.dart';
 import 'package:app/components/other/nunito_text.dart';
 import 'package:app/models/football_event.dart';
 import 'package:app/models/structure.dart';
@@ -17,7 +18,6 @@ class LeaguesScreen extends StatefulWidget {
 }
 
 class _LeaguesScreenState extends State<LeaguesScreen> {
-
   List<Sport> structure = [];
   List<BetPreviewWidget> displayedMatches = [];
   Sport? selectedSport;
@@ -43,39 +43,48 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
       context: context,
       builder: (context) {
         return Center(
-          child: LoadingAnimationWidget.hexagonDots(color: Theme.of(context).colorScheme.primary, size: 55,),
+          child: LoadingAnimationWidget.hexagonDots(
+            color: Theme.of(context).colorScheme.primary,
+            size: 55,
+          ),
         );
       },
     );
 
-    final response = await http.get(Uri.parse('https://bet-app-e520a.ew.r.appspot.com/competitions/$league'));
+    final response = await http.get(Uri.parse(
+        'https://bet-app-e520a.ew.r.appspot.com/competitions/$league'));
     displayedMatches.clear();
-    setState((){
-      footballEventFromJson(response.body).forEach((element) =>
-        displayedMatches.add(BetPreviewWidget(
-          eventName: '${element.homename} - ${element.awayname}',
-          eventDetails: element.date,
-          bets: {
-            '1':element.homeodds,
-            '1X':0,
-            'X': element.tieodds,
-            'X2':0,
-            '2':element.awayodds,
-          },
-          onOptionSelected: (option) {
-            print(option);
-          },
-        ),),
+    setState(() {
+      footballEventFromJson(response.body).forEach(
+        (element) => displayedMatches.add(
+          BetPreviewWidget(
+            eventName: '${element.homename} - ${element.awayname}',
+            eventDetails: element.date,
+            bets: {
+              '1': element.homeodds,
+              '1X': 0,
+              'X': element.tieodds,
+              'X2': 0,
+              '2': element.awayodds,
+            },
+            onOptionSelected: (option) {
+              print(option);
+            },
+          ),
+        ),
       );
     });
 
-    if (mounted){
+    if (mounted) {
       Navigator.of(context).pop();
     }
   }
 
   Widget buildListView(
-      List<dynamic> items, dynamic selectedItem, void Function(dynamic) onTap, ) {
+    List<dynamic> items,
+    dynamic selectedItem,
+    void Function(dynamic) onTap,
+  ) {
     return SizedBox(
       height: 75,
       width: double.infinity,
@@ -144,7 +153,7 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
     return buildListView(
       structure.map((sport) => sport).toList(),
       selectedSport,
-          (sport) {
+      (sport) {
         setState(() {
           selectedSport = sport as Sport;
           selectedCountry = null;
@@ -165,7 +174,7 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
     return buildListView(
       countries.map((country) => country).toList(),
       selectedCountry,
-          (country) {
+      (country) {
         setState(() {
           selectedCountry = country as Country;
           selectedLeague = null;
@@ -175,16 +184,17 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
     );
   }
 
-
   Widget buildLeagueListView() {
     final leagues = structure
         .firstWhere(
-            (sport) => sport.name == selectedSport?.name,
-        orElse: () => Sport(name: '', countries: [], icon: Icons.abc),)
+          (sport) => sport.name == selectedSport?.name,
+          orElse: () => Sport(name: '', countries: [], icon: Icons.abc),
+        )
         .countries
         .firstWhere(
-            (country) => country.name == selectedCountry?.name,
-        orElse: () => Country(name: '', leagues: [], svgPath: ''),)
+          (country) => country.name == selectedCountry?.name,
+          orElse: () => Country(name: '', leagues: [], svgPath: ''),
+        )
         .leagues
         .map((league) => league)
         .toList();
@@ -192,7 +202,7 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
     return buildListView(
       leagues,
       selectedLeague,
-          (league) {
+      (league) {
         setState(() {
           selectedLeague = league as League;
           fetchMatchesGivenLeague(selectedLeague!.id);
@@ -227,18 +237,24 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
+      appBar: const CustomAppbar(
+        50,
+        null,
+        'Leagues',
+        null,
+      ),
       body: SizedBox(
         width: MediaQuery.of(context).size.width,
         child: Column(
-          children:
-          [
-            const SizedBox(height: 40,),
+          children: [
+            const SizedBox(
+              height: 40,
+            ),
             ToggleButtons(
               onPressed: (int index) {
                 setState(() {
-                  final int other = (index+1)%2;
+                  final int other = (index + 1) % 2;
                   _selected[index] = true;
                   _selected[other] = false;
                 });
@@ -255,11 +271,13 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
               isSelected: _selected,
               children: const [Text('Private'), Text('Public')],
             ),
-
-            const SizedBox(height: 40,),
+            const SizedBox(
+              height: 40,
+            ),
             JoinLeagueWidget(),
-
-            const SizedBox(height: 120,),
+            const SizedBox(
+              height: 120,
+            ),
             LeagueListWidget(leagues: const [], height: 300),
             const Spacer(),
             ElevatedButton(
@@ -270,10 +288,13 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
               child: const Text(
                 'Create league',
                 style: TextStyle(color: Colors.white),
-                ),
-          ),
-              const SizedBox(height: 40,),
-        ],),
+              ),
+            ),
+            const SizedBox(
+              height: 40,
+            ),
+          ],
+        ),
       ),
     );
   }

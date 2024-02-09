@@ -39,7 +39,7 @@ class BalanceWidget extends StatelessWidget {
       onTap: () {
         goToShop(context);
       },
-      child: FutureBuilder<num> (
+      child: FutureBuilder<num>(
         future: getBalance(),
         builder: (BuildContext context, AsyncSnapshot<num> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -47,27 +47,46 @@ class BalanceWidget extends StatelessWidget {
           } else {
             return Row(
               children: [
-                nunitoText(
-                  '${snapshot.data}',
-                  6.5 * vw,
-                  FontWeight.w600,
-                  Theme.of(context).colorScheme.background,
-                ),
-                SizedBox(width: 2 * vw,),
                 SvgPicture.asset(
-                  'lib/assets/images/coscos.svg',
+                  'lib/assets/images/appbar/add_dollar.svg',
                   width: 7 * vw,
                   height: 7 * vw,
-                  colorFilter: ColorFilter.mode(
-                    Theme.of(context).colorScheme.background,
-                    BlendMode.srcIn,
-                  ),
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(1 * vw),
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 255, 214, 149),
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.25),
+                            blurRadius: 5,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: Center(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 1 * vw),
+                          child: nunitoText(
+                            '${snapshot.data}',
+                            5 * vw,
+                            FontWeight.bold,
+                            Theme.of(context).colorScheme.background,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             );
           }
-        }
-      )
+        },
+      ),
     );
   }
 }

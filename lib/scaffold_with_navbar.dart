@@ -3,7 +3,6 @@ import 'package:app/screens/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-
 /// Builds the "shell" for the app by building a [Scaffold] with a
 /// [BottomNavigationBar], where [child] is placed in the body of the [Scaffold].
 
@@ -23,10 +22,15 @@ class ScaffoldWithNavBar extends StatelessWidget {
     return Scaffold(
       drawer: drawer(
         context,
-        MediaQuery.of(context).size.width/100,
-        MediaQuery.of(context).size.height/100,
+        MediaQuery.of(context).size.width / 100,
+        MediaQuery.of(context).size.height / 100,
       ),
-      body: child,
+      body: Column(
+        children: <Widget>[
+          Expanded(child: child),
+          SizedBox(height: MediaQuery.of(context).size.width / 100 * 7),
+        ],
+      ),
       bottomNavigationBar: customNavbar(
         context,
         _calculateSelectedIndex(context),
@@ -37,23 +41,23 @@ class ScaffoldWithNavBar extends StatelessWidget {
   }
 
   static int _calculateSelectedIndex(BuildContext context) {
-  final String location = GoRouterState.of(context).uri.toString();
-  final Map<String, int> locationToIndex = {
-    '/profile': 0,
-    '/events': 1,
-    '/home': 2,
-    '/leagues': 3,
-    '/shop': 4,
-  };
+    final String location = GoRouterState.of(context).uri.toString();
+    final Map<String, int> locationToIndex = {
+      '/profile': 0,
+      '/events': 1,
+      '/home': 2,
+      '/leagues': 3,
+      '/shop': 4,
+    };
 
-  for (final entry in locationToIndex.entries) {
-    if (location.startsWith(entry.key)) {
-      return entry.value;
+    for (final entry in locationToIndex.entries) {
+      if (location.startsWith(entry.key)) {
+        return entry.value;
+      }
     }
-  }
 
-  return 0;
-}
+    return 0;
+  }
 
   void _onItemTapped(int index, BuildContext context) {
     switch (index) {

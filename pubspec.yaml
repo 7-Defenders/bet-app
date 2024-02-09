@@ -97,4 +97,5 @@ flutter:
     - lib/assets/images/league_logos/
     - lib/assets/images/country_flags/
     - lib/assets/images/navbar/
+    - lib/assets/images/appbar/
     - .env
