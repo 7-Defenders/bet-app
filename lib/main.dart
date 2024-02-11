@@ -1,5 +1,6 @@
 import 'package:app/blocs/league_joining_bloc/league_joining_bloc.dart';
 import 'package:app/firebase_options.dart';
+import 'package:app/globals.dart';
 import 'package:app/providers/button_states_provider.dart';
 import 'package:app/scaffold_with_navbar.dart';
 import 'package:app/screens/achievements_screen.dart';
@@ -225,6 +226,8 @@ class BetApp extends StatelessWidget {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   MobileAds.instance.initialize();
+
+  await Globals.loadData();
   
   await dotenv.load();
   await Firebase.initializeApp(

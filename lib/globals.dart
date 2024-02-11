@@ -1,7 +1,9 @@
+import 'dart:convert';
 import "dart:io";
 import 'dart:core';
 
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
@@ -9,23 +11,67 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 class Globals {
 
   static RewardedAd? rewardedAd;
+  static SharedPreferences? sharedPreferences;
   static bool joinedNewLeague = false;
   static final Map<String, DateTime> _callTimes = {};
-  static final Map<String, dynamic> _callResponses = {};
+  static final Map<String, String> _callResponses = {};
 
-  static Future<http.Response> performCall(String uri) async {
+  static const String callsSP = "calls";
+
+  static Future<String> performCall(String uri) async {
+    sharedPreferences ??= await SharedPreferences.getInstance();
+    if (_callTimes.isEmpty) {
+      loadData();
+    }
+
     if (_shouldCall(uri))
     {
       print("will call");
       final http.Response response = await http.get(Uri.parse(uri));
       _callTimes[uri] = DateTime.now();
-      _callResponses[uri] = response;
-      return response;
+      _callResponses[uri] = response.body;
+      saveData();
+      return response.body;
     }
     else{
       print("wont call");
-      return _callResponses[uri] as http.Response;
+      return _callResponses[uri]!;
     }
+  }
+
+  static Future<void> loadData() async {
+    sharedPreferences ??= await SharedPreferences.getInstance();
+    final json = sharedPreferences!.getString(callsSP);
+
+    if (json != null){
+      final Map<String, dynamic> data = jsonDecode(json) as Map<String, dynamic>;
+
+      data.entries.forEach((element) {
+        final key = element.key;
+        final time = element.value["time"] as String;
+        final response = element.value["response"] as String;
+
+        _callTimes[key] = DateTime.parse(time);
+        _callResponses[key] = response;
+      });
+    }
+  }
+
+  static Future<bool> saveData() async {
+    sharedPreferences ??= await SharedPreferences.getInstance();
+    final Map<String, dynamic> data = {};
+    // ignore: avoid_function_literals_in_foreach_calls
+    _callTimes.keys.forEach((element) {
+        final callTime = _callTimes[element].toString();
+        final callResponse = _callResponses[element];
+
+        data[element] = {
+          "time": callTime,
+          "response": callResponse,
+        };
+     });
+
+    return await sharedPreferences!.setString(callsSP, jsonEncode(data));
   }
 
   static bool _shouldCall(String uri){

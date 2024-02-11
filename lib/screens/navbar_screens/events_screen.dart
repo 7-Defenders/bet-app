@@ -132,14 +132,14 @@ class EventsScreenState extends State<EventsScreen> {
     try {
       final uri = 'https://bet-app-e520a.ew.r.appspot.com/v1/competitions/$league';
       final response = await Globals.performCall(uri);
-      print(response.body);
+      print(response);
 
       displayedMatches.clear();
 
       setState(() {
         final buttonStatesProvider = context.read<ButtonStatesProvider>();
 
-        footballEventFromJson(response.body).forEach(
+        footballEventFromJson(response).forEach(
           (element) => displayedMatches.add(
             BetPreviewWidget(
               eventName: '${element.homename} - ${element.awayname}',

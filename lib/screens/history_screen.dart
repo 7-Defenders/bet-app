@@ -61,7 +61,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
     setState(() {
       // print(response.body);
-      widget.betList = betFromJson(response.body);
+      widget.betList = betFromJson(response);
     });
 
     if (mounted) {

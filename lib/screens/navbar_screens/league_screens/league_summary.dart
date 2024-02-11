@@ -200,7 +200,7 @@ class _LeagueSummaryState extends State<LeagueSummary> {
     final response = await Globals.performCall(uri);
     // print(response.body);
     setState((){
-      final body = leagueSummaryFromJson(response.body);
+      final body = leagueSummaryFromJson(response);
       // print(body.competitionsIncluded);
 
       leagueName = body.leagueName;

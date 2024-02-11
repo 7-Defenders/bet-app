@@ -57,7 +57,7 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
    
     // print(response.body);
     setState((){
-      leaguePreviewFromJson(response.body).forEach((element) {
+      leaguePreviewFromJson(response).forEach((element) {
             rank.add('${element.rank}/${element.playerCount}');
             names.add(element.leagueName);
             leagueIDs.add(element.leagueID);
