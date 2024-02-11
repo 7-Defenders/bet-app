@@ -5,6 +5,7 @@ import 'package:app/models/bet.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class HistoryScreen extends StatefulWidget {
@@ -62,6 +63,25 @@ class _HistoryScreenState extends State<HistoryScreen> {
     setState(() {
       // print(response.body);
       widget.betList = betFromJson(response);
+      widget.betList.sort(
+        (a,b) {
+          if (a.game == null){
+            return 1;
+          }
+          if (b.game == null){
+            return 0;
+          }
+
+          final DateFormat dateFormat = DateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'");
+
+          final aDate = a.game!.date == null ? DateTime(2000,) : dateFormat.parse(a.game!.date!);
+          final bDate = b.game!.date == null ? DateTime(2000,) : dateFormat.parse(b.game!.date!);
+
+          print(dateFormat.parse(a.game!.date!));
+
+          return bDate.compareTo(aDate);
+        }
+      );
     });
 
     if (mounted) {
