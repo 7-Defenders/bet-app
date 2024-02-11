@@ -2,10 +2,13 @@ import 'package:app/components/auth_screens/button.dart';
 import 'package:app/components/auth_screens/image_tile.dart';
 import 'package:app/components/auth_screens/text_field.dart';
 import 'package:app/components/other/nunito_text.dart';
+import 'package:app/models/user_data.dart';
+import 'package:app/providers/user_data_provider.dart';
 import 'package:app/services/auth_service.dart';
 import 'package:app/utils/functions.dart' as utils;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class LogInScreen extends StatefulWidget {
   final Function()? toggleScreen;
@@ -21,6 +24,23 @@ class _LogInScreenState extends State<LogInScreen> {
   final passwordController = TextEditingController();
 
   Future<void> logInUser() async {
+    final bool loginSuccessful = await tryLogInUser();
+    if (mounted) {
+      if (Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
+    }
+    if (loginSuccessful) {
+      if (!mounted) return;
+      Provider.of<UserDataProvider>(context)
+          .fetchUserData()
+          .then((UserData? newData) {
+        Provider.of<UserDataProvider>(context).updateUserData(newData);
+      });
+    }
+  }
+
+  Future<bool> tryLogInUser() async {
     FocusManager.instance.primaryFocus?.unfocus();
     showDialog(
       context: context,
@@ -35,7 +55,8 @@ class _LogInScreenState extends State<LogInScreen> {
         email: emailController.text,
         password: passwordController.text,
       );
-      } on FirebaseAuthException catch (e) {
+      return true;
+    } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         if (context.mounted) {
           Navigator.pop(context);
@@ -61,11 +82,7 @@ class _LogInScreenState extends State<LogInScreen> {
           );
         }
       }
-    }
-    if (context.mounted) {
-      if (Navigator.canPop(context)) {
-        Navigator.pop(context);
-      }
+      return false;
     }
   }
 
@@ -79,7 +96,9 @@ class _LogInScreenState extends State<LogInScreen> {
             child: Column(
               children: [
                 const SizedBox(height: 30),
-                Icon(Icons.login, size: 135, color: Theme.of(context).colorScheme.onBackground),
+                Icon(Icons.login,
+                    size: 135,
+                    color: Theme.of(context).colorScheme.onBackground),
                 const SizedBox(height: 20),
                 nunitoText(
                   'Welcome back!',
@@ -109,7 +128,10 @@ class _LogInScreenState extends State<LogInScreen> {
                         'Forgot Password?',
                         16,
                         FontWeight.normal,
-                        Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
+                        Theme.of(context)
+                            .colorScheme
+                            .onBackground
+                            .withOpacity(0.8),
                       ),
                     ],
                   ),
@@ -121,7 +143,10 @@ class _LogInScreenState extends State<LogInScreen> {
                   children: [
                     Expanded(
                       child: Divider(
-                        color: Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onBackground
+                            .withOpacity(0.8),
                         thickness: 0.5,
                         indent: 20,
                         endIndent: 10,
@@ -131,11 +156,17 @@ class _LogInScreenState extends State<LogInScreen> {
                       'Or continue with: ',
                       13,
                       FontWeight.normal,
-                      Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
+                      Theme.of(context)
+                          .colorScheme
+                          .onBackground
+                          .withOpacity(0.8),
                     ),
                     Expanded(
                       child: Divider(
-                        color: Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onBackground
+                            .withOpacity(0.8),
                         thickness: 0.5,
                         indent: 10,
                         endIndent: 20,
@@ -170,7 +201,10 @@ class _LogInScreenState extends State<LogInScreen> {
                       "Not a member? ",
                       15,
                       FontWeight.normal,
-                      Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
+                      Theme.of(context)
+                          .colorScheme
+                          .onBackground
+                          .withOpacity(0.8),
                     ),
                     const SizedBox(width: 5),
                     GestureDetector(
