@@ -1,7 +1,10 @@
 import 'package:app/components/other/navbar/custom_navbar.dart';
+import 'package:app/models/user_data.dart';
+import 'package:app/providers/user_data_provider.dart';
 import 'package:app/screens/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 /// Builds the "shell" for the app by building a [Scaffold] with a
 /// [BottomNavigationBar], where [child] is placed in the body of the [Scaffold].
@@ -19,6 +22,18 @@ class ScaffoldWithNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (Provider.of<UserDataProvider>(context, listen: false).userData ==
+        null) {
+      Future.microtask(
+        () => Provider.of<UserDataProvider>(context, listen: false)
+            .fetchUserData()
+            .then((UserData? newData) {
+          Provider.of<UserDataProvider>(context, listen: false)
+              .updateUserData(newData);
+        }),
+      );
+    }
+
     return Scaffold(
       drawer: drawer(
         context,

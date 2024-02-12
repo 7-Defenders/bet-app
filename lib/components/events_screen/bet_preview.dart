@@ -117,7 +117,6 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
                             _selectedOption =
                                 _selectedOption == entry.key ? null : entry.key;
                             widget.onOptionSelected!(entry.key);
-                            debugPrint(entry.key);
                           });
                         },
                         style: ElevatedButton.styleFrom(

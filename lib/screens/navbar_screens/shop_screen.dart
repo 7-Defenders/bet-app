@@ -1,7 +1,9 @@
 import 'package:app/components/other/appbar/balance_widget.dart';
 import 'package:app/components/other/appbar/custom_appbar.dart';
 import 'package:app/components/shop_screen/add_points_widget.dart';
+import 'package:app/models/user_data.dart';
 import 'package:app/providers/user_data_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,6 +21,12 @@ class _ShopScreenState extends State<ShopScreen> {
     final double vw = MediaQuery.of(context).size.width / 100;
     final double vh = MediaQuery.of(context).size.height / 100;
     final userData = Provider.of<UserDataProvider>(context).userData;
+
+    Future<void> logOutUser() async {
+      Provider.of<UserDataProvider>(context, listen: false)
+          .updateUserData(null);
+      await FirebaseAuth.instance.signOut();
+    }
 
     return Scaffold(
       appBar: CustomAppbar(
@@ -65,6 +73,19 @@ class _ShopScreenState extends State<ShopScreen> {
                     )
                   else
                     const Center(child: CircularProgressIndicator()),
+                  ElevatedButton(
+                    onPressed: logOutUser,
+                    child: const Text('Log Out'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      final UserData? userdata =
+                          Provider.of<UserDataProvider>(context, listen: false)
+                              .userData;
+                      print(userdata);
+                    },
+                    child: const Text('show user data'),
+                  ),
                 ],
               ),
             ),

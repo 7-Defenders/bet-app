@@ -25,19 +25,8 @@ class _LogInScreenState extends State<LogInScreen> {
 
   Future<void> logInUser() async {
     final bool loginSuccessful = await tryLogInUser();
-    if (mounted) {
-      if (Navigator.canPop(context)) {
-        Navigator.pop(context);
-      }
-    }
-    if (loginSuccessful) {
-      if (!mounted) return;
-      Provider.of<UserDataProvider>(context)
-          .fetchUserData()
-          .then((UserData? newData) {
-        Provider.of<UserDataProvider>(context).updateUserData(newData);
-      });
-    }
+    // can do smth here, but if want to use [context],
+    // need to find a way for it to be mounted
   }
 
   Future<bool> tryLogInUser() async {

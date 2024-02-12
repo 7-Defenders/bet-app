@@ -2,11 +2,13 @@ import 'package:app/components/auth_screens/button.dart';
 import 'package:app/components/auth_screens/image_tile.dart';
 import 'package:app/components/auth_screens/text_field.dart';
 import 'package:app/components/other/nunito_text.dart';
+import 'package:app/providers/user_data_provider.dart';
 import 'package:app/services/auth_service.dart';
 import 'package:app/utils/functions.dart' as utils;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 class RegisterScreen extends StatefulWidget {
   final Function()? toggleScreen;
@@ -22,6 +24,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final confirmPasswordController = TextEditingController();
 
   Future<void> registerUser() async {
+    final bool registerSuccessful = await tryRegisterUser();
+    // can do smth here, but if want to use [context],
+    // need to find a way for it to be mounted
+  }
+
+  Future<bool> tryRegisterUser() async {
+    FocusManager.instance.primaryFocus?.unfocus();
     showDialog(
       context: context,
       builder: (context) {
@@ -40,19 +49,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
         if (mounted) {
           Navigator.pop(context);
         }
-        return;
       }
       if (passwordController.text != confirmPasswordController.text) {
         utils.showSnackbarMessage("Passwords do not match.", context);
         if (mounted) {
           Navigator.pop(context);
         }
-        return;
       }
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: emailController.text,
-        password: passwordController.text,
-      ).then((result) => result.user!.updateDisplayName(emailController.text));
+      await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+            email: emailController.text,
+            password: passwordController.text,
+          )
+          .then(
+            (result) => result.user!.updateDisplayName(emailController.text),
+          );
+
+      return true;
     } on FirebaseAuthException catch (e) {
       if (mounted) {
         Navigator.pop(context);
@@ -73,11 +86,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
         }
       }
     }
-    if (mounted){
+    if (mounted) {
       if (Navigator.canPop(context)) {
         Navigator.pop(context);
       }
     }
+    if (mounted) {
+      Provider.of<UserDataProvider>(context, listen: false)
+          .updateUserData(null);
+    }
+    return false;
   }
 
   @override
@@ -93,7 +111,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 Icon(
                   Icons.app_registration_rounded,
                   size: 135,
-                  color: Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
+                  color: Theme.of(context)
+                      .colorScheme
+                      .onBackground
+                      .withOpacity(0.8),
                 ),
                 const SizedBox(height: 20),
                 nunitoText(
@@ -128,7 +149,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   children: [
                     Expanded(
                       child: Divider(
-                        color: Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onBackground
+                            .withOpacity(0.8),
                         thickness: 0.5,
                         indent: 20,
                         endIndent: 10,
@@ -138,11 +162,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       'Or continue with: ',
                       13,
                       FontWeight.normal,
-                      Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
+                      Theme.of(context)
+                          .colorScheme
+                          .onBackground
+                          .withOpacity(0.8),
                     ),
                     Expanded(
                       child: Divider(
-                        color: Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onBackground
+                            .withOpacity(0.8),
                         thickness: 0.5,
                         indent: 10,
                         endIndent: 20,
@@ -177,7 +207,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       "Already have an account? ",
                       15,
                       FontWeight.normal,
-                      Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
+                      Theme.of(context)
+                          .colorScheme
+                          .onBackground
+                          .withOpacity(0.8),
                     ),
                     const SizedBox(width: 5),
                     GestureDetector(
