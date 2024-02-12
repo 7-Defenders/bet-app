@@ -58,10 +58,26 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
     final uri = 'https://bet-app-e520a.ew.r.appspot.com/v1/bets/$userID';
     final response = await Globals.performCall(uri);
+    print(response);
 
     setState(() {
       // print(response.body);
       widget.betList = betFromJson(response);
+      widget.betList.sort(
+        (a,b) {
+          if (a.game == null){
+            return 1;
+          }
+          if (b.game == null){
+            return 0;
+          }
+
+          final aDate = a.game!.date??= DateTime(2000,);
+          final bDate = b.game!.date??= DateTime(2000,);
+
+          return bDate.compareTo(aDate);
+        }
+      );
     });
 
     if (mounted) {

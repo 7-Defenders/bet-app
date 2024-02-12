@@ -24,7 +24,7 @@ class Globals {
       loadData();
     }
 
-    if (_shouldCall(uri))
+    if (shouldCall(uri))
     {
       print("will call");
       final http.Response response = await http.get(Uri.parse(uri));
@@ -74,7 +74,7 @@ class Globals {
     return await sharedPreferences!.setString(callsSP, jsonEncode(data));
   }
 
-  static bool _shouldCall(String uri){
+  static bool shouldCall(String uri){
     bool isUriMatching(String uri, RegExp regex) {
       return regex.hasMatch(uri);
     }

@@ -139,11 +139,11 @@ class EventsScreenState extends State<EventsScreen> {
       setState(() {
         final buttonStatesProvider = context.read<ButtonStatesProvider>();
 
-        footballEventFromJson(response).forEach(
+        footballEventFromJson(response).where((element) => element.date.isBefore(DateTime.now())).forEach(
           (element) => displayedMatches.add(
             BetPreviewWidget(
               eventName: '${element.homename} - ${element.awayname}',
-              eventDetails: element.date,
+              eventDetails: element.date.toString(),
               bets: {
                 '1': element.homeodds,
                 '1X': element.homedrawodds,

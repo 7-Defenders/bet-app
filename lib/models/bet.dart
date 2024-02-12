@@ -1,4 +1,7 @@
 import 'dart:convert';
+import 'package:intl/intl.dart';
+
+final DateFormat dateFormat = DateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'");
 
 class Bet {
   int? amount;
@@ -6,7 +9,7 @@ class Bet {
   double? betodds;
   String? competition;
   Game? game;
-  String? madeAt;
+  DateTime? madeAt;
   int? result;
   String? sport;
 
@@ -21,6 +24,7 @@ class Bet {
       this.sport,});
 
   Bet.fromJson(Map<String, dynamic> json) {
+
     amount = json['amount'] as int?;
     bet = json['bet'] as String?;
     betodds = json['betodds'] as double?;
@@ -28,7 +32,7 @@ class Bet {
     game = json['game'] != null
         ? Game.fromJson(json['game'] as Map<String, dynamic>)
         : null;
-    madeAt = json['madeAt'] as String?;
+    madeAt = json['madeAt'] == null ? DateTime(2000,) : dateFormat.parse(json['madeAt'] as String);
     result = json['result'] as int?;
     sport = json["sport"] as String?;
   }
@@ -42,7 +46,7 @@ class Bet {
     if (game != null) {
       data['game'] = game!.toJson();
     }
-    data['madeAt'] = madeAt;
+    data['madeAt'] = madeAt.toString();
     data['result'] = result;
     data['sport'] = sport;
     return data;
@@ -52,7 +56,7 @@ class Bet {
 class Game {
   String? awayname;
   double? awayodds;
-  String? date;
+  DateTime? date;
   double? drawawayodds;
   double? homedrawodds;
   String? homename;
@@ -76,7 +80,7 @@ class Game {
         awayodds: json["awayodds"] != null
             ? double.parse(json["awayodds"].toString())
             : null,
-        date: json["date"] as String,
+        date: json['date'] == null ? DateTime(2000,) : dateFormat.parse(json['date'] as String),
         drawawayodds: json["drawawayodds"] != null
             ? double.parse(json["drawawayodds"].toString())
             : null,
@@ -96,7 +100,7 @@ class Game {
   Map<String, dynamic> toJson() => {
         "awayname": awayname,
         "awayodds": awayodds,
-        "date": date,
+        "date": date.toString(),
         "drawawayodds": drawawayodds,
         "homedrawodds": homedrawodds,
         "homename": homename,
