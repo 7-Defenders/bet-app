@@ -50,8 +50,19 @@ final _router = GoRouter(
       routes: <RouteBase>[
         /// first navbar screen
         GoRoute(
+          path: '/user/:uid',
+          builder: (context, state) => ProfileScreenNew(
+            uid: state.pathParameters['uid'],
+          ),
+        ),
+
+        GoRoute(
           path: '/profile',
-          pageBuilder: fadePageBuilder(ProfileScreenNew()),
+          pageBuilder: fadePageBuilder(
+            ProfileScreenNew(
+              uid: FirebaseAuth.instance.currentUser!.uid,
+            ),
+          ),
         ),
 
         GoRoute(

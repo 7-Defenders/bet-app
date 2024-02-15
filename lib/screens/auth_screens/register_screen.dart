@@ -92,8 +92,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       }
     }
     if (mounted) {
-      Provider.of<UserDataProvider>(context, listen: false)
-          .updateUserData(null);
+      Provider.of<UserDataProvider>(context, listen: false).userData = null;
     }
     return false;
   }

@@ -2,6 +2,7 @@ import 'package:app/components/other/navbar/custom_navbar.dart';
 import 'package:app/models/user_data.dart';
 import 'package:app/providers/user_data_provider.dart';
 import 'package:app/screens/drawer.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -26,10 +27,10 @@ class ScaffoldWithNavBar extends StatelessWidget {
         null) {
       Future.microtask(
         () => Provider.of<UserDataProvider>(context, listen: false)
-            .fetchUserData()
+            .requestUserData(FirebaseAuth.instance.currentUser!.uid)
             .then((UserData? newData) {
-          Provider.of<UserDataProvider>(context, listen: false)
-              .updateUserData(newData);
+          Provider.of<UserDataProvider>(context, listen: false).userData =
+              newData;
         }),
       );
     }

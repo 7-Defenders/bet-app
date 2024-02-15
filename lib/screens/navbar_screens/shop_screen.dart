@@ -23,8 +23,7 @@ class _ShopScreenState extends State<ShopScreen> {
     final userData = Provider.of<UserDataProvider>(context).userData;
 
     Future<void> logOutUser() async {
-      Provider.of<UserDataProvider>(context, listen: false)
-          .updateUserData(null);
+      Provider.of<UserDataProvider>(context, listen: false).userData = null;
       await FirebaseAuth.instance.signOut();
     }
 
