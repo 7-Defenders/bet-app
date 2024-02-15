@@ -1,7 +1,11 @@
+import 'package:app/components/other/appbar/balance_widget.dart';
 import 'package:app/models/user_data.dart';
 import 'package:app/providers/user_data_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class ProfileScreenNew extends StatefulWidget {
@@ -37,7 +41,7 @@ class ProfileScreenNew extends StatefulWidget {
 }
 
 class _ProfileScreenNewState extends State<ProfileScreenNew> {
-  UserData? userData;
+  UserData? userData; //TODO: can this be null?
   late bool isCurrentUser;
 
   // on page load, we need to determine if the page is of the current user or not:
@@ -60,19 +64,27 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
   }
 
   Widget buildProfileScreen() {
+    debugPrint("bg url: ${userData!.bgURL}");
     return isCurrentUser ? buildCurrentUserProfile() : buildOtherUserProfile();
   }
 
   Widget buildCurrentUserProfile() {
-    return Column(
-      children: [
-        const Text("CURRENT USER PROFILE"),
-        Text('Display Name: ${userData!.displayName ?? 'N/A'}'),
-        Text('Email: ${userData!.email ?? 'N/A'}'),
-        Text('Photo URL: ${userData!.photoURL ?? 'N/A'}'),
-        Text('Email Verified: ${userData!.emailVerified ? 'Yes' : 'No'}'),
-        Text('UID: ${userData!.uid}'),
-      ],
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        return Scaffold(
+          body: Column(
+            children: [
+              SizedBox(
+                height: constraints.maxHeight * 0.5,
+                child: buildProfileArea(),
+              ),
+              Expanded(
+                child: buildOptionsList(ProfileScreenNew.profileOptions),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -89,50 +101,95 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    Future<void> logOutUser() async {
-      Provider.of<UserDataProvider>(context, listen: false).userData = null;
-      await FirebaseAuth.instance.signOut();
-    }
+  ListView buildOptionsList(List<Widget> widgets) {
+    return ListView(
+      children: widgets,
+    );
+  }
 
-    Container buildProfileArea() {
-      return Container(
-        decoration: const BoxDecoration(
-          //! in firestore add profile_bg field so it can
-          //! be displayed here. store it in userData!
-          color: Color.fromARGB(255, 255, 186, 74),
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(20),
-            bottomRight: Radius.circular(20),
-          ),
-        ),
-      );
-    }
+  Stack buildProfileArea() {
+    return Stack(
+      children: [
+        buildProfileAreaBackground(),
+        buildProfileAreaForeground(),
+        buildPoints(),
+      ],
+    );
+  }
 
-    ListView buildListView(List<Widget> widgets) {
-      return ListView(
-        children: widgets,
-      );
-    }
+  ClipRRect buildProfileAreaBackground() {
+    return ClipRRect(
+      borderRadius: const BorderRadius.only(
+        bottomLeft: Radius.circular(20),
+        bottomRight: Radius.circular(20),
+      ),
+      child: SvgPicture.network(
+        userData!.bgURL!,
+        fit: BoxFit.fill,
+      ),
+    );
+  }
 
+  LayoutBuilder buildProfileAreaForeground() {
+    // align the profile area widgets accordingly to their parent (proifleArea's) height
     return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) {
-        return Scaffold(
-          // body: Column(
-          //   children: [
-          //     SizedBox(
-          //       height: constraints.maxHeight * 0.5,
-          //       child: buildProfileArea(),
-          //     ),
-          //     Expanded(
-          //       child: buildListView(ProfileScreenNew.profileOptions),
-          //     ),
-          //   ],
-          // ),
-          body: buildProfileScreen(),
+      builder: (context, constraints) {
+        return Column(
+          children: [
+            SizedBox(height: constraints.maxHeight * 0.2),
+            Stack(
+              children: [
+                Column(
+                  children: [
+                    SizedBox(height: constraints.maxHeight * 0.1),
+                    Align(
+                      alignment: const Alignment(0, -0.5),
+                      child: SvgPicture.network(
+                        userData!.tshirtURL!,
+                        height: constraints.maxHeight * 0.5,
+                        fit: BoxFit.fill,
+                      ),
+                    ),
+                  ],
+                ),
+                Align(
+                  alignment: const Alignment(0, 0.5),
+                  child: Image.network(
+                    userData!.photoURL!,
+                    height: constraints.maxHeight * 0.25,
+                  ),
+                ),
+              ],
+            ),
+            buildUserFactsWidget(),
+            SizedBox(height: constraints.maxHeight * 0.1),
+          ],
         );
       },
     );
+  }
+
+  Positioned buildPoints() {
+    //TODO use the already-existing points widget (figure out vw vh 'replacement' first):
+    // return Positioned(
+    // child: BalanceWidget(),
+    // );
+    return Positioned(
+      child: Container(),
+    );
+  }
+
+  Container buildUserFactsWidget() {
+    return Container();
+  }
+
+  Future<void> logOutUser() async {
+    Provider.of<UserDataProvider>(context, listen: false).userData = null;
+    await FirebaseAuth.instance.signOut();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return buildProfileScreen();
   }
 }

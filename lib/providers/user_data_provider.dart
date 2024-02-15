@@ -11,6 +11,7 @@ class UserDataProvider extends ChangeNotifier {
     if (user != null) {
       requestUserData(user.uid).then((value) => _userData = value);
     }
+    // TODO handle no internet connection
   }
 
   UserData? get userData => _userData;
@@ -28,5 +29,23 @@ class UserDataProvider extends ChangeNotifier {
     } else {
       throw Exception('Failed to load user data');
     }
+    // //TODO: add money to GCP for this to work XD
+    // //! for now we use mock data
+
+    // return UserData(
+    //   displayName: "Test123",
+    //   email: "yoooo@gmail.com",
+    //   photoURL:
+    //       "https://firebasestorage.googleapis.com/v0/b/bet-app-e520a.appspot.com/o/profile_pictures%2Fdefault.jpg?alt=media&token=ab37cd08-4c3e-4da3-9f78-ea5e27f9250d",
+    //   emailVerified: true,
+    //   uid: "123", //TODO change
+    //   balance: 100,
+    //   bgURL:
+    //       "https://firebasestorage.googleapis.com/v0/b/bet-app-e520a.appspot.com/o/cosmetics%2Fbackgrounds%2Fdefault.svg?alt=media&token=19c77486-0350-4dba-b4da-d2db07f75df4",
+    //   tshirtURL:
+    //       "https://firebasestorage.googleapis.com/v0/b/bet-app-e520a.appspot.com/o/cosmetics%2Ftshirts%2Fdefault.svg?alt=media&token=09dd66ff-b5cb-4e61-81c2-9b3423b5ca6a",
+    //   frameURL:
+    //       "https://firebasestorage.googleapis.com/v0/b/bet-app-e520a.appspot.com/o/cosmetics%2Fframes%2Fdefault.svg?alt=media&token=ce8d5d33-596f-45a8-b9da-b2cdad3692b5",
+    // );
   }
 }

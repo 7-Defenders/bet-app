@@ -7,6 +7,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 
 class BalanceWidget extends StatelessWidget {
+  //!!!
+  //TODO: get rid of vw & vh calculations
   const BalanceWidget({super.key, required this.vw, required this.vh});
   final double vw;
   final double vh;
