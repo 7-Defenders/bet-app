@@ -29,8 +29,6 @@ class UserDataProvider extends ChangeNotifier {
     } else {
       throw Exception('Failed to load user data');
     }
-    // //TODO: add money to GCP for this to work XD
-    // //! for now we use mock data
 
     // return UserData(
     //   displayName: "Test123",
@@ -38,7 +36,7 @@ class UserDataProvider extends ChangeNotifier {
     //   photoURL:
     //       "https://firebasestorage.googleapis.com/v0/b/bet-app-e520a.appspot.com/o/profile_pictures%2Fdefault.jpg?alt=media&token=ab37cd08-4c3e-4da3-9f78-ea5e27f9250d",
     //   emailVerified: true,
-    //   uid: "123", //TODO change
+    //   uid: "123",
     //   balance: 100,
     //   bgURL:
     //       "https://firebasestorage.googleapis.com/v0/b/bet-app-e520a.appspot.com/o/cosmetics%2Fbackgrounds%2Fdefault.svg?alt=media&token=19c77486-0350-4dba-b4da-d2db07f75df4",

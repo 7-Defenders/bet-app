@@ -1,10 +1,7 @@
-import 'package:app/components/other/appbar/balance_widget.dart';
 import 'package:app/models/user_data.dart';
 import 'package:app/providers/user_data_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
@@ -17,25 +14,6 @@ class ProfileScreenNew extends StatefulWidget {
     required this.uid,
   });
 
-  static const List<Widget> profileOptions = <Widget>[
-    ListTile(
-      leading: Icon(Icons.history),
-      title: Text("History"),
-    ),
-    ListTile(
-      leading: Icon(Icons.settings),
-      title: Text("Settings"),
-    ),
-    ListTile(
-      leading: Icon(Icons.person),
-      title: Text("Profile settings"),
-    ),
-    ListTile(
-      leading: Icon(Icons.notifications),
-      title: Text("Notifications"),
-    ),
-  ];
-
   @override
   State<ProfileScreenNew> createState() => _ProfileScreenNewState();
 }
@@ -43,6 +21,86 @@ class ProfileScreenNew extends StatefulWidget {
 class _ProfileScreenNewState extends State<ProfileScreenNew> {
   UserData? userData; //TODO: can this be null?
   late bool isCurrentUser;
+
+  late List<Widget> profileOptions = <Widget>[
+    ListTile(
+      leading: Icon(
+        Icons.history,
+        color: Theme.of(context).iconTheme.color,
+        size: Theme.of(context).iconTheme.size,
+      ),
+      title: Text(
+        "Your Bet history",
+        style: Theme.of(context).textTheme.displayMedium,
+      ),
+    ),
+    ListTile(
+      leading: Icon(
+        Icons.settings,
+        color: Theme.of(context).iconTheme.color,
+        size: Theme.of(context).iconTheme.size,
+      ),
+      title: Text(
+        "Settings",
+        style: Theme.of(context).textTheme.displayMedium,
+      ),
+    ),
+    ListTile(
+      leading: Icon(
+        Icons.person,
+        color: Theme.of(context).iconTheme.color,
+        size: Theme.of(context).iconTheme.size,
+      ),
+      title: Text(
+        "Profile Settings",
+        style: Theme.of(context).textTheme.displayMedium,
+      ),
+    ),
+    ListTile(
+      leading: Icon(
+        Icons.notifications,
+        color: Theme.of(context).iconTheme.color,
+        size: Theme.of(context).iconTheme.size,
+      ),
+      title: Text(
+        "Notification Settings",
+        style: Theme.of(context).textTheme.displayMedium,
+      ),
+    ),
+    ListTile(
+      leading: Icon(
+        Icons.check,
+        color: Theme.of(context).iconTheme.color,
+        size: Theme.of(context).iconTheme.size,
+      ),
+      title: Text(
+        "Achievements",
+        style: Theme.of(context).textTheme.displayMedium,
+      ),
+    ),
+    const Divider(
+      color: Colors.black,
+    ),
+    ListTile(
+      leading: Icon(
+        Icons.logout,
+        color: Theme.of(context).iconTheme.color,
+        size: Theme.of(context).iconTheme.size,
+      ),
+      title: Text(
+        "Log out",
+        style: Theme.of(context).textTheme.displayMedium?.copyWith(
+              color: Colors.red,
+            ),
+      ),
+      onTap: logOutUser,
+    ),
+  ];
+
+  Future<void> logOutUser() async {
+    Provider.of<UserDataProvider>(context, listen: false).userData = null;
+    await FirebaseAuth.instance.signOut();
+  }
 
   // on page load, we need to determine if the page is of the current user or not:
   @override
@@ -64,7 +122,6 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
   }
 
   Widget buildProfileScreen() {
-    debugPrint("bg url: ${userData!.bgURL}");
     return isCurrentUser ? buildCurrentUserProfile() : buildOtherUserProfile();
   }
 
@@ -79,7 +136,7 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
                 child: buildProfileArea(),
               ),
               Expanded(
-                child: buildOptionsList(ProfileScreenNew.profileOptions),
+                child: buildOptionsList(profileOptions),
               ),
             ],
           ),
@@ -101,9 +158,14 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
     );
   }
 
-  ListView buildOptionsList(List<Widget> widgets) {
-    return ListView(
-      children: widgets,
+  LayoutBuilder buildOptionsList(List<Widget> widgets) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return ListView(
+          padding: EdgeInsets.all(constraints.maxWidth * 0.02),
+          children: widgets,
+        );
+      },
     );
   }
 
@@ -117,15 +179,25 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
     );
   }
 
-  ClipRRect buildProfileAreaBackground() {
-    return ClipRRect(
-      borderRadius: const BorderRadius.only(
-        bottomLeft: Radius.circular(20),
-        bottomRight: Radius.circular(20),
+  Container buildProfileAreaBackground() {
+    return Container(
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.5),
+            blurRadius: 10,
+          ),
+        ],
       ),
-      child: SvgPicture.network(
-        userData!.bgURL!,
-        fit: BoxFit.fill,
+      child: ClipRRect(
+        borderRadius: const BorderRadius.only(
+          bottomLeft: Radius.circular(20),
+          bottomRight: Radius.circular(20),
+        ),
+        child: SvgPicture.network(
+          userData!.bgURL!,
+          fit: BoxFit.fill,
+        ),
       ),
     );
   }
@@ -161,8 +233,9 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
                 ),
               ],
             ),
-            buildUserFactsWidget(),
-            SizedBox(height: constraints.maxHeight * 0.1),
+            SizedBox(height: constraints.maxHeight * 0.05),
+            buildUserFactsWidget(constraints),
+            SizedBox(height: constraints.maxHeight * 0.05),
           ],
         );
       },
@@ -179,13 +252,36 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
     );
   }
 
-  Container buildUserFactsWidget() {
-    return Container();
-  }
-
-  Future<void> logOutUser() async {
-    Provider.of<UserDataProvider>(context, listen: false).userData = null;
-    await FirebaseAuth.instance.signOut();
+  Padding buildUserFactsWidget(BoxConstraints constraints) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: constraints.maxHeight * 0.04),
+      child: Container(
+        padding: EdgeInsets.all(constraints.maxHeight * 0.01),
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
+          color: const Color.fromARGB(255, 255, 186, 75),
+          border: Border.all(
+            color: Colors.white,
+            width: constraints.maxHeight * 0.006,
+          ),
+        ),
+        child: ClipRRect(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Text(
+                "Verified: ${userData!.emailVerified}",
+                style: Theme.of(context).textTheme.displaySmall,
+              ),
+              Text(
+                "Balance: ${userData!.balance}",
+                style: Theme.of(context).textTheme.displaySmall,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   @override

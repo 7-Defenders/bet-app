@@ -49,18 +49,19 @@ final _router = GoRouter(
       },
       routes: <RouteBase>[
         /// first navbar screen
+        ///
         GoRoute(
           path: '/user/:uid',
           builder: (context, state) => ProfileScreenNew(
             uid: state.pathParameters['uid'],
           ),
         ),
-
+        //TODO: there might be no need for both /user/:uid and /profile
         GoRoute(
           path: '/profile',
           pageBuilder: fadePageBuilder(
             ProfileScreenNew(
-              uid: FirebaseAuth.instance.currentUser!.uid,
+              uid: FirebaseAuth.instance.currentUser?.uid,
             ),
           ),
         ),
