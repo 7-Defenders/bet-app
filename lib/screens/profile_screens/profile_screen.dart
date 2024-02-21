@@ -161,13 +161,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                   ),
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: Padding(
-                      padding: EdgeInsets.fromLTRB(0, 2 * vw, 2.5 * vw, 0),
-                      child: BalanceWidget(vw: vw, vh: vh),
-                    ),
-                  ),
+                  // Align(
+                  //   alignment: Alignment.topRight,
+                  //   child: Padding(
+                  //     padding: EdgeInsets.fromLTRB(0, 2 * vw, 2.5 * vw, 0),
+                  //     child: const BalanceWidget(),
+                  //   ),
+                  // ),
                 ],
               ),
             ),

@@ -1,3 +1,4 @@
+import 'package:app/components/other/appbar/balance_widget.dart';
 import 'package:app/models/user_data.dart';
 import 'package:app/providers/user_data_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -174,7 +175,6 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
       children: [
         buildProfileAreaBackground(),
         buildProfileAreaForeground(),
-        buildPoints(),
       ],
     );
   }
@@ -202,53 +202,54 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
     );
   }
 
-  LayoutBuilder buildProfileAreaForeground() {
+  Stack buildProfileAreaForeground() {
     // align the profile area widgets accordingly to their parent (proifleArea's) height
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Column(
-          children: [
-            SizedBox(height: constraints.maxHeight * 0.2),
-            Stack(
+    return Stack(
+      children: [
+        Positioned(
+          top: MediaQuery.of(context).padding.top + 10,
+          right: 10,
+          child: const BalanceWidget(
+            bgColor: Color.fromARGB(255, 255, 163, 21),
+          ),
+        ),
+        LayoutBuilder(
+          builder: (context, constraints) {
+            return Column(
               children: [
-                Column(
+                SizedBox(height: constraints.maxHeight * 0.2),
+                Stack(
                   children: [
-                    SizedBox(height: constraints.maxHeight * 0.1),
+                    Column(
+                      children: [
+                        SizedBox(height: constraints.maxHeight * 0.1),
+                        Align(
+                          alignment: const Alignment(0, -0.5),
+                          child: SvgPicture.network(
+                            userData!.tshirtURL!,
+                            height: constraints.maxHeight * 0.5,
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                      ],
+                    ),
                     Align(
-                      alignment: const Alignment(0, -0.5),
-                      child: SvgPicture.network(
-                        userData!.tshirtURL!,
-                        height: constraints.maxHeight * 0.5,
-                        fit: BoxFit.fill,
+                      alignment: const Alignment(0, 0.5),
+                      child: Image.network(
+                        userData!.photoURL!,
+                        height: constraints.maxHeight * 0.25,
                       ),
                     ),
                   ],
                 ),
-                Align(
-                  alignment: const Alignment(0, 0.5),
-                  child: Image.network(
-                    userData!.photoURL!,
-                    height: constraints.maxHeight * 0.25,
-                  ),
-                ),
+                SizedBox(height: constraints.maxHeight * 0.05),
+                buildUserFactsWidget(constraints),
+                SizedBox(height: constraints.maxHeight * 0.05),
               ],
-            ),
-            SizedBox(height: constraints.maxHeight * 0.05),
-            buildUserFactsWidget(constraints),
-            SizedBox(height: constraints.maxHeight * 0.05),
-          ],
-        );
-      },
-    );
-  }
-
-  Positioned buildPoints() {
-    //TODO use the already-existing points widget (figure out vw vh 'replacement' first):
-    // return Positioned(
-    // child: BalanceWidget(),
-    // );
-    return Positioned(
-      child: Container(),
+            );
+          },
+        ),
+      ],
     );
   }
 

@@ -38,7 +38,9 @@ class _HomeScreen2State extends State<HomeScreen2> {
         [
           Padding(
             padding: EdgeInsets.only(right: vw * 3),
-            child: BalanceWidget(vw: vw, vh: vh),
+            child: const BalanceWidget(
+              bgColor: Color.fromARGB(255, 21, 70, 175),
+            ),
           ),
         ],
       ),

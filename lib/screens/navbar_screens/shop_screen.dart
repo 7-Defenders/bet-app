@@ -35,7 +35,9 @@ class _ShopScreenState extends State<ShopScreen> {
         [
           Padding(
             padding: EdgeInsets.only(right: vw * 3),
-            child: BalanceWidget(vw: vw, vh: vh),
+            child: const BalanceWidget(
+              bgColor: Color.fromARGB(255, 255, 214, 149),
+            ),
           ),
         ],
       ),
