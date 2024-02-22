@@ -6,7 +6,6 @@ import 'package:app/components/profile_screen/change_display_name_icon.dart';
 import 'package:app/components/profile_screen/gesture_detector_button.dart';
 import 'package:app/components/profile_screen/profile_pic.dart';
 import 'package:app/components/profile_screen/text_input_dialog.dart';
-import 'package:app/screens/drawer.dart';
 import 'package:app/utils/functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -15,7 +14,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileScreen extends StatefulWidget {

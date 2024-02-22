@@ -94,7 +94,7 @@ class _JoinLeagueWidgetState extends State<JoinLeagueWidget> {
             children: [
               ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).pop(); // Close the dialog
+                  Navigator.of(context, rootNavigator: true).pop(); // Close the dialog
                   BlocProvider.of<LeagueJoiningBloc>(context).add(CancelLeagueJoinEvent());
                 },
                 child: const Text('Cancel'),
@@ -107,7 +107,7 @@ class _JoinLeagueWidgetState extends State<JoinLeagueWidget> {
                       leagueCode: leagueCodeController.text,
                     ),
                   );
-                  Navigator.of(context).pop(); // Close the dialog
+                  Navigator.of(context, rootNavigator: true).pop(); // Close the dialog
                 },
                 child: const Text('Join'),
               ),
@@ -128,7 +128,7 @@ class _JoinLeagueWidgetState extends State<JoinLeagueWidget> {
       actions: [
         TextButton(
           onPressed: () {
-            Navigator.of(context).pop(); // Close the dialog
+            Navigator.of(context, rootNavigator: true).pop(); // Close the dialog
             // BlocProvider.of<LeagueJoiningBloc>(context).add(CancelLeagueJoinEvent());
           },
           child: const Text('Ok'),
@@ -147,7 +147,7 @@ class _JoinLeagueWidgetState extends State<JoinLeagueWidget> {
       actions: [
         ElevatedButton(
           onPressed: () {
-            Navigator.of(context).pop(); // Close the dialog
+            Navigator.of(context, rootNavigator: true).pop(); // Close the dialog
             BlocProvider.of<LeagueJoiningBloc>(context).add(CancelLeagueJoinEvent());
           },
           child: const Text('Cancel'),
@@ -156,7 +156,7 @@ class _JoinLeagueWidgetState extends State<JoinLeagueWidget> {
           onPressed: () {
             // Trigger the second cloud function to confirm join
             BlocProvider.of<LeagueJoiningBloc>(context).add(ConfirmJoinLeagueEvent(leagueId: state.leagueId));
-            Navigator.of(context).pop(); // Close the dialog
+            Navigator.of(context, rootNavigator: true).pop(); // Close the dialog
           },
           child: const Text('Confirm Join'),
         ),
@@ -174,7 +174,7 @@ class _JoinLeagueWidgetState extends State<JoinLeagueWidget> {
       actions: [
         TextButton(
           onPressed: () {
-            Navigator.of(context).pop(); // Close the dialog
+            Navigator.of(context, rootNavigator: true).pop(); // Close the dialog
             BlocProvider.of<LeagueJoiningBloc>(context).add(CancelLeagueJoinEvent());
           },
           child: const Text('Ok'),

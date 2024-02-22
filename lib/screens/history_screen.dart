@@ -1,60 +1,98 @@
-import 'package:app/components/bet.dart';
 import 'package:app/components/history_screen/history_bet_widget.dart';
 import 'package:app/components/other/nunito_text.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:app/models/bet.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class HistoryScreen extends StatefulWidget {
-  HistoryScreen({super.key});
-  final List<Bet> betList = [];
+  String? userID;
+  HistoryScreen({super.key, this.userID});
+  List<Bet> betList = [];
   final List<HistoryBetWidget> betWidgets = [];
 
   @override
+  // ignore: no_logic_in_create_state
   State<HistoryScreen> createState() => _HistoryScreenState();
 }
 
 class _HistoryScreenState extends State<HistoryScreen> {
-  Future<void>? getBetListFuture;
-
-  void goToProfile() {}
-
-  Future<void> getBetList() async {
-    widget.betList.clear();
-    // fill betList with data from Firestore
-    final FirebaseFirestore firestore = FirebaseFirestore.instance;
-    final FirebaseAuth auth = FirebaseAuth.instance;
-    final User? user = auth.currentUser;
-    final CollectionReference userBets =
-        firestore.collection('Users').doc(user!.uid).collection('UserBets');
-    try {
-      final QuerySnapshot userBetsSnapshot = await userBets.get();
-
-      for (final QueryDocumentSnapshot betDocument in userBetsSnapshot.docs) {
-        final DocumentReference betRef =
-            betDocument['betRef'] as DocumentReference;
-        final DocumentSnapshot betSnapshot = await betRef.get();
-
-        if (betSnapshot.exists) {
-          final Bet bet =
-              await Bet.create(betSnapshot.data()! as Map<String, dynamic>);
-          widget.betList.add(bet);
-        } else {}
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        print('Error fetching bet list: $e');
-      }
-    }
-    setState(() {});
-  }
-
   @override
   void initState() {
     super.initState();
-    getBetListFuture = getBetList();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getBetList();
+    });
+  }
+
+  void goBack() {
+    Navigator.of(context).pop();
+  }
+
+  Future<void> getBetList() async {
+    // print(widget.userID);
+    widget.betList.clear();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Center(
+          child: LoadingAnimationWidget.hexagonDots(
+            color: Theme.of(context).colorScheme.primary,
+            size: 55,
+          ),
+        );
+      },
+      barrierDismissible: false,
+      useRootNavigator: false,
+    );
+
+    final String userID =
+        widget.userID ?? FirebaseAuth.instance.currentUser!.uid;
+    // print('userID: $userID');
+
+    final response = await http.get(
+      Uri.parse(
+        'https://bet-app-e520a.ew.r.appspot.com/v1/bets/${userID}',
+      ),
+    );
+
+    setState(() {
+      // print(response.body);
+      widget.betList = betFromJson(response.body);
+    });
+
+    if (mounted) {
+      Navigator.of(context).pop();
+    }
+    // // fill betList with data from Firestore
+    // final FirebaseFirestore firestore = FirebaseFirestore.instance;
+    // final FirebaseAuth auth = FirebaseAuth.instance;
+    // final User? user = auth.currentUser;
+    // final CollectionReference userBets =
+    //     firestore.collection('Users').doc(userID == null ? user!.uid : userID!).collection('UserBets');
+    // try {
+    //   final QuerySnapshot userBetsSnapshot = await userBets.get();
+
+    //   for (final QueryDocumentSnapshot betDocument in userBetsSnapshot.docs) {
+    //     final DocumentReference betRef =
+    //         betDocument['betRef'] as DocumentReference;
+    //     final DocumentSnapshot betSnapshot = await betRef.get();
+
+    //     if (betSnapshot.exists) {
+    //       final Bet bet =
+    //           await Bet.create(betSnapshot.data()! as Map<String, dynamic>);
+    //       widget.betList.add(bet);
+    //     } else {
+    //     }
+    //   }
+    // } catch (e) {
+    //   if (kDebugMode) {
+    //     print('Error fetching bet list: $e');
+    //   }
+    // }
+    // setState(() {});
   }
 
   @override
@@ -66,7 +104,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
       // return PopScope(
       // canPop: false,
       // onPopInvoked: (didPop) {
-      //   goToProfile();
+      //   goBack();
       // },
       // child: Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
@@ -76,8 +114,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
             children: [
               Container(
                 color: Theme.of(context).colorScheme.primary,
-                height: 2 *
+                height: 5 *
                     vh, // artificial padding for 'History' text that makes color go under the notch
+                //TODO: check if theres a way to get safe area height
               ),
               Container(
                 height: 10 * vh,
@@ -97,7 +136,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         children: [
                           IconButton(
                             onPressed: () {
-                              goToProfile();
+                              goBack();
                             },
                             icon: Icon(
                               Icons.arrow_back_rounded,
@@ -121,19 +160,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
             ],
           ),
           Expanded(
-            child: FutureBuilder<void>(
-              future: getBetListFuture,
-              builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else {
-                  return ListView(
-                    children: widget.betList
-                        .map((bet) => HistoryBetWidget(bet: bet))
-                        .toList(),
-                  );
-                }
-              },
+            child: ListView(
+              children: widget.betList
+                  .map((bet) => HistoryBetWidget(bet: bet))
+                  .toList(),
             ),
           ),
         ],
