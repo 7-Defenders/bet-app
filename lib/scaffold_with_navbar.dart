@@ -4,6 +4,7 @@ import 'package:app/providers/user_data_provider.dart';
 import 'package:app/screens/drawer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -45,6 +46,7 @@ class ScaffoldWithNavBar extends StatelessWidget {
       body: Column(
         children: <Widget>[
           Expanded(child: child),
+          SizedBox(height: MediaQuery.of(context).size.height / 100 * 7),
         ],
       ),
       bottomNavigationBar: customNavbar(
@@ -52,6 +54,7 @@ class ScaffoldWithNavBar extends StatelessWidget {
         _calculateSelectedIndex(context),
         (int idx) => _onItemTapped(idx, context),
       ),
+      extendBody: true,
     );
   }
 
