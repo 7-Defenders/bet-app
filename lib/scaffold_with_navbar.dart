@@ -45,7 +45,6 @@ class ScaffoldWithNavBar extends StatelessWidget {
       body: Column(
         children: <Widget>[
           Expanded(child: child),
-          SizedBox(height: MediaQuery.of(context).size.width / 100 * 7),
         ],
       ),
       bottomNavigationBar: customNavbar(
