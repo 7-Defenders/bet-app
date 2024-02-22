@@ -23,7 +23,7 @@ class ScaffoldWithNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //TODO: fix: on logout currentUser is null
+    //TODO: Use a splash screen to load everything and use this microtask there
     if (Provider.of<UserDataProvider>(context, listen: false).userData ==
         null) {
       Future.microtask(

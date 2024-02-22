@@ -4,6 +4,7 @@ import 'package:app/providers/user_data_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class ProfileScreenNew extends StatefulWidget {
@@ -45,6 +46,7 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
         "Settings",
         style: Theme.of(context).textTheme.displayMedium,
       ),
+      onTap: () => {GoRouter.of(context).go('/profile/settings')},
     ),
     ListTile(
       leading: Icon(

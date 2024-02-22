@@ -11,15 +11,11 @@ class HomeScreen2 extends StatefulWidget {
 }
 
 class _HomeScreen2State extends State<HomeScreen2> {
-  void goHome(BuildContext context) {
-    GoRouter.of(context).go('/home');
-  }
-
-  IconButton buildBackButton(double vw, double vh) {
+  IconButton buildBackButton() {
     return IconButton(
       icon: const Icon(Icons.arrow_back),
       onPressed: () {
-        goHome(context);
+        GoRouter.of(context).go('/home');
       },
     );
   }
@@ -33,7 +29,7 @@ class _HomeScreen2State extends State<HomeScreen2> {
     return Scaffold(
       appBar: CustomAppbar(
         56,
-        buildBackButton(vw, vh),
+        buildBackButton(),
         'Home2',
         [
           Padding(

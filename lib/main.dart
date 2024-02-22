@@ -10,6 +10,7 @@ import 'package:app/screens/navbar_screens/home_screens/home_screen_2.dart';
 import 'package:app/screens/navbar_screens/leagues_screen.dart';
 import 'package:app/screens/navbar_screens/shop_screen.dart';
 import 'package:app/screens/profile_screens/profile_screen_new.dart';
+import 'package:app/screens/profile_screens/settings_screen.dart';
 import 'package:app/themes/dark_theme.dart';
 import 'package:app/themes/light_theme.dart';
 import 'package:app/themes/transitions/fade_page_builder.dart';
@@ -64,6 +65,12 @@ final _router = GoRouter(
               uid: FirebaseAuth.instance.currentUser?.uid,
             ),
           ),
+          routes: <RouteBase>[
+            GoRoute(
+              path: 'settings',
+              pageBuilder: fadePageBuilder(const SettingsScreen()),
+            ),
+          ],
         ),
 
         GoRoute(
