@@ -1,4 +1,5 @@
-import 'package:app/ad_state.dart';
+import 'dart:async';
+
 import 'package:app/blocs/league_joining_bloc/league_joining_bloc.dart';
 import 'package:app/firebase_options.dart';
 import 'package:app/providers/button_states_provider.dart';
@@ -16,6 +17,7 @@ import 'package:app/screens/navbar_screens/shop_screen.dart';
 import 'package:app/themes/dark_theme.dart';
 import 'package:app/themes/light_theme.dart';
 import 'package:app/themes/transitions/fade_page_builder.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -208,10 +210,45 @@ final _router = GoRouter(
 );
 
 class BetApp extends StatelessWidget {
-  const BetApp({super.key});
+  BetApp({super.key});
+
+  final connectivity = Connectivity();
+
+  Future<bool> isConnected() async{
+    return await connectivity.checkConnectivity() != ConnectivityResult.none;
+  }
 
   @override
   Widget build(BuildContext context) {
+
+  // ignore: cancel_subscriptions
+  final StreamSubscription<ConnectivityResult> connectivityPlus = connectivity.onConnectivityChanged.listen((ConnectivityResult result) {
+      if (ConnectivityResult.none == result) {
+        showDialog(context: context, builder: (ctx){
+          return AlertDialog(
+          icon: const Icon(Icons.wifi_off_rounded),
+            title: const Text("No internet connection"),
+            content: const Text("Make sure you are connected to the internet"),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () async {
+                  if (await isConnected()) {
+                    // ignore: use_build_context_synchronously
+                    Navigator.of(ctx).pop();
+                  }
+                },
+                child: Container(
+                  color: Colors.green,
+                  padding: const EdgeInsets.all(14),
+                  child: const Text("Retry"),
+                ),
+              ),
+            ],
+          );
+        },);
+      }
+    });
+  
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       theme: lightTheme,
@@ -223,10 +260,12 @@ class BetApp extends StatelessWidget {
   }
 }
 
+
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   MobileAds.instance.initialize();
-  
+
   await dotenv.load();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -245,6 +284,21 @@ void main() async {
         BlocProvider<LeagueJoiningBloc>(
           create: (context) => LeagueJoiningBloc(),
         ),
+        // BlocProvider(
+        //   create: (context) => NetworkBloc()..add(NetworkObserve()),
+        //   // child: const Home(),
+        //   child: BlocBuilder<NetworkBloc, NetworkState>(
+        //   builder: (context, state) {
+        //     if (state is NetworkFailure) {
+        //       return const Text("No Internet Connection");
+        //     } else if (state is NetworkSuccess) {
+        //       return const Text("You're Connected to Internet");
+        //     } else {
+        //       return const SizedBox.shrink();
+        //     }
+        //   },
+        // ),
+        // ),
       ],
       child: MultiProvider(
         providers: [
@@ -255,7 +309,9 @@ void main() async {
             create: (_) => EventsScreenState.key,
           ),
         ],
-        child: const BetApp(),
+        child: MaterialApp(
+          home: BetApp(),
+        ),
       ),
     ),
   );
