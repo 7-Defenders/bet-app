@@ -225,25 +225,28 @@ class BetApp extends StatelessWidget {
   final StreamSubscription<ConnectivityResult> connectivityPlus = connectivity.onConnectivityChanged.listen((ConnectivityResult result) {
       if (ConnectivityResult.none == result) {
         showDialog(context: context, builder: (ctx){
-          return AlertDialog(
-          icon: const Icon(Icons.wifi_off_rounded),
-            title: const Text("No internet connection"),
-            content: const Text("Make sure you are connected to the internet"),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () async {
-                  if (await isConnected()) {
-                    // ignore: use_build_context_synchronously
-                    Navigator.of(ctx).pop();
-                  }
-                },
-                child: Container(
-                  color: Colors.green,
-                  padding: const EdgeInsets.all(14),
-                  child: const Text("Retry"),
+          return PopScope(
+            canPop: false,
+            child: AlertDialog(
+              icon: const Icon(Icons.wifi_off_rounded),
+              title: const Text("No internet connection"),
+              content: const Text("Make sure you are connected to the internet"),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () async {
+                    if (await isConnected()) {
+                      // ignore: use_build_context_synchronously
+                      Navigator.of(ctx).pop();
+                    }
+                  },
+                  child: Container(
+                    color: Colors.green,
+                    padding: const EdgeInsets.all(14),
+                    child: const Text("Retry"),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           );
         },);
       }
