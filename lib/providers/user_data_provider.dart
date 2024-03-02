@@ -25,8 +25,12 @@ class UserDataProvider extends ChangeNotifier {
     final response = await http
         .get(Uri.parse('https://bet-app-e520a.ew.r.appspot.com/v1/users/$uid'));
     if (response.statusCode == 200) {
+      debugPrint('successful call');
+      debugPrint(response.body);
+      debugPrint(UserData.fromJson(response.body).toString());
       return UserData.fromJson(response.body);
     } else {
+      debugPrint('failed to call user data');
       throw Exception('Failed to load user data');
     }
 

@@ -21,7 +21,7 @@ class ProfileScreenNew extends StatefulWidget {
 }
 
 class _ProfileScreenNewState extends State<ProfileScreenNew> {
-  UserData? userData; //TODO: can this be null?
+  UserData? userData;
   late bool isCurrentUser;
 
   late List<Widget> profileOptions = <Widget>[
@@ -35,6 +35,7 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
         "Your Bet history",
         style: Theme.of(context).textTheme.displayMedium,
       ),
+      onTap: () => {GoRouter.of(context).go('/profile/history')},
     ),
     ListTile(
       leading: Icon(
@@ -50,17 +51,6 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
     ),
     ListTile(
       leading: Icon(
-        Icons.person,
-        color: Theme.of(context).iconTheme.color,
-        size: Theme.of(context).iconTheme.size,
-      ),
-      title: Text(
-        "Profile Settings",
-        style: Theme.of(context).textTheme.displayMedium,
-      ),
-    ),
-    ListTile(
-      leading: Icon(
         Icons.notifications,
         color: Theme.of(context).iconTheme.color,
         size: Theme.of(context).iconTheme.size,
@@ -69,6 +59,7 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
         "Notification Settings",
         style: Theme.of(context).textTheme.displayMedium,
       ),
+      onTap: () => {GoRouter.of(context).go('/profile/notifications')},
     ),
     ListTile(
       leading: Icon(
@@ -80,6 +71,7 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
         "Achievements",
         style: Theme.of(context).textTheme.displayMedium,
       ),
+      onTap: () => {GoRouter.of(context).go('/profile/achievements')},
     ),
     const Divider(
       color: Colors.black,
@@ -112,12 +104,20 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
 
     if ((widget.uid != null) &&
         (widget.uid != FirebaseAuth.instance.currentUser!.uid)) {
+      debugPrint('User is not current user');
+      debugPrint("(widget.uid != null) returned ${widget.uid != null}");
+      debugPrint(
+          "(widget.uid != FirebaseAuth.instance.currentUser!.uid) returned ${widget.uid != FirebaseAuth.instance.currentUser!.uid}");
+      debugPrint("widget.uid: ${widget.uid}");
+      debugPrint(
+          "FirebaseAuth.instance.currentUser!.uid: ${FirebaseAuth.instance.currentUser!.uid}");
       // the page is not of the current user. set flag and fetch the user data.
       isCurrentUser = false;
       Provider.of<UserDataProvider>(context, listen: false)
           .requestUserData(widget.uid!)
           .then((value) => userData = value);
     } else {
+      debugPrint('User IS current user');
       // the page is of the current user. set flag and use the user data from the provider
       isCurrentUser = true;
       userData = Provider.of<UserDataProvider>(context, listen: false).userData;

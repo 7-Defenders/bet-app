@@ -1,5 +1,5 @@
 import 'package:app/components/history_screen/history_bet_widget.dart';
-import 'package:app/components/other/nunito_text.dart';
+import 'package:app/components/other/appbar/custom_appbar.dart';
 import 'package:app/models/bet.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -7,13 +7,12 @@ import 'package:http/http.dart' as http;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class HistoryScreen extends StatefulWidget {
-  String? userID;
+  final String? userID;
   HistoryScreen({super.key, this.userID});
   List<Bet> betList = [];
   final List<HistoryBetWidget> betWidgets = [];
 
   @override
-  // ignore: no_logic_in_create_state
   State<HistoryScreen> createState() => _HistoryScreenState();
 }
 
@@ -54,7 +53,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
     final response = await http.get(
       Uri.parse(
-        'https://bet-app-e520a.ew.r.appspot.com/v1/bets/${userID}',
+        'https://bet-app-e520a.ew.r.appspot.com/v1/bets/$userID',
       ),
     );
 
@@ -97,9 +96,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final double vw = MediaQuery.of(context).size.width / 100;
-    final double vh = MediaQuery.of(context).size.height / 100;
-
     return Scaffold(
       // return PopScope(
       // canPop: false,
@@ -108,57 +104,17 @@ class _HistoryScreenState extends State<HistoryScreen> {
       // },
       // child: Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
+      appBar: CustomAppbar(
+        56,
+        IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: goBack,
+        ),
+        'History',
+        null,
+      ),
       body: Column(
         children: [
-          Column(
-            children: [
-              Container(
-                color: Theme.of(context).colorScheme.primary,
-                height: 5 *
-                    vh, // artificial padding for 'History' text that makes color go under the notch
-                //TODO: check if theres a way to get safe area height
-              ),
-              Container(
-                height: 10 * vh,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary,
-                  // color: Colors.red,
-                  borderRadius: const BorderRadius.only(
-                    bottomLeft: Radius.circular(30),
-                    bottomRight: Radius.circular(30),
-                  ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Row(
-                        children: [
-                          IconButton(
-                            onPressed: () {
-                              goBack();
-                            },
-                            icon: Icon(
-                              Icons.arrow_back_rounded,
-                              size: vw * 8,
-                              color: Theme.of(context).colorScheme.background,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    nunitoText(
-                      'History',
-                      30,
-                      FontWeight.bold,
-                      Theme.of(context).colorScheme.background,
-                    ),
-                    const Spacer(),
-                  ],
-                ),
-              ),
-            ],
-          ),
           Expanded(
             child: ListView(
               children: widget.betList

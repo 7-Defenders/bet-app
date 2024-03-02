@@ -8,9 +8,12 @@ class AchievementsScreen extends StatefulWidget {
 }
 
 class _AchievementsScreenState extends State<AchievementsScreen> {
-
   @override
-  Widget build(BuildContext context){
-    return const Scaffold();
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: Center(
+        child: Text('Achievements'),
+      ),
+    );
   }
 }

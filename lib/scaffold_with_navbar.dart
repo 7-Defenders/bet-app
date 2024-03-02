@@ -24,18 +24,20 @@ class ScaffoldWithNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //TODO: Use a splash screen to load everything and use this microtask there
-    if (Provider.of<UserDataProvider>(context, listen: false).userData ==
-        null) {
-      Future.microtask(
-        () => Provider.of<UserDataProvider>(context, listen: false)
-            .requestUserData(FirebaseAuth.instance.currentUser!.uid)
-            .then((UserData? newData) {
-          Provider.of<UserDataProvider>(context, listen: false).userData =
-              newData;
-        }),
-      );
-    }
+    debugPrint('building scaffold with navbar');
+    // //TODO: Use a loading/splash screen to load everything and load uer data there
+    // if (Provider.of<UserDataProvider>(context, listen: false).userData ==
+    //     null) {
+    //   debugPrint('User data is null');
+    //   Future.microtask(
+    //     () => Provider.of<UserDataProvider>(context, listen: false)
+    //         .requestUserData(FirebaseAuth.instance.currentUser!.uid)
+    //         .then((UserData? newData) {
+    //       Provider.of<UserDataProvider>(context, listen: false).userData =
+    //           newData;
+    //     }),
+    //   );
+    // }
 
     return Scaffold(
       drawer: drawer(

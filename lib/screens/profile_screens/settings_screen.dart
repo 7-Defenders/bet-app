@@ -9,6 +9,18 @@ class SettingsScreen extends StatefulWidget {
   State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
+ListView buildProfileOptions() {
+  return ListView(
+    children: <Widget>[],
+  );
+}
+
+ListView buildOptions() {
+  return ListView(
+    children: <Widget>[],
+  );
+}
+
 class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
@@ -24,8 +36,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
         'Settings',
         null,
       ),
-      body: const Center(
-        child: Text('Settings Screen'),
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            buildProfileOptions(),
+            const Divider(),
+            buildOptions(),
+          ],
+        ),
       ),
     );
   }
