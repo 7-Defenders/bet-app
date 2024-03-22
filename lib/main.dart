@@ -1,6 +1,7 @@
 import 'package:app/blocs/league_joining_bloc/league_joining_bloc.dart';
 import 'package:app/firebase_options.dart';
 import 'package:app/providers/button_states_provider.dart';
+import 'package:app/providers/theme_provider.dart';
 import 'package:app/providers/user_data_provider.dart';
 import 'package:app/scaffold_with_navbar.dart';
 import 'package:app/screens/auth_screens/login_or_register_screen.dart';
@@ -14,8 +15,8 @@ import 'package:app/screens/navbar_screens/league_screens/league_summary.dart';
 import 'package:app/screens/navbar_screens/leagues_screen.dart';
 import 'package:app/screens/navbar_screens/shop_screen.dart';
 import 'package:app/screens/profile_screens/achievements_screen.dart';
-import 'package:app/screens/profile_screens/notifications_screen.dart';
 import 'package:app/screens/profile_screens/profile_screen_new.dart';
+import 'package:app/screens/profile_screens/profile_settings_screen.dart';
 import 'package:app/screens/profile_screens/settings_screen.dart';
 import 'package:app/themes/dark_theme.dart';
 import 'package:app/themes/light_theme.dart';
@@ -111,11 +112,11 @@ final _router = GoRouter(
               },
             ),
             GoRoute(
-              path: 'notifications',
+              path: 'profile_settings',
               pageBuilder: (BuildContext context, GoRouterState state) {
                 return CustomTransitionPage<void>(
                   key: state.pageKey,
-                  child: const NotificationSettingsScreen(),
+                  child: const ProfileSettingsScreen(),
                   transitionDuration: const Duration(milliseconds: 301),
                   transitionsBuilder:
                       (context, animation, secondaryAnimation, child) {
@@ -280,11 +281,15 @@ final _router = GoRouter(
     ),
   ],
   redirect: (BuildContext ctx, GoRouterState state) {
-    final userAuthenticated = FirebaseAuth.instance.currentUser != null;
-    final onAuthPage = state.matchedLocation.startsWith('/auth');
+    final bool userAuthenticated = FirebaseAuth.instance.currentUser != null;
+    final bool userDataExists =
+        Provider.of<UserDataProvider>(ctx, listen: false).userData != null;
+    final bool onAuthPage = state.matchedLocation.startsWith('/auth');
     if (!userAuthenticated && !onAuthPage) {
       return '/auth';
-    } else if (userAuthenticated && onAuthPage) {
+    } else if ((userAuthenticated && onAuthPage) ||
+        (!userDataExists && userAuthenticated && !onAuthPage)) {
+      // log in authenticated user; if logged in and no user data, show loading screen
       return '/loading';
     } else {
       return null;
@@ -297,13 +302,18 @@ class BetApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      theme: lightTheme,
-      darkTheme: darkTheme,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      routerConfig: _router,
+    return Consumer<ThemeModeProvider>(
+      builder: (context, themeModeProvider, child) {
+        return MaterialApp.router(
+          debugShowCheckedModeBanner: false,
+          themeMode: themeModeProvider.themeMode,
+          theme: lightTheme,
+          darkTheme: darkTheme,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          routerConfig: _router,
+        );
+      },
     );
   }
 }
@@ -343,6 +353,9 @@ void main() async {
           ),
           ChangeNotifierProvider(
             create: (context) => UserDataProvider(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => ThemeModeProvider(),
           ),
         ],
         child: const BetApp(),

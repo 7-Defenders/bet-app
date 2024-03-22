@@ -44,22 +44,22 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
         size: Theme.of(context).iconTheme.size,
       ),
       title: Text(
-        "Settings",
+        "App Settings",
         style: Theme.of(context).textTheme.displayMedium,
       ),
       onTap: () => {GoRouter.of(context).go('/profile/settings')},
     ),
     ListTile(
       leading: Icon(
-        Icons.notifications,
+        Icons.person,
         color: Theme.of(context).iconTheme.color,
         size: Theme.of(context).iconTheme.size,
       ),
       title: Text(
-        "Notification Settings",
+        "Profile Settings",
         style: Theme.of(context).textTheme.displayMedium,
       ),
-      onTap: () => {GoRouter.of(context).go('/profile/notifications')},
+      onTap: () => {GoRouter.of(context).go('/profile/profile_settings')},
     ),
     ListTile(
       leading: Icon(

@@ -1,4 +1,6 @@
+import 'package:app/models/user_data.dart';
 import 'package:app/providers/user_data_provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -26,12 +28,21 @@ class _LoadingScreenState extends State<LoadingScreen> {
 
   Future<void> asyncLoadData() async {
     final user = FirebaseAuth.instance.currentUser;
-
-    debugPrint('user: $user');
-    debugPrint("i will wait 5 seconds now!");
-    // wait 5 seconds before fetching the user data so that it's saved in DB
-    await Future.delayed(const Duration(seconds: 5));
+    await Future.delayed(const Duration(seconds: 5)); //TODO transaction
     if (mounted) {
+      // if (user != null) {
+      //   final userDataProvider =
+      //       Provider.of<UserDataProvider>(context, listen: false);
+      //   final Map<String, dynamic> userData = await FirebaseFirestore.instance
+      //       .runTransaction<Map<String, dynamic>>((transaction) async {
+      //     final userDataSnapshot = await transaction.get(
+      //       FirebaseFirestore.instance.collection('users').doc(user.uid),
+      //     );
+      //     return Future.value(userDataSnapshot.data());
+      //   });
+      //   final UserData? ud = UserData.fromMap(userData);
+      //   userDataProvider.userData = ud;
+      // }
       if (user != null) {
         // wait for API call to request user data and then manually set it
         debugPrint("wait is over. lets fetch data!");
@@ -42,17 +53,13 @@ class _LoadingScreenState extends State<LoadingScreen> {
                   .userData = value,
             );
       }
-      debugPrint("data fetching ended!");
-      debugPrint(
-        "ofter the data fetching user data is: ${Provider.of<UserDataProvider>(context, listen: false).userData}",
-      );
       if (Provider.of<UserDataProvider>(context, listen: false).userData !=
           null) {
         GoRouter.of(context).go('/home');
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('An error occured - please log in again.'),
+            content: Text('An error occurred - please log in again.'),
           ),
         );
         GoRouter.of(context).go('/auth');
