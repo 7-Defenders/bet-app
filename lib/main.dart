@@ -1,21 +1,29 @@
+import 'dart:async';
+
 import 'package:app/blocs/league_joining_bloc/league_joining_bloc.dart';
 import 'package:app/firebase_options.dart';
 import 'package:app/globals.dart';
 import 'package:app/providers/button_states_provider.dart';
+import 'package:app/providers/user_data_provider.dart';
 import 'package:app/scaffold_with_navbar.dart';
-import 'package:app/screens/achievements_screen.dart';
 import 'package:app/screens/auth_screens/login_or_register_screen.dart';
 import 'package:app/screens/history_screen.dart';
+import 'package:app/screens/loading_screen.dart';
 import 'package:app/screens/navbar_screens/events_screen.dart';
-import 'package:app/screens/navbar_screens/home_screen.dart';
+import 'package:app/screens/navbar_screens/home_screens/home_screen.dart';
+import 'package:app/screens/navbar_screens/home_screens/home_screen_2.dart';
 import 'package:app/screens/navbar_screens/league_screens/league_creator.dart';
 import 'package:app/screens/navbar_screens/league_screens/league_summary.dart';
 import 'package:app/screens/navbar_screens/leagues_screen.dart';
-import 'package:app/screens/navbar_screens/profile_screen.dart';
 import 'package:app/screens/navbar_screens/shop_screen.dart';
+import 'package:app/screens/profile_screens/achievements_screen.dart';
+import 'package:app/screens/profile_screens/notifications_screen.dart';
+import 'package:app/screens/profile_screens/profile_screen_new.dart';
+import 'package:app/screens/profile_screens/settings_screen.dart';
 import 'package:app/themes/dark_theme.dart';
 import 'package:app/themes/light_theme.dart';
 import 'package:app/themes/transitions/fade_page_builder.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -29,22 +37,25 @@ import 'package:provider/provider.dart';
 // import 'package:flutter_localizations/flutter_localizations.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey =
-  GlobalKey<NavigatorState>(debugLabel: 'root');
+    GlobalKey<NavigatorState>(debugLabel: 'root');
 final GlobalKey<NavigatorState> _shellNavigatorKey =
-  GlobalKey<NavigatorState>(debugLabel: 'shell');
-
+    GlobalKey<NavigatorState>(debugLabel: 'shell');
 
 final _router = GoRouter(
   initialLocation: '/events',
   navigatorKey: _rootNavigatorKey,
   debugLogDiagnostics: true,
-  routes: <RouteBase> [
+  routes: <RouteBase>[
     // auth flow route
     GoRoute(
       path: '/auth',
       builder: (BuildContext context, GoRouterState state) {
         return const LoginOrRegisterScreen();
       },
+    ),
+    GoRoute(
+      path: '/loading',
+      pageBuilder: fadePageBuilder(LoadingScreen()),
     ),
     // Shell for scaffold + bottom navbar
     ShellRoute(
@@ -54,12 +65,31 @@ final _router = GoRouter(
       },
       routes: <RouteBase>[
         /// first navbar screen
+        ///
+        GoRoute(
+          path: '/user/:uid',
+          builder: (context, state) => ProfileScreenNew(
+            uid: state.pathParameters['uid'],
+          ),
+        ),
+        //TODO: there might be no need for both /user/:uid and /profile
         GoRoute(
           path: '/profile',
-          pageBuilder: fadePageBuilder(const ProfileScreen()),
+          // pageBuilder: fadePageBuilder(
+          //   ProfileScreenNew(),
+          // ),
+          builder: (BuildContext context, GoRouterState state) {
+            return ProfileScreenNew(
+              uid: Provider.of<UserDataProvider>(context, listen: false)
+                  .userData!
+                  .uid,
+            );
+          },
           routes: <RouteBase>[
-            // The history screen to display stacked on the inner Navigator.
-            // This will cover profile screen but not the application shell.
+            GoRoute(
+              path: 'settings',
+              pageBuilder: fadePageBuilder(const SettingsScreen()),
+            ),
             GoRoute(
               path: 'history',
               // builder: (BuildContext context, GoRouterState state) {
@@ -70,8 +100,10 @@ final _router = GoRouter(
                   key: state.pageKey,
                   child: HistoryScreen(),
                   transitionDuration: const Duration(milliseconds: 301),
-                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                    return const FadeUpwardsPageTransitionsBuilder().buildTransitions(
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) {
+                    return const FadeUpwardsPageTransitionsBuilder()
+                        .buildTransitions(
                       MaterialPageRoute(builder: (context) => Container()),
                       context,
                       animation,
@@ -82,6 +114,139 @@ final _router = GoRouter(
                 );
               },
             ),
+            GoRoute(
+              path: 'notifications',
+              pageBuilder: (BuildContext context, GoRouterState state) {
+                return CustomTransitionPage<void>(
+                  key: state.pageKey,
+                  child: const NotificationSettingsScreen(),
+                  transitionDuration: const Duration(milliseconds: 301),
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) {
+                    return const FadeUpwardsPageTransitionsBuilder()
+                        .buildTransitions(
+                      MaterialPageRoute(builder: (context) => Container()),
+                      context,
+                      animation,
+                      secondaryAnimation,
+                      child,
+                    );
+                  },
+                );
+              },
+            ),
+
+            /// Same as "/profile/history", but displayed on the root Navigator
+            /// by specifying [parentNavigatorKey]. This will cover both events
+            /// screen and the application shell.
+            GoRoute(
+              path: 'achievements',
+              pageBuilder: fadePageBuilder(const AchievementsScreen()),
+            ),
+          ],
+        ),
+
+        GoRoute(
+          path: '/events',
+          pageBuilder: fadePageBuilder(const EventsScreen()),
+        ),
+
+        GoRoute(
+          path: '/home',
+          pageBuilder: fadePageBuilder(const HomeScreen()),
+          routes: <RouteBase>[
+            GoRoute(
+              path: '2',
+              pageBuilder: fadePageBuilder(const HomeScreen2()),
+            ),
+          ],
+        ),
+
+        GoRoute(
+          path: '/leagues',
+          pageBuilder: fadePageBuilder(const LeaguesScreen()),
+          routes: <RouteBase>[
+            GoRoute(
+              path: 'creator',
+              // builder: (BuildContext context, GoRouterState state) {
+              //   return HistoryScreen();
+              // },
+              pageBuilder: (BuildContext context, GoRouterState state) {
+                return CustomTransitionPage<void>(
+                  key: state.pageKey,
+                  child: const LeagueCreator(),
+                  transitionDuration: const Duration(milliseconds: 301),
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) {
+                    return const FadeUpwardsPageTransitionsBuilder()
+                        .buildTransitions(
+                      MaterialPageRoute(builder: (context) => Container()),
+                      context,
+                      animation,
+                      secondaryAnimation,
+                      child,
+                    );
+                  },
+                );
+              },
+            ),
+            GoRoute(
+              path: 'summary',
+              // builder: (BuildContext context, GoRouterState state) {
+              //   return HistoryScreen();
+              // },
+              pageBuilder: (BuildContext context, GoRouterState state) {
+                return CustomTransitionPage<void>(
+                  key: state.pageKey,
+                  child: LeagueSummary(
+                    leagueID: state.extra! as String,
+                  ),
+                  transitionDuration: const Duration(milliseconds: 301),
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) {
+                    return const FadeUpwardsPageTransitionsBuilder()
+                        .buildTransitions(
+                      MaterialPageRoute(builder: (context) => Container()),
+                      context,
+                      animation,
+                      secondaryAnimation,
+                      child,
+                    );
+                  },
+                );
+              },
+              routes: <RouteBase>[
+                // The history screen to display stacked on the inner Navigator.
+                // This will cover profile screen but not the application shell.
+                GoRoute(
+                  path: 'history',
+                  // builder: (BuildContext context, GoRouterState state) {
+                  //   return HistoryScreen();
+                  // },
+                  pageBuilder: (BuildContext context, GoRouterState state) {
+                    return CustomTransitionPage<void>(
+                      key: state.pageKey,
+                      child: HistoryScreen(
+                        userID: state.extra! as String,
+                      ),
+                      transitionDuration: const Duration(milliseconds: 301),
+                      transitionsBuilder:
+                          (context, animation, secondaryAnimation, child) {
+                        return const FadeUpwardsPageTransitionsBuilder()
+                            .buildTransitions(
+                          MaterialPageRoute(builder: (context) => Container()),
+                          context,
+                          animation,
+                          secondaryAnimation,
+                          child,
+                        );
+                      },
+                    );
+                  },
+                ),
+              ],
+            ),
+
             /// Same as "/profile/history", but displayed on the root Navigator
             /// by specifying [parentNavigatorKey]. This will cover both events
             /// screen and the application shell.
@@ -103,87 +268,11 @@ final _router = GoRouter(
         GoRoute(
           path: '/home',
           pageBuilder: fadePageBuilder(const HomeScreen()),
-        ),
-
-        GoRoute(
-          path: '/leagues',
-          pageBuilder: fadePageBuilder(const LeaguesScreen()),
           routes: <RouteBase>[
-            // The history screen to display stacked on the inner Navigator.
-            // This will cover profile screen but not the application shell.
             GoRoute(
-              path: 'creator',
-              // builder: (BuildContext context, GoRouterState state) {
-              //   return HistoryScreen();
-              // },
-              pageBuilder: (BuildContext context, GoRouterState state) {
-                return CustomTransitionPage<void>(
-                  key: state.pageKey,
-                  child: const LeagueCreator(),
-                  transitionDuration: const Duration(milliseconds: 301),
-                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                    return const FadeUpwardsPageTransitionsBuilder().buildTransitions(
-                      MaterialPageRoute(builder: (context) => Container()),
-                      context,
-                      animation,
-                      secondaryAnimation,
-                      child,
-                    );
-                  },
-                );
-              },
+              path: '2',
+              pageBuilder: fadePageBuilder(const HomeScreen2()),
             ),
-            GoRoute(
-              path: 'summary',
-              // builder: (BuildContext context, GoRouterState state) {
-              //   return HistoryScreen();
-              // },
-              pageBuilder: (BuildContext context, GoRouterState state) {
-                return CustomTransitionPage<void>(
-                  key: state.pageKey,
-                  child: LeagueSummary(leagueID: state.extra! as String,),
-                  transitionDuration: const Duration(milliseconds: 301),
-                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                    return const FadeUpwardsPageTransitionsBuilder().buildTransitions(
-                      MaterialPageRoute(builder: (context) => Container()),
-                      context,
-                      animation,
-                      secondaryAnimation,
-                      child,
-                    );
-                  },
-                );
-              },
-              routes: <RouteBase>[
-                // The history screen to display stacked on the inner Navigator.
-                // This will cover profile screen but not the application shell.
-                GoRoute(
-                  path: 'history',
-                  // builder: (BuildContext context, GoRouterState state) {
-                  //   return HistoryScreen();
-                  // },
-                  pageBuilder: (BuildContext context, GoRouterState state) {
-                    return CustomTransitionPage<void>(
-                      key: state.pageKey,
-                      child: HistoryScreen(userID: state.extra! as String,),
-                      transitionDuration: const Duration(milliseconds: 301),
-                      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                        return const FadeUpwardsPageTransitionsBuilder().buildTransitions(
-                          MaterialPageRoute(builder: (context) => Container()),
-                          context,
-                          animation,
-                          secondaryAnimation,
-                          child,
-                        );
-                      },
-                    );
-                  },
-                ),
-              ],
-            ),
-            /// Same as "/profile/history", but displayed on the root Navigator
-            /// by specifying [parentNavigatorKey]. This will cover both events
-            /// screen and the application shell.
           ],
         ),
 
@@ -200,7 +289,7 @@ final _router = GoRouter(
     if (!userAuthenticated && !onAuthPage) {
       return '/auth';
     } else if (userAuthenticated && onAuthPage) {
-      return '/events';
+      return '/loading';
     } else {
       return null;
     }
@@ -208,10 +297,48 @@ final _router = GoRouter(
 );
 
 class BetApp extends StatelessWidget {
-  const BetApp({super.key});
+  BetApp({super.key});
+
+  final connectivity = Connectivity();
+
+  Future<bool> isConnected() async{
+    return await connectivity.checkConnectivity() != ConnectivityResult.none;
+  }
 
   @override
   Widget build(BuildContext context) {
+
+  // ignore: cancel_subscriptions
+  final StreamSubscription<ConnectivityResult> connectivityPlus = connectivity.onConnectivityChanged.listen((ConnectivityResult result) {
+      if (ConnectivityResult.none == result) {
+        showDialog(context: context, builder: (ctx){
+          return PopScope(
+            canPop: false,
+            child: AlertDialog(
+              icon: const Icon(Icons.wifi_off_rounded),
+              title: const Text("No internet connection"),
+              content: const Text("Make sure you are connected to the internet"),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () async {
+                    if (await isConnected()) {
+                      // ignore: use_build_context_synchronously
+                      Navigator.of(ctx).pop();
+                    }
+                  },
+                  child: Container(
+                    color: Colors.green,
+                    padding: const EdgeInsets.all(14),
+                    child: const Text("Retry"),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },);
+      }
+    });
+  
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       theme: lightTheme,
@@ -223,13 +350,15 @@ class BetApp extends StatelessWidget {
   }
 }
 
+
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   MobileAds.instance.initialize();
 
   await Globals.loadData();
-  
   await dotenv.load();
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -237,16 +366,33 @@ void main() async {
     webProvider: ReCaptchaV3Provider(dotenv.env['RECAPTCHA_SITE_KEY']!),
     androidProvider: AndroidProvider.debug,
   );
+
   // when log out or log in, refresh the router to redirect to the correct page
   FirebaseAuth.instance.authStateChanges().listen((User? user) {
     _router.refresh();
   });
+
   runApp(
     MultiBlocProvider(
       providers: [
         BlocProvider<LeagueJoiningBloc>(
           create: (context) => LeagueJoiningBloc(),
         ),
+        // BlocProvider(
+        //   create: (context) => NetworkBloc()..add(NetworkObserve()),
+        //   // child: const Home(),
+        //   child: BlocBuilder<NetworkBloc, NetworkState>(
+        //   builder: (context, state) {
+        //     if (state is NetworkFailure) {
+        //       return const Text("No Internet Connection");
+        //     } else if (state is NetworkSuccess) {
+        //       return const Text("You're Connected to Internet");
+        //     } else {
+        //       return const SizedBox.shrink();
+        //     }
+        //   },
+        // ),
+        // ),
       ],
       child: MultiProvider(
         providers: [
@@ -256,8 +402,13 @@ void main() async {
           Provider<GlobalKey<EventsScreenState>>(
             create: (_) => EventsScreenState.key,
           ),
+          ChangeNotifierProvider(
+            create: (context) => UserDataProvider(),
+          ),
         ],
-        child: const BetApp(),
+        child: MaterialApp(
+          home: BetApp(),
+        ),
       ),
     ),
   );

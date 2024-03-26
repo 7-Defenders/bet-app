@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:app/components/balance_widget.dart';
+import 'package:app/components/other/appbar/balance_widget.dart';
 import 'package:app/components/other/nunito_text.dart';
 import 'package:app/components/profile_screen/change_display_name_icon.dart';
 import 'package:app/components/profile_screen/gesture_detector_button.dart';
@@ -159,13 +159,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                   ),
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: Padding(
-                      padding: EdgeInsets.fromLTRB(0, 2 * vw, 2.5 * vw, 0),
-                      child: BalanceWidget(vw: vw, vh: vh),
-                    ),
-                  ),
+                  // Align(
+                  //   alignment: Alignment.topRight,
+                  //   child: Padding(
+                  //     padding: EdgeInsets.fromLTRB(0, 2 * vw, 2.5 * vw, 0),
+                  //     child: const BalanceWidget(),
+                  //   ),
+                  // ),
                 ],
               ),
             ),
@@ -208,7 +208,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           style: GoogleFonts.nunito(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 30,
-                                            color: Theme.of(context).colorScheme.onBackground,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onBackground,
                                           ),
                                           maxLines: 1,
                                         ),

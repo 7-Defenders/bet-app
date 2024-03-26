@@ -1,0 +1,48 @@
+import 'package:app/components/other/appbar/balance_widget.dart';
+import 'package:app/components/other/appbar/custom_appbar.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+class HomeScreen2 extends StatefulWidget {
+  const HomeScreen2({super.key});
+
+  @override
+  State<HomeScreen2> createState() => _HomeScreen2State();
+}
+
+class _HomeScreen2State extends State<HomeScreen2> {
+  IconButton buildBackButton() {
+    return IconButton(
+      icon: const Icon(Icons.arrow_back),
+      onPressed: () {
+        GoRouter.of(context).go('/home');
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    //TODO: move all vw and vh calculations to constants file or find a better way to handle them
+    final double vw = MediaQuery.of(context).size.width / 100;
+    final double vh = MediaQuery.of(context).size.height / 100;
+
+    return Scaffold(
+      appBar: CustomAppbar(
+        56,
+        buildBackButton(),
+        'Home2',
+        [
+          Padding(
+            padding: EdgeInsets.only(right: vw * 3),
+            child: const BalanceWidget(
+              bgColor: Color.fromARGB(255, 21, 70, 175),
+            ),
+          ),
+        ],
+      ),
+      body: const Center(
+        child: Text('Home Screen 2'),
+      ),
+    );
+  }
+}

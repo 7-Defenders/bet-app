@@ -22,6 +22,7 @@ class _ShopScreenState extends State<ShopScreen> {
   @override
   void initState() {
     super.initState();
+
     if (Globals.rewardedAd == null) {
       setState(() => Globals.loadRewardedAd());
     }
@@ -45,24 +46,24 @@ class _ShopScreenState extends State<ShopScreen> {
       }
       Globals.rewardedAd!.show(
         onUserEarnedReward: (ad, reward) async {
+          // awarding coins
+          final response = await http.post(
+            Uri.parse(
+              'https://bet-app-e520a.ew.r.appspot.com/v1/users/$uid/coins',
+            ),
+            headers: <String, String>{
+              'Content-Type': 'application/json; charset=UTF-8',
+            },
+          );
 
-            // awarding coins
-            final response = await http.post(
-              Uri.parse(
-                'https://bet-app-e520a.ew.r.appspot.com/v1/users/$uid/coins',
-              ),
-              headers: <String, String>{
-                'Content-Type': 'application/json; charset=UTF-8',
-              },
-            );
-            
-            // displaying a snackbar
-            // ignore: use_build_context_synchronously
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: nunitoText('100 coins were awarded', 16, FontWeight.bold, Colors.black)));
-          },
+          // displaying a snackbar
+          // ignore: use_build_context_synchronously
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: nunitoText('100 coins were awarded', 16, FontWeight.bold,
+                  Colors.black)));
+        },
       );
-      
-      
+
       Globals.rewardedAd = null;
       Globals.loadRewardedAd();
     }
@@ -85,226 +86,300 @@ class _ShopScreenState extends State<ShopScreen> {
       backgroundColor: Theme.of(context).colorScheme.background,
       body: SingleChildScrollView(
         child: Center(
-            child: Column(
-              children: [
-                // FIRST SECTION - COINS
-                SizedBox(
-                  width: usableWidth,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 8,),
-                      nunitoText("Bet coins", 18, FontWeight.bold, Colors.black),
-                      nunitoText("Get free coins or buy coin multipliers", 14, FontWeight.normal, Colors.grey),
-                      const SizedBox(height: 8,),
-                    ],
-                  ),
+          child: Column(
+            children: [
+              // FIRST SECTION - COINS
+              SizedBox(
+                width: usableWidth,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    nunitoText("Bet coins", 18, FontWeight.bold, Colors.black),
+                    nunitoText("Get free coins or buy coin multipliers", 14,
+                        FontWeight.normal, Colors.grey),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                  ],
                 ),
-                SizedBox(
-                  height: cardHeight,
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    shrinkWrap: true,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(usableWidth / 18, 8, 8, 8),
-                          child: Card(
-                            elevation: 5,
-                            surfaceTintColor: Colors.white,
-                            child: SizedBox(
-                              width: cardWidth,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  SizedBox(
-                                    width: cardWidth * 0.8,
-                                    child: nunitoText('Watch an ad to get 100 coins', 14, FontWeight.normal, Colors.black, textAlign: TextAlign.center),),
-                                  IconButton(
-                                    onPressed: () => showRewardedAd(),
-                                    highlightColor: const Color.fromARGB(255, 255, 187, 85),
-                                    color: const Color.fromARGB(255, 96, 179, 255),
-                                    icon: Icon(Icons.videocam, size: cardHeight * .5,),
-                                  ),
-                                ],
+              ),
+              SizedBox(
+                height: cardHeight,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(usableWidth / 18, 8, 8, 8),
+                      child: Card(
+                        elevation: 5,
+                        surfaceTintColor: Colors.white,
+                        child: SizedBox(
+                          width: cardWidth,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              SizedBox(
+                                width: cardWidth * 0.8,
+                                child: nunitoText(
+                                    'Watch an ad to get 100 coins',
+                                    14,
+                                    FontWeight.normal,
+                                    Colors.black,
+                                    textAlign: TextAlign.center),
                               ),
-                            ),
+                              IconButton(
+                                onPressed: () => showRewardedAd(),
+                                highlightColor:
+                                    const Color.fromARGB(255, 255, 187, 85),
+                                color: const Color.fromARGB(255, 96, 179, 255),
+                                icon: Icon(
+                                  Icons.videocam,
+                                  size: cardHeight * .5,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                  ),
+                      ),
+                    ),
+                  ],
                 ),
+              ),
 
-                // SECOND SECTION - BACKGROUNDS
+              // SECOND SECTION - BACKGROUNDS
 
-                SizedBox(
-                  width: usableWidth,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 8,),
-                      nunitoText("Profile backgrounds", 18, FontWeight.bold, Colors.black),
-                      nunitoText("Stick your favourite pattern on your profile for others to see", 14, FontWeight.normal, Colors.grey),
-                      const SizedBox(height: 8,),
-                    ],
-                  ),
+              SizedBox(
+                width: usableWidth,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    nunitoText("Profile backgrounds", 18, FontWeight.bold,
+                        Colors.black),
+                    nunitoText(
+                        "Stick your favourite pattern on your profile for others to see",
+                        14,
+                        FontWeight.normal,
+                        Colors.grey),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                  ],
                 ),
-                SizedBox(
-                  height: cardHeight,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    shrinkWrap: true,
-                    itemCount: itemCount,
-                    itemBuilder: (BuildContext context, int index){
-                      return Padding(
-                        padding: EdgeInsets.fromLTRB(index==0 ? usableWidth / 18 : 8, 8, index==itemCount-1 ? usableWidth / 18 : 8, 8),
-                        child: Card(
-                          elevation: 5,
-                          surfaceTintColor: Colors.white,
-                          child: SizedBox(
-                            width: cardWidth,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                nunitoText(index.toString(), 16, FontWeight.normal, Colors.black),
-                                SvgPicture.asset('lib/assets/images/futbol-regular.svg', width: cardWidth * 0.5, height: cardHeight * .5,),
-                              ],
-                            ),
-                    
+              ),
+              SizedBox(
+                height: cardHeight,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  itemCount: itemCount,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Padding(
+                      padding: EdgeInsets.fromLTRB(
+                          index == 0 ? usableWidth / 18 : 8,
+                          8,
+                          index == itemCount - 1 ? usableWidth / 18 : 8,
+                          8),
+                      child: Card(
+                        elevation: 5,
+                        surfaceTintColor: Colors.white,
+                        child: SizedBox(
+                          width: cardWidth,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              nunitoText(index.toString(), 16,
+                                  FontWeight.normal, Colors.black),
+                              SvgPicture.asset(
+                                'lib/assets/images/futbol-regular.svg',
+                                width: cardWidth * 0.5,
+                                height: cardHeight * .5,
+                              ),
+                            ],
                           ),
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  },
                 ),
+              ),
 
-                // THIRD SECTION - JERSEYS
+              // THIRD SECTION - JERSEYS
 
-                SizedBox(
-                  width: usableWidth,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 8,),
-                      nunitoText("Jerseys", 18, FontWeight.bold, Colors.black),
-                      nunitoText("Get a beautiful jersey to present your name", 14, FontWeight.normal, Colors.grey),
-                      const SizedBox(height: 8,),
-                    ],
-                  ),
+              SizedBox(
+                width: usableWidth,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    nunitoText("Jerseys", 18, FontWeight.bold, Colors.black),
+                    nunitoText("Get a beautiful jersey to present your name",
+                        14, FontWeight.normal, Colors.grey),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                  ],
                 ),
-                SizedBox(
-                  height: cardHeight,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    shrinkWrap: true,
-                    itemCount: itemCount,
-                    itemBuilder: (BuildContext context, int index){
-                      return Padding(
-                        padding: EdgeInsets.fromLTRB(index==0 ? usableWidth / 18 : 8, 8, index==itemCount-1 ? usableWidth / 18 : 8, 8),
-                        child: Card(
-                          elevation: 5,
-                          surfaceTintColor: Colors.white,
-                          child: SizedBox(
-                            width: cardWidth,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                nunitoText(index.toString(), 16, FontWeight.normal, Colors.black),
-                                SvgPicture.asset('lib/assets/images/futbol-regular.svg', width: cardWidth * 0.5, height: cardHeight * .5,),
-                              ],
-                            ),
+              ),
+              SizedBox(
+                height: cardHeight,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  itemCount: itemCount,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Padding(
+                      padding: EdgeInsets.fromLTRB(
+                          index == 0 ? usableWidth / 18 : 8,
+                          8,
+                          index == itemCount - 1 ? usableWidth / 18 : 8,
+                          8),
+                      child: Card(
+                        elevation: 5,
+                        surfaceTintColor: Colors.white,
+                        child: SizedBox(
+                          width: cardWidth,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              nunitoText(index.toString(), 16,
+                                  FontWeight.normal, Colors.black),
+                              SvgPicture.asset(
+                                'lib/assets/images/futbol-regular.svg',
+                                width: cardWidth * 0.5,
+                                height: cardHeight * .5,
+                              ),
+                            ],
                           ),
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  },
                 ),
+              ),
 
-                // FOURTH SECTION - NUMBERS
+              // FOURTH SECTION - NUMBERS
 
-                SizedBox(
-                  width: usableWidth,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 8,),
-                      nunitoText("Numbers", 18, FontWeight.bold, Colors.black),
-                      nunitoText("Stick your favourite number on your jersey", 14, FontWeight.normal, Colors.grey),
-                      const SizedBox(height: 8,),
-                    ],
-                  ),
+              SizedBox(
+                width: usableWidth,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    nunitoText("Numbers", 18, FontWeight.bold, Colors.black),
+                    nunitoText("Stick your favourite number on your jersey", 14,
+                        FontWeight.normal, Colors.grey),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                  ],
                 ),
-                SizedBox(
-                  height: cardHeight,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    shrinkWrap: true,
-                    itemCount: itemCount,
-                    itemBuilder: (BuildContext context, int index){
-                      return Padding(
-                        padding: EdgeInsets.fromLTRB(index==0 ? usableWidth / 18 : 8, 8, index==itemCount-1 ? usableWidth / 18 : 8, 8),
-                        child: Card(
-                          elevation: 5,
-                          surfaceTintColor: Colors.white,
-                          child: SizedBox(
-                            width: cardWidth,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                nunitoText(index.toString(), 16, FontWeight.normal, Colors.black),
-                                SvgPicture.asset('lib/assets/images/futbol-regular.svg', width: cardWidth * 0.5, height: cardHeight * .5,),
-                              ],
-                            ),
+              ),
+              SizedBox(
+                height: cardHeight,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  itemCount: itemCount,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Padding(
+                      padding: EdgeInsets.fromLTRB(
+                          index == 0 ? usableWidth / 18 : 8,
+                          8,
+                          index == itemCount - 1 ? usableWidth / 18 : 8,
+                          8),
+                      child: Card(
+                        elevation: 5,
+                        surfaceTintColor: Colors.white,
+                        child: SizedBox(
+                          width: cardWidth,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              nunitoText(index.toString(), 16,
+                                  FontWeight.normal, Colors.black),
+                              SvgPicture.asset(
+                                'lib/assets/images/futbol-regular.svg',
+                                width: cardWidth * 0.5,
+                                height: cardHeight * .5,
+                              ),
+                            ],
                           ),
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  },
                 ),
+              ),
 
-                
-                // FIFTH SECTION - PROFILE BORDERS
+              // FIFTH SECTION - PROFILE BORDERS
 
-                SizedBox(
-                  width: usableWidth,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 8,),
-                      nunitoText("Profile borders", 18, FontWeight.bold, Colors.black),
-                      nunitoText("Enhance your profile with a stylish border", 14, FontWeight.normal, Colors.grey),
-                      const SizedBox(height: 8,),
-                    ],
-                  ),
+              SizedBox(
+                width: usableWidth,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    nunitoText(
+                        "Profile borders", 18, FontWeight.bold, Colors.black),
+                    nunitoText("Enhance your profile with a stylish border", 14,
+                        FontWeight.normal, Colors.grey),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                  ],
                 ),
-                SizedBox(
-                  height: cardHeight,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    shrinkWrap: true,
-                    itemCount: itemCount,
-                    itemBuilder: (BuildContext context, int index){
-                      return Padding(
-                        padding: EdgeInsets.fromLTRB(index==0 ? usableWidth / 18 : 8, 8, index==itemCount-1 ? usableWidth / 18 : 8, 8),
-                        child: Card(
-                          elevation: 5,
-                          surfaceTintColor: Colors.white,
-                          child: SizedBox(
-                            width: cardWidth,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                nunitoText(index.toString(), 16, FontWeight.normal, Colors.black),
-                                SvgPicture.asset('lib/assets/images/futbol-regular.svg', width: cardWidth * 0.5, height: cardHeight * .5,),
-                              ],
-                            ),
+              ),
+              SizedBox(
+                height: cardHeight,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  itemCount: itemCount,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Padding(
+                      padding: EdgeInsets.fromLTRB(
+                          index == 0 ? usableWidth / 18 : 8,
+                          8,
+                          index == itemCount - 1 ? usableWidth / 18 : 8,
+                          8),
+                      child: Card(
+                        elevation: 5,
+                        surfaceTintColor: Colors.white,
+                        child: SizedBox(
+                          width: cardWidth,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              nunitoText(index.toString(), 16,
+                                  FontWeight.normal, Colors.black),
+                              SvgPicture.asset(
+                                'lib/assets/images/futbol-regular.svg',
+                                width: cardWidth * 0.5,
+                                height: cardHeight * .5,
+                              ),
+                            ],
                           ),
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  },
                 ),
-              ],
-            ),
+              ),
+            ],
+          ),
         ),
       ),
     );
