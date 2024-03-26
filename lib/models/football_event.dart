@@ -3,6 +3,10 @@
 //     final footballEvent = footballEventFromJson(jsonString);
 
 import 'dart:convert';
+import 'package:intl/intl.dart';
+
+
+final DateFormat dateFormat = DateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'");
 
 List<FootballEvent> footballEventFromJson(String str) {
   final jsonData = json.decode(str);
@@ -18,8 +22,7 @@ List<FootballEvent> footballEventFromJson(String str) {
 class FootballEvent {
   String awayname;
   double awayodds;
-  // String competition;
-  String date;
+  DateTime date;
   double drawawayodds;
   double homedrawodds;
   String homename;
@@ -46,7 +49,7 @@ class FootballEvent {
         awayname: json["awayname"] as String,
         awayodds: double.parse(json["awayodds"].toString()),
         // competition: json["competition"]  as String,
-        date: json["date"] as String,
+        date: json['date'] == null ? DateTime(2000,) : dateFormat.parse(json['date'] as String),
         drawawayodds: double.parse(json["drawawayodds"].toString()),
         homedrawodds: double.parse(json["homedrawodds"].toString()),
         homename: json["homename"] as String,
@@ -60,7 +63,7 @@ class FootballEvent {
         "awayname": awayname,
         "awayodds": awayodds,
         // "competition": competition,
-        "date": date,
+        "date": date.toString(),
         "drawawayodds": drawawayodds,
         "homedrawodds": homedrawodds,
         "homename": homename,

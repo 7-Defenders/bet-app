@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:app/globals.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -70,6 +71,7 @@ class LeagueJoiningBloc extends Bloc<LeagueJoiningEvent, LeagueJoiningState> {
         // print("3");
         // print(data);
         if (data.containsKey('success') && data['success'] == true) {
+          Globals.joinedNewLeague = true;
           emit(LeagueJoiningConfirmationSuccessState());
         } else {
           emit(LeagueJoiningFailedState(message: 'Failed to join the league.'));

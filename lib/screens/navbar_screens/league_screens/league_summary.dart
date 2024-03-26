@@ -1,5 +1,6 @@
 import 'package:app/components/league_screen/league_widget.dart';
 import 'package:app/components/other/nunito_text.dart';
+import 'package:app/globals.dart';
 import 'package:app/models/player_league_summary.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -195,10 +196,11 @@ class _LeagueSummaryState extends State<LeagueSummary> {
       useRootNavigator: false,
     );
 
-    final response = await http.get(Uri.parse('https://bet-app-e520a.ew.r.appspot.com/v1/leagues/${widget.leagueID}/users'));
+    final uri = 'https://bet-app-e520a.ew.r.appspot.com/v1/leagues/${widget.leagueID}/users';
+    final response = await Globals.performCall(uri);
     // print(response.body);
     setState((){
-      final body = leagueSummaryFromJson(response.body);
+      final body = leagueSummaryFromJson(response);
       // print(body.competitionsIncluded);
 
       leagueName = body.leagueName;

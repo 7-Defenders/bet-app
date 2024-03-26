@@ -1,14 +1,19 @@
 import 'package:app/components/history_screen/history_bet_widget.dart';
+import 'package:app/components/other/nunito_text.dart';
+import 'package:app/globals.dart';
 import 'package:app/components/other/appbar/custom_appbar.dart';
 import 'package:app/models/bet.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class HistoryScreen extends StatefulWidget {
+
   final String? userID;
   HistoryScreen({super.key, this.userID});
+
   List<Bet> betList = [];
   final List<HistoryBetWidget> betWidgets = [];
 
@@ -51,15 +56,27 @@ class _HistoryScreenState extends State<HistoryScreen> {
         widget.userID ?? FirebaseAuth.instance.currentUser!.uid;
     // print('userID: $userID');
 
-    final response = await http.get(
-      Uri.parse(
-        'https://bet-app-e520a.ew.r.appspot.com/v1/bets/$userID',
-      ),
-    );
+    final uri = 'https://bet-app-e520a.ew.r.appspot.com/v1/bets/$userID';
+    final response = await Globals.performCall(uri);
 
     setState(() {
       // print(response.body);
-      widget.betList = betFromJson(response.body);
+      widget.betList = betFromJson(response);
+      widget.betList.sort(
+        (a,b) {
+          if (a.game == null){
+            return 1;
+          }
+          if (b.game == null){
+            return 0;
+          }
+
+          final aDate = a.game!.date??= DateTime(2000,);
+          final bDate = b.game!.date??= DateTime(2000,);
+
+          return bDate.compareTo(aDate);
+        }
+      );
     });
 
     if (mounted) {
