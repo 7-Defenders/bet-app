@@ -114,7 +114,7 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
             ),
             JoinLeagueWidget(),
             const SizedBox(
-              height: 120,
+              height: 40,
             ),
             LeagueListWidget(
               header: nunitoText("Your leagues", 20, FontWeight.bold,
@@ -131,7 +131,7 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
               onTap: (int index) {
                 goToLeagueSummary(context, index);
               },
-              height: 300,
+              height: MediaQuery.of(context).size.height * 0.5,
             ),
             const Spacer(),
             ElevatedButton(
@@ -144,9 +144,9 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
                 style: TextStyle(color: Colors.white),
               ),
             ),
-            const SizedBox(
-              height: 40,
-            ),
+            // const SizedBox(
+            //   height: 40,
+            // ),
           ],
         ),
       ),

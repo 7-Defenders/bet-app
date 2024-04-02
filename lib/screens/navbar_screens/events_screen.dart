@@ -132,15 +132,16 @@ class EventsScreenState extends State<EventsScreen> {
     try {
       final uri = 'https://bet-app-e520a.ew.r.appspot.com/v1/competitions/$league';
       final response = await Globals.performCall(uri);
-      print(response);
 
       displayedMatches.clear();
 
       setState(() {
         final buttonStatesProvider = context.read<ButtonStatesProvider>();
 
-        footballEventFromJson(response).where((element) => element.date.isBefore(DateTime.now())).forEach(
-          (element) => displayedMatches.add(
+        final List<FootballEvent> fe = footballEventFromJson(response);
+
+        fe.where((element) => element.date.isAfter(DateTime.now())).forEach(
+          (element)  {displayedMatches.add(
             BetPreviewWidget(
               eventName: '${element.homename} - ${element.awayname}',
               eventDetails: element.date.toString(),
@@ -196,6 +197,7 @@ class EventsScreenState extends State<EventsScreen> {
                     '$selectedOption,$odds,$matchRef',
                   );
                 }
+
                 //print(
                 //"ButtonStatesProvider values: ${buttonStatesProvider.buttonStates}");
                 //print whole map
@@ -204,9 +206,13 @@ class EventsScreenState extends State<EventsScreen> {
                   .buttonStates['${element.homename} - ${element.awayname}']
                   ?.split(',')[0],
             ),
-          ),
+          );
+          
+                print(displayedMatches.length);}
         );
       });
+    } catch (e) {
+      print(e);
     } finally {
       if (mounted) {
         Navigator.of(context).pop();

@@ -55,7 +55,7 @@ class _LeagueSummaryState extends State<LeagueSummary> {
       child: Column(
         children: [
           nunitoText("Are you sure?", 22, FontWeight.bold, Colors.black),
-          nunitoText("You will use your league points forever.", 16, FontWeight.normal, Colors.black),
+          nunitoText("You will lose your league points forever.", 16, FontWeight.normal, Colors.black),
           const Spacer(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -307,7 +307,7 @@ class _LeagueSummaryState extends State<LeagueSummary> {
           ),
           const SizedBox(height: 40,),
           LeagueListWidget(
-            header: nunitoText("Your leagues", 20, FontWeight.bold, Color.fromRGBO(30, 30, 27, 1)),
+            header: nunitoText("Standings", 20, FontWeight.bold, const Color.fromRGBO(30, 30, 27, 1)),
             leadingWidgets: leadingWidgets,
             titles: usernames,
             // addons: points,
