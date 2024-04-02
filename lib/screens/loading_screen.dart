@@ -28,31 +28,31 @@ class _LoadingScreenState extends State<LoadingScreen> {
 
   Future<void> asyncLoadData() async {
     final user = FirebaseAuth.instance.currentUser;
-    await Future.delayed(const Duration(seconds: 5)); //TODO transaction
+    // await Future.delayed(const Duration(seconds: 5)); //TODO transaction
     if (mounted) {
-      // if (user != null) {
-      //   final userDataProvider =
-      //       Provider.of<UserDataProvider>(context, listen: false);
-      //   final Map<String, dynamic> userData = await FirebaseFirestore.instance
-      //       .runTransaction<Map<String, dynamic>>((transaction) async {
-      //     final userDataSnapshot = await transaction.get(
-      //       FirebaseFirestore.instance.collection('users').doc(user.uid),
-      //     );
-      //     return Future.value(userDataSnapshot.data());
-      //   });
-      //   final UserData? ud = UserData.fromMap(userData);
-      //   userDataProvider.userData = ud;
-      // }
       if (user != null) {
-        // wait for API call to request user data and then manually set it
-        debugPrint("wait is over. lets fetch data!");
-        await Provider.of<UserDataProvider>(context, listen: false)
-            .requestUserData(FirebaseAuth.instance.currentUser!.uid)
-            .then(
-              (value) => Provider.of<UserDataProvider>(context, listen: false)
-                  .userData = value,
-            );
+        final userDataProvider =
+            Provider.of<UserDataProvider>(context, listen: false);
+        final Map<String, dynamic> userData = await FirebaseFirestore.instance
+            .runTransaction<Map<String, dynamic>>((transaction) async {
+          final userDataSnapshot = await transaction.get(
+            FirebaseFirestore.instance.collection('users').doc(user.uid),
+          );
+          return Future.value(userDataSnapshot.data());
+        });
+        final UserData? ud = UserData.fromMap(userData);
+        userDataProvider.userData = ud;
       }
+      // if (user != null) {
+      //   // wait for API call to request user data and then manually set it
+      //   debugPrint("wait is over. lets fetch data!");
+      //   await Provider.of<UserDataProvider>(context, listen: false)
+      //       .requestUserData(FirebaseAuth.instance.currentUser!.uid)
+      //       .then(
+      //         (value) => Provider.of<UserDataProvider>(context, listen: false)
+      //             .userData = value,
+      //       );
+      // }
       if (Provider.of<UserDataProvider>(context, listen: false).userData !=
           null) {
         GoRouter.of(context).go('/home');
