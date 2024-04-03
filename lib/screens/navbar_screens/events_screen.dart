@@ -211,8 +211,6 @@ class EventsScreenState extends State<EventsScreen> {
                 print(displayedMatches.length);}
         );
       });
-    } catch (e) {
-      print(e);
     } finally {
       if (mounted) {
         Navigator.of(context).pop();
