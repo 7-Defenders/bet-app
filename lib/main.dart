@@ -1,11 +1,12 @@
 import 'dart:async';
 
 import 'package:app/blocs/league_joining_bloc/league_joining_bloc.dart';
-import 'package:app/firebase_options.dart';
 import 'package:app/globals.dart';
+import 'package:app/other/firebase_options.dart';
+import 'package:app/other/scaffold_with_navbar.dart';
 import 'package:app/providers/button_states_provider.dart';
+import 'package:app/providers/theme_provider.dart';
 import 'package:app/providers/user_data_provider.dart';
-import 'package:app/scaffold_with_navbar.dart';
 import 'package:app/screens/auth_screens/login_or_register_screen.dart';
 import 'package:app/screens/history_screen.dart';
 import 'package:app/screens/loading_screen.dart';
@@ -17,8 +18,9 @@ import 'package:app/screens/navbar_screens/league_screens/league_summary.dart';
 import 'package:app/screens/navbar_screens/leagues_screen.dart';
 import 'package:app/screens/navbar_screens/shop_screen.dart';
 import 'package:app/screens/profile_screens/achievements_screen.dart';
-import 'package:app/screens/profile_screens/notifications_screen.dart';
+import 'package:app/screens/profile_screens/cosmetics.dart';
 import 'package:app/screens/profile_screens/profile_screen_new.dart';
+import 'package:app/screens/profile_screens/profile_settings_screen.dart';
 import 'package:app/screens/profile_screens/settings_screen.dart';
 import 'package:app/themes/dark_theme.dart';
 import 'package:app/themes/light_theme.dart';
@@ -55,7 +57,10 @@ final _router = GoRouter(
     ),
     GoRoute(
       path: '/loading',
-      pageBuilder: fadePageBuilder(LoadingScreen()),
+      pageBuilder: fadePageBuilder(
+        (context, state, _) => LoadingScreen(),
+        null,
+      ),
     ),
     // Shell for scaffold + bottom navbar
     ShellRoute(
@@ -75,20 +80,28 @@ final _router = GoRouter(
         //TODO: there might be no need for both /user/:uid and /profile
         GoRoute(
           path: '/profile',
-          // pageBuilder: fadePageBuilder(
-          //   ProfileScreenNew(),
-          // ),
-          builder: (BuildContext context, GoRouterState state) {
-            return ProfileScreenNew(
+          pageBuilder: fadePageBuilder(
+            (context, state, uid) => ProfileScreenNew(
               uid: Provider.of<UserDataProvider>(context, listen: false)
                   .userData!
                   .uid,
-            );
-          },
+            ),
+            null,
+          ),
+          // builder: (BuildContext context, GoRouterState state) {
+          //   return ProfileScreenNew(
+          //     uid: Provider.of<UserDataProvider>(context, listen: false)
+          //         .userData!
+          //         .uid,
+          //   );
+          // },
           routes: <RouteBase>[
             GoRoute(
               path: 'settings',
-              pageBuilder: fadePageBuilder(const SettingsScreen()),
+              pageBuilder: fadePageBuilder(
+                (context, state, _) => const SettingsScreen(),
+                null,
+              ),
             ),
             GoRoute(
               path: 'history',
@@ -115,11 +128,32 @@ final _router = GoRouter(
               },
             ),
             GoRoute(
-              path: 'notifications',
+              path: 'profile_settings',
               pageBuilder: (BuildContext context, GoRouterState state) {
                 return CustomTransitionPage<void>(
                   key: state.pageKey,
-                  child: const NotificationSettingsScreen(),
+                  child: const ProfileSettingsScreen(),
+                  transitionDuration: const Duration(milliseconds: 301),
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) {
+                    return const FadeUpwardsPageTransitionsBuilder()
+                        .buildTransitions(
+                      MaterialPageRoute(builder: (context) => Container()),
+                      context,
+                      animation,
+                      secondaryAnimation,
+                      child,
+                    );
+                  },
+                );
+              },
+            ),
+            GoRoute(
+              path: 'cosmetics',
+              pageBuilder: (BuildContext context, GoRouterState state) {
+                return CustomTransitionPage<void>(
+                  key: state.pageKey,
+                  child: const CosmeticsScreen(),
                   transitionDuration: const Duration(milliseconds: 301),
                   transitionsBuilder:
                       (context, animation, secondaryAnimation, child) {
@@ -141,30 +175,45 @@ final _router = GoRouter(
             /// screen and the application shell.
             GoRoute(
               path: 'achievements',
-              pageBuilder: fadePageBuilder(const AchievementsScreen()),
+              pageBuilder: fadePageBuilder(
+                (context, state, _) => const AchievementsScreen(),
+                null,
+              ),
             ),
           ],
         ),
 
         GoRoute(
           path: '/events',
-          pageBuilder: fadePageBuilder(const EventsScreen()),
+          pageBuilder: fadePageBuilder(
+            (context, state, _) => const EventsScreen(),
+            null,
+          ),
         ),
 
         GoRoute(
           path: '/home',
-          pageBuilder: fadePageBuilder(const HomeScreen()),
+          pageBuilder: fadePageBuilder(
+            (context, state, _) => const HomeScreen(),
+            null,
+          ),
           routes: <RouteBase>[
             GoRoute(
               path: '2',
-              pageBuilder: fadePageBuilder(const HomeScreen2()),
+              pageBuilder: fadePageBuilder(
+                (context, state, _) => const HomeScreen2(),
+                null,
+              ),
             ),
           ],
         ),
 
         GoRoute(
           path: '/leagues',
-          pageBuilder: fadePageBuilder(const LeaguesScreen()),
+          pageBuilder: fadePageBuilder(
+            (context, state, _) => const LeaguesScreen(),
+            null,
+          ),
           routes: <RouteBase>[
             GoRoute(
               path: 'creator',
@@ -262,33 +311,41 @@ final _router = GoRouter(
 
         GoRoute(
           path: '/events',
-          pageBuilder: fadePageBuilder(const EventsScreen()),
+          pageBuilder: fadePageBuilder(
+              (context, state, _) => const EventsScreen(), null),
         ),
 
         GoRoute(
           path: '/home',
-          pageBuilder: fadePageBuilder(const HomeScreen()),
+          pageBuilder:
+              fadePageBuilder((context, state, _) => const HomeScreen(), null),
           routes: <RouteBase>[
             GoRoute(
               path: '2',
-              pageBuilder: fadePageBuilder(const HomeScreen2()),
+              pageBuilder: fadePageBuilder(
+                  (context, state, _) => const HomeScreen2(), null),
             ),
           ],
         ),
 
         GoRoute(
           path: '/shop',
-          pageBuilder: fadePageBuilder(const ShopScreen()),
+          pageBuilder:
+              fadePageBuilder((context, state, _) => const ShopScreen(), null),
         ),
       ],
     ),
   ],
   redirect: (BuildContext ctx, GoRouterState state) {
-    final userAuthenticated = FirebaseAuth.instance.currentUser != null;
-    final onAuthPage = state.matchedLocation.startsWith('/auth');
+    final bool userAuthenticated = FirebaseAuth.instance.currentUser != null;
+    final bool userDataExists =
+        Provider.of<UserDataProvider>(ctx, listen: false).userData != null;
+    final bool onAuthPage = state.matchedLocation.startsWith('/auth');
     if (!userAuthenticated && !onAuthPage) {
       return '/auth';
-    } else if (userAuthenticated && onAuthPage) {
+    } else if ((userAuthenticated && onAuthPage) ||
+        (!userDataExists && userAuthenticated && !onAuthPage)) {
+      // log in authenticated user; if logged in and no user data, show loading screen
       return '/loading';
     } else {
       return null;
@@ -301,56 +358,63 @@ class BetApp extends StatelessWidget {
 
   final connectivity = Connectivity();
 
-  Future<bool> isConnected() async{
+  Future<bool> isConnected() async {
     return await connectivity.checkConnectivity() != ConnectivityResult.none;
   }
 
   @override
   Widget build(BuildContext context) {
-
-  // ignore: cancel_subscriptions
-  final StreamSubscription<ConnectivityResult> connectivityPlus = connectivity.onConnectivityChanged.listen((ConnectivityResult result) {
+    // ignore: cancel_subscriptions
+    final StreamSubscription<ConnectivityResult> connectivityPlus =
+        connectivity.onConnectivityChanged.listen((ConnectivityResult result) {
       if (ConnectivityResult.none == result) {
-        showDialog(context: context, builder: (ctx){
-          return PopScope(
-            canPop: false,
-            child: AlertDialog(
-              icon: const Icon(Icons.wifi_off_rounded),
-              title: const Text("No internet connection"),
-              content: const Text("Make sure you are connected to the internet"),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () async {
-                    if (await isConnected()) {
-                      // ignore: use_build_context_synchronously
-                      Navigator.of(ctx).pop();
-                    }
-                  },
-                  child: Container(
-                    color: Colors.green,
-                    padding: const EdgeInsets.all(14),
-                    child: const Text("Retry"),
+        showDialog(
+          context: context,
+          builder: (ctx) {
+            return PopScope(
+              canPop: false,
+              child: AlertDialog(
+                icon: const Icon(Icons.wifi_off_rounded),
+                title: const Text("No internet connection"),
+                content:
+                    const Text("Make sure you are connected to the internet"),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () async {
+                      if (await isConnected()) {
+                        // ignore: use_build_context_synchronously
+                        Navigator.of(ctx).pop();
+                      }
+                    },
+                    child: Container(
+                      color: Colors.green,
+                      padding: const EdgeInsets.all(14),
+                      child: const Text("Retry"),
+                    ),
                   ),
-                ),
-              ],
-            ),
-          );
-        },);
+                ],
+              ),
+            );
+          },
+        );
       }
     });
-  
-    return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      theme: lightTheme,
-      darkTheme: darkTheme,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      routerConfig: _router,
+
+    return Consumer<ThemeModeProvider>(
+      builder: (context, themeModeProvider, child) {
+        return MaterialApp.router(
+          debugShowCheckedModeBanner: false,
+          themeMode: themeModeProvider.themeMode,
+          theme: lightTheme,
+          darkTheme: darkTheme,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          routerConfig: _router,
+        );
+      },
     );
   }
 }
-
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -404,6 +468,9 @@ void main() async {
           ),
           ChangeNotifierProvider(
             create: (context) => UserDataProvider(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => ThemeModeProvider(),
           ),
         ],
         child: MaterialApp(

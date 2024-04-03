@@ -2,13 +2,10 @@ import 'package:app/components/auth_screens/button.dart';
 import 'package:app/components/auth_screens/image_tile.dart';
 import 'package:app/components/auth_screens/text_field.dart';
 import 'package:app/components/other/nunito_text.dart';
-import 'package:app/models/user_data.dart';
-import 'package:app/providers/user_data_provider.dart';
 import 'package:app/services/auth_service.dart';
 import 'package:app/utils/functions.dart' as utils;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class LogInScreen extends StatefulWidget {
   final Function()? toggleScreen;
@@ -78,22 +75,27 @@ class _LogInScreenState extends State<LogInScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Color.fromARGB(255, 242, 242, 242),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
             child: Column(
               children: [
                 const SizedBox(height: 30),
-                Icon(Icons.login,
-                    size: 135,
-                    color: Theme.of(context).colorScheme.onBackground),
+                Icon(
+                  Icons.login,
+                  size: 135,
+                  color: Theme.of(context)
+                      .colorScheme
+                      .onBackground
+                      .withOpacity(0.8),
+                ),
                 const SizedBox(height: 20),
                 nunitoText(
                   'Welcome back!',
                   25,
                   FontWeight.normal,
-                  Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
+                  Theme.of(context).colorScheme.onBackground,
                 ),
                 const SizedBox(height: 25),
                 AuthTextField(

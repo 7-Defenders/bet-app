@@ -26,11 +26,11 @@ ThemeData lightTheme = ThemeData(
     tertiary: Colors.grey,
     onTertiary: Color.fromARGB(
         255, 255, 255, 255), // there was no other appropriate name lol
-    onSurface: Color.fromARGB(255, 134, 141, 255),
+    onSurface: Color.fromARGB(255, 0, 0, 0),
     error: Color.fromARGB(255, 224, 227, 255),
 
     background: Color.fromARGB(255, 250, 250, 250),
-    onBackground: Color.fromARGB(255, 40, 40, 40),
+    onBackground: Color.fromARGB(255, 30, 30, 27),
   ),
   pageTransitionsTheme: const PageTransitionsTheme(
     //default transition

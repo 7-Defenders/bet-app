@@ -73,4 +73,26 @@ class UserData {
       return null;
     }
   }
+
+  static UserData? fromMap(Map<String, dynamic> userDataMap) {
+    try {
+      return UserData(
+        displayName: userDataMap['displayName'] as String,
+        email: userDataMap['email'] as String,
+        photoURL: userDataMap['photoURL'] as String? ??
+            dotenv.env['DEFAULT_PFP_URL']!,
+        emailVerified: userDataMap['emailVerified'] as bool? ?? false,
+        uid: userDataMap['uid'] as String,
+        balance: userDataMap['balance'] as num,
+        bgURL: userDataMap['bgURL'] as String? ?? dotenv.env['DEFAULT_BG_URL']!,
+        frameURL: userDataMap['frameURL'] as String? ??
+            dotenv.env['DEFAULT_FRAME_URL']!,
+        tshirtURL: userDataMap['tshirtURL'] as String? ??
+            dotenv.env['DEFAULT_TSHIRT_URL']!,
+      );
+    } catch (e) {
+      debugPrint('Error: $e');
+      return null;
+    }
+  }
 }
