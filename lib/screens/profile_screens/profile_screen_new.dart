@@ -138,8 +138,8 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
 
   @override
   void didChangeDependencies() {
-    // this is actually goated.
-    // called right after initState because you cant listen to provider in initState.
+    // this is actually goated
+    // called right after initState - you cant listen to provider in initState
     super.didChangeDependencies();
     if (isCurrentUser) {
       userData = Provider.of<UserDataProvider>(context).userData;

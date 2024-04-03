@@ -265,17 +265,25 @@ class _ShopScreenState extends State<ShopScreen> {
                 ),
               ),
 
-              Padding(
-                //! BRUH
-                padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                child: buildSection(
-                  "Profile backgrounds",
-                  "Show off with you favorite background",
-                  usableWidth, //this has no impact?
-                  cardHeight,
-                  cardWidth,
-                  "background",
-                ),
+              // Padding(
+              //   //! BRUH
+              //   padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+              //   child: buildSection(
+              //     "Profile backgrounds",
+              //     "Show off with you favorite background",
+              //     usableWidth, //this has no impact?
+              //     cardHeight,
+              //     cardWidth,
+              //     "background",
+              //   ),
+              // ),
+              buildSection(
+                "Profile backgrounds",
+                "Show off with you favorite background",
+                usableWidth, //this has no impact?
+                cardHeight,
+                cardWidth,
+                "background",
               ),
 
               buildSection(

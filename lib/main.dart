@@ -53,7 +53,10 @@ final _router = GoRouter(
     ),
     GoRoute(
       path: '/loading',
-      pageBuilder: fadePageBuilder(LoadingScreen()),
+      pageBuilder: fadePageBuilder(
+        (context, state, _) => LoadingScreen(),
+        null,
+      ),
     ),
     // Shell for scaffold + bottom navbar
     ShellRoute(
@@ -73,20 +76,28 @@ final _router = GoRouter(
         //TODO: there might be no need for both /user/:uid and /profile
         GoRoute(
           path: '/profile',
-          // pageBuilder: fadePageBuilder(
-          //   ProfileScreenNew(),
-          // ),
-          builder: (BuildContext context, GoRouterState state) {
-            return ProfileScreenNew(
+          pageBuilder: fadePageBuilder(
+            (context, state, uid) => ProfileScreenNew(
               uid: Provider.of<UserDataProvider>(context, listen: false)
                   .userData!
                   .uid,
-            );
-          },
+            ),
+            null,
+          ),
+          // builder: (BuildContext context, GoRouterState state) {
+          //   return ProfileScreenNew(
+          //     uid: Provider.of<UserDataProvider>(context, listen: false)
+          //         .userData!
+          //         .uid,
+          //   );
+          // },
           routes: <RouteBase>[
             GoRoute(
               path: 'settings',
-              pageBuilder: fadePageBuilder(const SettingsScreen()),
+              pageBuilder: fadePageBuilder(
+                (context, state, _) => const SettingsScreen(),
+                null,
+              ),
             ),
             GoRoute(
               path: 'history',
@@ -160,30 +171,45 @@ final _router = GoRouter(
             /// screen and the application shell.
             GoRoute(
               path: 'achievements',
-              pageBuilder: fadePageBuilder(const AchievementsScreen()),
+              pageBuilder: fadePageBuilder(
+                (context, state, _) => const AchievementsScreen(),
+                null,
+              ),
             ),
           ],
         ),
 
         GoRoute(
           path: '/events',
-          pageBuilder: fadePageBuilder(const EventsScreen()),
+          pageBuilder: fadePageBuilder(
+            (context, state, _) => const EventsScreen(),
+            null,
+          ),
         ),
 
         GoRoute(
           path: '/home',
-          pageBuilder: fadePageBuilder(const HomeScreen()),
+          pageBuilder: fadePageBuilder(
+            (context, state, _) => const HomeScreen(),
+            null,
+          ),
           routes: <RouteBase>[
             GoRoute(
               path: '2',
-              pageBuilder: fadePageBuilder(const HomeScreen2()),
+              pageBuilder: fadePageBuilder(
+                (context, state, _) => const HomeScreen2(),
+                null,
+              ),
             ),
           ],
         ),
 
         GoRoute(
           path: '/leagues',
-          pageBuilder: fadePageBuilder(const LeaguesScreen()),
+          pageBuilder: fadePageBuilder(
+            (context, state, _) => const LeaguesScreen(),
+            null,
+          ),
           routes: <RouteBase>[
             GoRoute(
               path: 'creator',
@@ -281,23 +307,27 @@ final _router = GoRouter(
 
         GoRoute(
           path: '/events',
-          pageBuilder: fadePageBuilder(const EventsScreen()),
+          pageBuilder: fadePageBuilder(
+              (context, state, _) => const EventsScreen(), null),
         ),
 
         GoRoute(
           path: '/home',
-          pageBuilder: fadePageBuilder(const HomeScreen()),
+          pageBuilder:
+              fadePageBuilder((context, state, _) => const HomeScreen(), null),
           routes: <RouteBase>[
             GoRoute(
               path: '2',
-              pageBuilder: fadePageBuilder(const HomeScreen2()),
+              pageBuilder: fadePageBuilder(
+                  (context, state, _) => const HomeScreen2(), null),
             ),
           ],
         ),
 
         GoRoute(
           path: '/shop',
-          pageBuilder: fadePageBuilder(const ShopScreen()),
+          pageBuilder:
+              fadePageBuilder((context, state, _) => const ShopScreen(), null),
         ),
       ],
     ),
