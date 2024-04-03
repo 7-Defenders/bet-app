@@ -63,6 +63,18 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
     ),
     ListTile(
       leading: Icon(
+        Icons.palette,
+        color: Theme.of(context).iconTheme.color,
+        size: Theme.of(context).iconTheme.size,
+      ),
+      title: Text(
+        "Cosmetics",
+        style: Theme.of(context).textTheme.displayMedium,
+      ),
+      onTap: () => {GoRouter.of(context).go('/profile/cosmetics')},
+    ),
+    ListTile(
+      leading: Icon(
         Icons.check,
         color: Theme.of(context).iconTheme.color,
         size: Theme.of(context).iconTheme.size,
@@ -121,6 +133,16 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
       // the page is of the current user. set flag and use the user data from the provider
       isCurrentUser = true;
       userData = Provider.of<UserDataProvider>(context, listen: false).userData;
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    // this is actually goated.
+    // called right after initState because you cant listen to provider in initState.
+    super.didChangeDependencies();
+    if (isCurrentUser) {
+      userData = Provider.of<UserDataProvider>(context).userData;
     }
   }
 

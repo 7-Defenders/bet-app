@@ -1,9 +1,9 @@
 import 'package:app/blocs/league_joining_bloc/league_joining_bloc.dart';
-import 'package:app/firebase_options.dart';
+import 'package:app/other/firebase_options.dart';
 import 'package:app/providers/button_states_provider.dart';
 import 'package:app/providers/theme_provider.dart';
 import 'package:app/providers/user_data_provider.dart';
-import 'package:app/scaffold_with_navbar.dart';
+import 'package:app/other/scaffold_with_navbar.dart';
 import 'package:app/screens/auth_screens/login_or_register_screen.dart';
 import 'package:app/screens/history_screen.dart';
 import 'package:app/screens/loading_screen.dart';
@@ -15,6 +15,7 @@ import 'package:app/screens/navbar_screens/league_screens/league_summary.dart';
 import 'package:app/screens/navbar_screens/leagues_screen.dart';
 import 'package:app/screens/navbar_screens/shop_screen.dart';
 import 'package:app/screens/profile_screens/achievements_screen.dart';
+import 'package:app/screens/profile_screens/cosmetics.dart';
 import 'package:app/screens/profile_screens/profile_screen_new.dart';
 import 'package:app/screens/profile_screens/profile_settings_screen.dart';
 import 'package:app/screens/profile_screens/settings_screen.dart';
@@ -117,6 +118,27 @@ final _router = GoRouter(
                 return CustomTransitionPage<void>(
                   key: state.pageKey,
                   child: const ProfileSettingsScreen(),
+                  transitionDuration: const Duration(milliseconds: 301),
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) {
+                    return const FadeUpwardsPageTransitionsBuilder()
+                        .buildTransitions(
+                      MaterialPageRoute(builder: (context) => Container()),
+                      context,
+                      animation,
+                      secondaryAnimation,
+                      child,
+                    );
+                  },
+                );
+              },
+            ),
+            GoRoute(
+              path: 'cosmetics',
+              pageBuilder: (BuildContext context, GoRouterState state) {
+                return CustomTransitionPage<void>(
+                  key: state.pageKey,
+                  child: const CosmeticsScreen(),
                   transitionDuration: const Duration(milliseconds: 301),
                   transitionsBuilder:
                       (context, animation, secondaryAnimation, child) {

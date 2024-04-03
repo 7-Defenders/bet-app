@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:convert';
 import 'dart:async';
 
-import 'package:app/ad_state.dart';
+import 'package:app/other/ad_state.dart';
 import 'package:app/components/other/nunito_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -133,32 +133,46 @@ class _ShopScreenState extends State<ShopScreen> {
                       document.data()! as Map<String, dynamic>;
                   return Padding(
                     padding: const EdgeInsets.fromLTRB(0, 8, 20, 8),
-                    child: Card(
-                      elevation: 5,
-                      surfaceTintColor: Colors.white,
-                      child: SizedBox(
-                        width: cardWidth,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            nunitoText(
-                              data['name'] as String,
-                              16,
-                              FontWeight.normal,
-                              Colors.black,
-                            ),
-                            SvgPicture.network(
-                              data['link'] as String,
-                              width: cardWidth * 0.5,
-                              height: cardHeight * .5,
-                            ),
-                            nunitoText(
-                              'Price: ${data['price']}',
-                              14,
-                              FontWeight.normal,
-                              Colors.black,
-                            ),
-                          ],
+                    child: GestureDetector(
+                      onTap: () => showPurchasePopup(
+                        context,
+                        Item(
+                          id: data['id'] as String,
+                          name: data['name'] as String,
+                          price: data['price'] as int,
+                          link: data['link'] as String,
+                          type: ItemType.values.firstWhere(
+                            (e) => e.toString() == 'ItemType.$type',
+                          ),
+                        ),
+                      ),
+                      child: Card(
+                        elevation: 5,
+                        surfaceTintColor: Colors.white,
+                        child: SizedBox(
+                          width: cardWidth,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              nunitoText(
+                                data['name'] as String,
+                                16,
+                                FontWeight.normal,
+                                Colors.black,
+                              ),
+                              SvgPicture.network(
+                                data['link'] as String,
+                                width: cardWidth * 0.5,
+                                height: cardHeight * .5,
+                              ),
+                              nunitoText(
+                                'Price: ${data['price']}',
+                                14,
+                                FontWeight.normal,
+                                Colors.black,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -251,13 +265,17 @@ class _ShopScreenState extends State<ShopScreen> {
                 ),
               ),
 
-              buildSection(
-                "Profile backgrounds",
-                "Show off with you favorite background",
-                usableWidth,
-                cardHeight,
-                cardWidth,
-                "background",
+              Padding(
+                //! BRUH
+                padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                child: buildSection(
+                  "Profile backgrounds",
+                  "Show off with you favorite background",
+                  usableWidth, //this has no impact?
+                  cardHeight,
+                  cardWidth,
+                  "background",
+                ),
               ),
 
               buildSection(
@@ -269,12 +287,12 @@ class _ShopScreenState extends State<ShopScreen> {
                 "tshirt",
               ),
               buildSection(
-                "Profile borders",
-                "Enhance your profile with a stylish border",
+                "Profile frames",
+                "Enhance your profile with a stylish frame",
                 usableWidth,
                 cardHeight,
                 cardWidth,
-                "border",
+                "frame",
               ),
             ],
           ),
