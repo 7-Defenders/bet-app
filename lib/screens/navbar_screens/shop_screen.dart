@@ -9,6 +9,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:app/models/item.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ShopScreen extends StatefulWidget {
   const ShopScreen({super.key});
@@ -69,9 +71,16 @@ class _ShopScreenState extends State<ShopScreen> {
 
           // displaying a snackbar
           // ignore: use_build_context_synchronously
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: nunitoText('100 coins were awarded', 16, FontWeight.bold,
-                  Colors.black)));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: nunitoText(
+                '100 coins were awarded',
+                16,
+                FontWeight.bold,
+                Colors.black,
+              ),
+            ),
+          );
         },
       );
 
@@ -80,13 +89,94 @@ class _ShopScreenState extends State<ShopScreen> {
     }
   }
 
+  Widget buildSection(
+    String title,
+    String description,
+    double usableWidth,
+    double cardHeight,
+    double cardWidth,
+    String type,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(
+          height: 8,
+        ),
+        nunitoText(title, 18, FontWeight.bold, Colors.black),
+        nunitoText(description, 14, FontWeight.normal, Colors.grey),
+        const SizedBox(
+          height: 8,
+        ),
+        SizedBox(
+          height: cardHeight,
+          child: StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection('Cosmetics')
+                .where('type', isEqualTo: type)
+                .snapshots(),
+            builder:
+                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (snapshot.hasError) {
+                return const Text('Something went wrong');
+              }
+
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Text("Loading");
+              }
+
+              return ListView(
+                scrollDirection: Axis.horizontal,
+                shrinkWrap: true,
+                children: snapshot.data!.docs.map((DocumentSnapshot document) {
+                  final Map<String, dynamic> data =
+                      document.data()! as Map<String, dynamic>;
+                  return Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 8, 20, 8),
+                    child: Card(
+                      elevation: 5,
+                      surfaceTintColor: Colors.white,
+                      child: SizedBox(
+                        width: cardWidth,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            nunitoText(
+                              data['name'] as String,
+                              16,
+                              FontWeight.normal,
+                              Colors.black,
+                            ),
+                            SvgPicture.network(
+                              data['link'] as String,
+                              width: cardWidth * 0.5,
+                              height: cardHeight * .5,
+                            ),
+                            nunitoText(
+                              'Price: ${data['price']}',
+                              14,
+                              FontWeight.normal,
+                              Colors.black,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final usableWidth = MediaQuery.of(context).size.width * 0.9;
     final cardWidth = usableWidth * 0.4;
     final cardHeight = MediaQuery.of(context).size.height * 0.25;
-
-    const itemCount = 4;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -161,233 +251,30 @@ class _ShopScreenState extends State<ShopScreen> {
                 ),
               ),
 
-              // SECOND SECTION - BACKGROUNDS
-
-              SizedBox(
-                width: usableWidth,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    nunitoText("Profile backgrounds", 18, FontWeight.bold,
-                        Colors.black),
-                    nunitoText(
-                        "Stick your favourite pattern on your profile for others to see",
-                        14,
-                        FontWeight.normal,
-                        Colors.grey),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: cardHeight,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  shrinkWrap: true,
-                  itemCount: itemCount,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Padding(
-                      padding: EdgeInsets.fromLTRB(
-                          index == 0 ? usableWidth / 18 : 8,
-                          8,
-                          index == itemCount - 1 ? usableWidth / 18 : 8,
-                          8),
-                      child: Card(
-                        elevation: 5,
-                        surfaceTintColor: Colors.white,
-                        child: SizedBox(
-                          width: cardWidth,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              nunitoText(index.toString(), 16,
-                                  FontWeight.normal, Colors.black),
-                              SvgPicture.asset(
-                                'lib/assets/images/futbol-regular.svg',
-                                width: cardWidth * 0.5,
-                                height: cardHeight * .5,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
+              buildSection(
+                "Profile backgrounds",
+                "Show off with you favorite background",
+                usableWidth,
+                cardHeight,
+                cardWidth,
+                "background",
               ),
 
-              // THIRD SECTION - JERSEYS
-
-              SizedBox(
-                width: usableWidth,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    nunitoText("Jerseys", 18, FontWeight.bold, Colors.black),
-                    nunitoText("Get a beautiful jersey to present your name",
-                        14, FontWeight.normal, Colors.grey),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                  ],
-                ),
+              buildSection(
+                "Jerseys",
+                "Get a beautiful jersey to present your name",
+                usableWidth,
+                cardHeight,
+                cardWidth,
+                "tshirt",
               ),
-              SizedBox(
-                height: cardHeight,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  shrinkWrap: true,
-                  itemCount: itemCount,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Padding(
-                      padding: EdgeInsets.fromLTRB(
-                          index == 0 ? usableWidth / 18 : 8,
-                          8,
-                          index == itemCount - 1 ? usableWidth / 18 : 8,
-                          8),
-                      child: Card(
-                        elevation: 5,
-                        surfaceTintColor: Colors.white,
-                        child: SizedBox(
-                          width: cardWidth,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              nunitoText(index.toString(), 16,
-                                  FontWeight.normal, Colors.black),
-                              SvgPicture.asset(
-                                'lib/assets/images/futbol-regular.svg',
-                                width: cardWidth * 0.5,
-                                height: cardHeight * .5,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-
-              // FOURTH SECTION - NUMBERS
-
-              SizedBox(
-                width: usableWidth,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    nunitoText("Numbers", 18, FontWeight.bold, Colors.black),
-                    nunitoText("Stick your favourite number on your jersey", 14,
-                        FontWeight.normal, Colors.grey),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: cardHeight,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  shrinkWrap: true,
-                  itemCount: itemCount,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Padding(
-                      padding: EdgeInsets.fromLTRB(
-                          index == 0 ? usableWidth / 18 : 8,
-                          8,
-                          index == itemCount - 1 ? usableWidth / 18 : 8,
-                          8),
-                      child: Card(
-                        elevation: 5,
-                        surfaceTintColor: Colors.white,
-                        child: SizedBox(
-                          width: cardWidth,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              nunitoText(index.toString(), 16,
-                                  FontWeight.normal, Colors.black),
-                              SvgPicture.asset(
-                                'lib/assets/images/futbol-regular.svg',
-                                width: cardWidth * 0.5,
-                                height: cardHeight * .5,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-
-              // FIFTH SECTION - PROFILE BORDERS
-
-              SizedBox(
-                width: usableWidth,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    nunitoText(
-                        "Profile borders", 18, FontWeight.bold, Colors.black),
-                    nunitoText("Enhance your profile with a stylish border", 14,
-                        FontWeight.normal, Colors.grey),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: cardHeight,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  shrinkWrap: true,
-                  itemCount: itemCount,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Padding(
-                      padding: EdgeInsets.fromLTRB(
-                          index == 0 ? usableWidth / 18 : 8,
-                          8,
-                          index == itemCount - 1 ? usableWidth / 18 : 8,
-                          8),
-                      child: Card(
-                        elevation: 5,
-                        surfaceTintColor: Colors.white,
-                        child: SizedBox(
-                          width: cardWidth,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              nunitoText(index.toString(), 16,
-                                  FontWeight.normal, Colors.black),
-                              SvgPicture.asset(
-                                'lib/assets/images/futbol-regular.svg',
-                                width: cardWidth * 0.5,
-                                height: cardHeight * .5,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
+              buildSection(
+                "Profile borders",
+                "Enhance your profile with a stylish border",
+                usableWidth,
+                cardHeight,
+                cardWidth,
+                "border",
               ),
             ],
           ),
