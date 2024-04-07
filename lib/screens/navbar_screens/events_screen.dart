@@ -9,6 +9,7 @@ import 'package:app/models/football_event.dart';
 import 'package:app/models/structure.dart';
 import 'package:app/providers/button_states_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_svg/svg.dart';
@@ -130,7 +131,8 @@ class EventsScreenState extends State<EventsScreen> {
     );
 
     try {
-      final uri = 'https://bet-app-e520a.ew.r.appspot.com/v1/competitions/$league';
+      final uri =
+          'https://bet-app-e520a.ew.r.appspot.com/v1/competitions/$league';
       final response = await Globals.performCall(uri);
 
       displayedMatches.clear();
@@ -140,8 +142,10 @@ class EventsScreenState extends State<EventsScreen> {
 
         final List<FootballEvent> fe = footballEventFromJson(response);
 
-        fe.where((element) => element.date.isAfter(DateTime.now())).forEach(
-          (element)  {displayedMatches.add(
+        fe
+            .where((element) => element.date.isAfter(DateTime.now()))
+            .forEach((element) {
+          displayedMatches.add(
             BetPreviewWidget(
               eventName: '${element.homename} - ${element.awayname}',
               eventDetails: element.date.toString(),
@@ -207,9 +211,9 @@ class EventsScreenState extends State<EventsScreen> {
                   ?.split(',')[0],
             ),
           );
-          
-                print(displayedMatches.length);}
-        );
+
+          print(displayedMatches.length);
+        });
       });
     } finally {
       if (mounted) {
@@ -402,6 +406,97 @@ class EventsScreenState extends State<EventsScreen> {
     );
   }
 
+  Widget buildMiniature(String? name, dynamic image) {
+    return Column(
+      children: <Widget>[
+        if (image is IconData)
+          Icon(
+            image,
+            size: 50.0,
+          )
+        else if (image is String)
+          SvgPicture.asset(
+            image,
+            height: 50.0,
+            width: 50.0,
+          ),
+        Text(
+          //TODO: wrap text
+          name ?? 'Select',
+          textAlign: TextAlign.center,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ],
+    );
+  }
+
+  void showCategorySelectionDialog(String category) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        List<Widget> options = [];
+
+        switch (category) {
+          case "sport":
+            options = sportsObject.map((sport) {
+              return SimpleDialogOption(
+                child: Text(sport.name),
+                onPressed: () {
+                  Navigator.pop(context, sport);
+                },
+              );
+            }).toList();
+            break;
+          case "country":
+            options = selectedSport?.countries.map((country) {
+                  return SimpleDialogOption(
+                    child: Text(country.name),
+                    onPressed: () {
+                      Navigator.pop(context, country);
+                    },
+                  );
+                }).toList() ??
+                [];
+            break;
+          case "league":
+            options = selectedCountry?.leagues.map((league) {
+                  return SimpleDialogOption(
+                    child: Text(league.name),
+                    onPressed: () {
+                      Navigator.pop(context, league);
+                    },
+                  );
+                }).toList() ??
+                [];
+            break;
+        }
+
+        return SimpleDialog(
+          title: Text('Select $category'),
+          children: options,
+        );
+      },
+    ).then((selectedOption) {
+      if (selectedOption != null) {
+        setState(() {
+          switch (category) {
+            case "sport":
+              selectedSport = selectedOption as Sport;
+              break;
+            case "country":
+              selectedCountry = selectedOption as Country;
+              break;
+            case "league":
+              selectedLeague = selectedOption as League;
+              fetchMatchesGivenLeague(selectedLeague!.id);
+              break;
+          }
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     //print("LeaguesScreen context: $context");
@@ -415,44 +510,82 @@ class EventsScreenState extends State<EventsScreen> {
             child: Column(
               children: [
                 // filters
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 150),
-                  height: selectedSport == null
-                      ? 140
-                      : selectedCountry == null
-                          ? 220
-                          : selectedLeague == null
-                              ? 290
-                              : 290,
-                  curve: Curves.easeInOut,
-                  child: SingleChildScrollView(
-                    // this helps avoid overflow during animation
+                // AnimatedContainer(
+                //   duration: const Duration(milliseconds: 150),
+                //   height: selectedSport == null
+                //       ? 140
+                //       : selectedCountry == null
+                //           ? 220
+                //           : selectedLeague == null
+                //               ? 290
+                //               : 290,
+                //   curve: Curves.easeInOut,
+                //   child: SingleChildScrollView(
+                //     // this helps avoid overflow during animation
+                //     child: Container(
+                //       color: Color.fromARGB(255, 255, 186, 74),
+                //       padding: const EdgeInsets.only(
+                //         left: 20,
+                //         top: 55,
+                //         bottom: 10,
+                //       ),
+                //       child: Column(
+                //         children: [
+                //           buildSportListView(),
+                //           if (selectedSport != null)
+                //             buildCountryListView().animate(
+                //               effects: [
+                //                 const SlideEffect(
+                //                   duration: Duration(milliseconds: 250),
+                //                   begin: Offset(0, -0.5),
+                //                   end: Offset.zero,
+                //                 ),
+                //                 const FadeEffect(
+                //                   duration: Duration(milliseconds: 250),
+                //                   begin: 0,
+                //                   end: 1,
+                //                 ),
+                //               ],
+                //             ),
+                //           if (selectedCountry != null) buildLeagueListView(),
+                //         ],
+                //       ),
+                //     ),
+                //   ),
+                // ),
+                SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
                     child: Container(
-                      color: Theme.of(context).colorScheme.primary,
-                      padding: const EdgeInsets.only(
-                        left: 20,
-                        top: 55,
-                        bottom: 10,
+                      padding: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: const Color.fromARGB(255, 96, 178, 255),
                       ),
-                      child: Column(
-                        children: [
-                          buildSportListView(),
-                          if (selectedSport != null)
-                            buildCountryListView().animate(
-                              effects: [
-                                const SlideEffect(
-                                  duration: Duration(milliseconds: 250),
-                                  begin: Offset(0, -0.5),
-                                  end: Offset.zero,
-                                ),
-                                const FadeEffect(
-                                  duration: Duration(milliseconds: 250),
-                                  begin: 0,
-                                  end: 1,
-                                ),
-                              ],
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          GestureDetector(
+                            onTap: () => showCategorySelectionDialog("sport"),
+                            child: buildMiniature(
+                              selectedSport?.name,
+                              selectedSport?.icon,
                             ),
-                          if (selectedCountry != null) buildLeagueListView(),
+                          ),
+                          GestureDetector(
+                            onTap: () => showCategorySelectionDialog("country"),
+                            child: buildMiniature(
+                              selectedCountry?.name,
+                              selectedCountry?.svgPath,
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () => showCategorySelectionDialog("league"),
+                            child: buildMiniature(
+                              selectedLeague?.name,
+                              selectedLeague?.svgPath,
+                            ),
+                          ),
                         ],
                       ),
                     ),
