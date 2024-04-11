@@ -222,136 +222,136 @@ class EventsScreenState extends State<EventsScreen> {
     }
   }
 
-  Widget buildListView(
-    List<dynamic> items,
-    dynamic selectedItem,
-    void Function(dynamic) onTap,
-  ) {
-    return SizedBox(
-      height: 75,
-      width: double.infinity,
-      child: ListView.builder(
-        itemCount: items.length,
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.only(bottom: 5),
-        itemBuilder: (context, index) {
-          final item = items[index];
-          // every item has a name - TODO workaround linter for this, maybe cast
-          final String itemName = item.name as String;
-          return Padding(
-            padding: const EdgeInsets.fromLTRB(0, 0, 20, 5),
-            child: GestureDetector(
-              onTap: () {
-                onTap(item);
-              },
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Container(
-                  padding: const EdgeInsets.only(top: 5),
-                  width: 115,
-                  color: item == selectedItem
-                      ? Theme.of(context).colorScheme.background
-                      : Theme.of(context).colorScheme.error,
-                  child: Column(
-                    children: [
-                      if (item is Country || item is League)
-                        SvgPicture.asset(
-                          item.svgPath as String,
-                          width: (item is Country) ? 45 : 40,
-                          height: (item is Country) ? 38 : 38,
-                        )
-                      else if (item is Sport)
-                        Icon(
-                          item.icon,
-                          color: Theme.of(context).colorScheme.onBackground,
-                          size: 35,
-                        ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: 5),
-                          child: Container(
-                            alignment: Alignment.bottomCenter,
-                            child: nunitoText(
-                              itemName,
-                              14,
-                              FontWeight.normal,
-                              Theme.of(context).colorScheme.onBackground,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
+  // Widget buildListView(
+  //   List<dynamic> items,
+  //   dynamic selectedItem,
+  //   void Function(dynamic) onTap,
+  // ) {
+  //   return SizedBox(
+  //     height: 75,
+  //     width: double.infinity,
+  //     child: ListView.builder(
+  //       itemCount: items.length,
+  //       scrollDirection: Axis.horizontal,
+  //       padding: const EdgeInsets.only(bottom: 5),
+  //       itemBuilder: (context, index) {
+  //         final item = items[index];
+  //         // every item has a name - TODO workaround linter for this, maybe cast
+  //         final String itemName = item.name as String;
+  //         return Padding(
+  //           padding: const EdgeInsets.fromLTRB(0, 0, 20, 5),
+  //           child: GestureDetector(
+  //             onTap: () {
+  //               onTap(item);
+  //             },
+  //             child: ClipRRect(
+  //               borderRadius: BorderRadius.circular(20),
+  //               child: Container(
+  //                 padding: const EdgeInsets.only(top: 5),
+  //                 width: 115,
+  //                 color: item == selectedItem
+  //                     ? Theme.of(context).colorScheme.background
+  //                     : Theme.of(context).colorScheme.error,
+  //                 child: Column(
+  //                   children: [
+  //                     if (item is Country || item is League)
+  //                       SvgPicture.asset(
+  //                         item.svgPath as String,
+  //                         width: (item is Country) ? 45 : 40,
+  //                         height: (item is Country) ? 38 : 38,
+  //                       )
+  //                     else if (item is Sport)
+  //                       Icon(
+  //                         item.icon,
+  //                         color: Theme.of(context).colorScheme.onBackground,
+  //                         size: 35,
+  //                       ),
+  //                     Expanded(
+  //                       child: Padding(
+  //                         padding: const EdgeInsets.only(bottom: 5),
+  //                         child: Container(
+  //                           alignment: Alignment.bottomCenter,
+  //                           child: nunitoText(
+  //                             itemName,
+  //                             14,
+  //                             FontWeight.normal,
+  //                             Theme.of(context).colorScheme.onBackground,
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ),
+  //             ),
+  //           ),
+  //         );
+  //       },
+  //     ),
+  //   );
+  // }
 
-  Widget buildSportListView() {
-    return buildListView(
-      structure.map((sport) => sport).toList(),
-      selectedSport,
-      (sport) {
-        setState(() {
-          selectedSport = sport as Sport;
-          selectedCountry = null;
-          selectedLeague = null;
-          displayedMatches.clear();
-        });
-      },
-    );
-  }
+  // Widget buildSportListView() {
+  //   return buildListView(
+  //     structure.map((sport) => sport).toList(),
+  //     selectedSport,
+  //     (sport) {
+  //       setState(() {
+  //         selectedSport = sport as Sport;
+  //         selectedCountry = null;
+  //         selectedLeague = null;
+  //         displayedMatches.clear();
+  //       });
+  //     },
+  //   );
+  // }
 
-  Widget buildCountryListView() {
-    final List<Country> countries = [];
+  // Widget buildCountryListView() {
+  //   final List<Country> countries = [];
 
-    for (final Sport sport in structure) {
-      countries.addAll(sport.countries);
-    }
+  //   for (final Sport sport in structure) {
+  //     countries.addAll(sport.countries);
+  //   }
 
-    return buildListView(
-      countries.map((country) => country).toList(),
-      selectedCountry,
-      (country) {
-        setState(() {
-          selectedCountry = country as Country;
-          selectedLeague = null;
-          displayedMatches.clear();
-        });
-      },
-    );
-  }
+  //   return buildListView(
+  //     countries.map((country) => country).toList(),
+  //     selectedCountry,
+  //     (country) {
+  //       setState(() {
+  //         selectedCountry = country as Country;
+  //         selectedLeague = null;
+  //         displayedMatches.clear();
+  //       });
+  //     },
+  //   );
+  // }
 
-  Widget buildLeagueListView() {
-    final leagues = structure
-        .firstWhere(
-          (sport) => sport.name == selectedSport?.name,
-          orElse: () => Sport(name: '', countries: [], icon: Icons.abc),
-        )
-        .countries
-        .firstWhere(
-          (country) => country.name == selectedCountry?.name,
-          orElse: () => Country(name: '', leagues: [], svgPath: ''),
-        )
-        .leagues
-        .map((league) => league)
-        .toList();
+  // Widget buildLeagueListView() {
+  //   final leagues = structure
+  //       .firstWhere(
+  //         (sport) => sport.name == selectedSport?.name,
+  //         orElse: () => Sport(name: '', countries: [], icon: Icons.abc),
+  //       )
+  //       .countries
+  //       .firstWhere(
+  //         (country) => country.name == selectedCountry?.name,
+  //         orElse: () => Country(name: '', leagues: [], svgPath: ''),
+  //       )
+  //       .leagues
+  //       .map((league) => league)
+  //       .toList();
 
-    return buildListView(
-      leagues,
-      selectedLeague,
-      (league) {
-        setState(() {
-          selectedLeague = league as League;
-          fetchMatchesGivenLeague(selectedLeague!.id);
-        });
-      },
-    );
-  }
+  //   return buildListView(
+  //     leagues,
+  //     selectedLeague,
+  //     (league) {
+  //       setState(() {
+  //         selectedLeague = league as League;
+  //         fetchMatchesGivenLeague(selectedLeague!.id);
+  //       });
+  //     },
+  //   );
+  // }
 
   void onMakeBetPressed() {
     showModalBottomSheet(
@@ -406,7 +406,7 @@ class EventsScreenState extends State<EventsScreen> {
     );
   }
 
-  Widget buildMiniature(String? name, dynamic image) {
+  Widget buildMiniature(dynamic type, String? name, dynamic image) {
     return Column(
       children: <Widget>[
         if (image is IconData)
@@ -419,16 +419,56 @@ class EventsScreenState extends State<EventsScreen> {
             image,
             height: 50.0,
             width: 50.0,
-          ),
+          )
+        else
+          getTypeIcon(type),
         Text(
           //TODO: wrap text
-          name ?? 'Select',
+          name ?? getDefaultText(type),
           textAlign: TextAlign.center,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
         ),
       ],
     );
+  }
+
+  Icon getTypeIcon(dynamic type) {
+    switch (type) {
+      case const (Sport):
+        return const Icon(
+          Icons.sports_soccer_rounded,
+          size: 50.0,
+        );
+      case const (Country):
+        return const Icon(
+          Icons.flag_rounded,
+          size: 50.0,
+        );
+      case const (League):
+        return const Icon(
+          Icons.stadium_rounded,
+          size: 50.0,
+        );
+      default:
+        return const Icon(
+          Icons.help,
+          size: 50.0,
+        );
+    }
+  }
+
+  String getDefaultText(dynamic type) {
+    switch (type) {
+      case const (Sport):
+        return 'Select sport';
+      case const (Country):
+        return 'Select country';
+      case const (League):
+        return 'Select league';
+      default:
+        return 'Select';
+    }
   }
 
   void showCategorySelectionDialog(String category) {
@@ -441,7 +481,17 @@ class EventsScreenState extends State<EventsScreen> {
           case "sport":
             options = sportsObject.map((sport) {
               return SimpleDialogOption(
-                child: Text(sport.name),
+                child: Row(
+                  children: [
+                    Icon(
+                      sport.icon,
+                      color: Theme.of(context).colorScheme.onBackground,
+                      size: 30,
+                    ),
+                    const SizedBox(width: 10),
+                    Text(sport.name),
+                  ],
+                ),
                 onPressed: () {
                   Navigator.pop(context, sport);
                 },
@@ -451,7 +501,17 @@ class EventsScreenState extends State<EventsScreen> {
           case "country":
             options = selectedSport?.countries.map((country) {
                   return SimpleDialogOption(
-                    child: Text(country.name),
+                    child: Row(
+                      children: [
+                        SvgPicture.asset(
+                          country.svgPath,
+                          width: 30,
+                          height: 30,
+                        ),
+                        const SizedBox(width: 10),
+                        Text(country.name),
+                      ],
+                    ),
                     onPressed: () {
                       Navigator.pop(context, country);
                     },
@@ -462,7 +522,17 @@ class EventsScreenState extends State<EventsScreen> {
           case "league":
             options = selectedCountry?.leagues.map((league) {
                   return SimpleDialogOption(
-                    child: Text(league.name),
+                    child: Row(
+                      children: [
+                        SvgPicture.asset(
+                          league.svgPath,
+                          width: 30,
+                          height: 30,
+                        ),
+                        const SizedBox(width: 10),
+                        Text(league.name),
+                      ],
+                    ),
                     onPressed: () {
                       Navigator.pop(context, league);
                     },
@@ -483,9 +553,14 @@ class EventsScreenState extends State<EventsScreen> {
           switch (category) {
             case "sport":
               selectedSport = selectedOption as Sport;
+              selectedCountry = null;
+              selectedLeague = null;
+              displayedMatches.clear();
               break;
             case "country":
               selectedCountry = selectedOption as Country;
+              selectedLeague = null;
+              displayedMatches.clear();
               break;
             case "league":
               selectedLeague = selectedOption as League;
@@ -553,57 +628,62 @@ class EventsScreenState extends State<EventsScreen> {
                 //     ),
                 //   ),
                 // ),
-                SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Container(
-                      padding: const EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: const Color.fromARGB(255, 96, 178, 255),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          GestureDetector(
-                            onTap: () => showCategorySelectionDialog("sport"),
-                            child: buildMiniature(
-                              selectedSport?.name,
-                              selectedSport?.icon,
-                            ),
+                SizedBox(
+                  height: MediaQuery.of(context).padding.top,
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(15, 15, 15, 20),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 6),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: const Color.fromARGB(255, 96, 178, 255),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        GestureDetector(
+                          onTap: () => showCategorySelectionDialog("sport"),
+                          child: buildMiniature(
+                            Sport,
+                            selectedSport?.name,
+                            selectedSport?.icon,
                           ),
+                        ),
+                        if (selectedSport != null)
                           GestureDetector(
                             onTap: () => showCategorySelectionDialog("country"),
-                            child: buildMiniature(
-                              selectedCountry?.name,
-                              selectedCountry?.svgPath,
-                            ),
+                            child: selectedSport != null
+                                ? buildMiniature(
+                                    Country,
+                                    selectedCountry?.name,
+                                    selectedCountry?.svgPath,
+                                  )
+                                : const SizedBox.shrink(),
                           ),
+                        if (selectedSport != null && selectedCountry != null)
                           GestureDetector(
                             onTap: () => showCategorySelectionDialog("league"),
                             child: buildMiniature(
+                              League,
                               selectedLeague?.name,
                               selectedLeague?.svgPath,
                             ),
                           ),
-                        ],
-                      ),
+                      ],
                     ),
                   ),
                 ),
                 // matches
                 Consumer<ButtonStatesProvider>(
                   builder: (context, buttonStatesProvider, child) {
-                    return Container(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Column(
-                        children: [
-                          ...displayedMatches,
-                          const SizedBox(
-                            height: 100,
-                          ),
-                        ],
-                      ),
+                    return Column(
+                      children: [
+                        ...displayedMatches,
+                        const SizedBox(
+                          height: 100,
+                        ),
+                      ],
                     );
                   },
                 ),
