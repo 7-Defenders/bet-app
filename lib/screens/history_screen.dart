@@ -56,7 +56,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
         widget.userID ?? FirebaseAuth.instance.currentUser!.uid;
     // print('userID: $userID');
 
-    final uri = 'https://bet-app-e520a.ew.r.appspot.com/v1/bets/$userID';
+    final uri = 'https://flask-vhn3gxevdq-ew.a.run.app/v1/bets/$userID';
     final response = await Globals.performCall(uri);
 
     setState(() {

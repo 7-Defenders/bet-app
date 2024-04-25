@@ -92,7 +92,7 @@ class EventsScreenState extends State<EventsScreen> {
 
     final response = await http.post(
       Uri.parse(
-        'https://bet-app-e520a.ew.r.appspot.com/v1/bets', // Change the endpoint to /bets
+        'https://flask-vhn3gxevdq-ew.a.run.app/v1/bets', // Change the endpoint to /bets
       ),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
@@ -130,7 +130,7 @@ class EventsScreenState extends State<EventsScreen> {
     );
 
     try {
-      final uri = 'https://bet-app-e520a.ew.r.appspot.com/v1/competitions/$league';
+      final uri = 'https://flask-vhn3gxevdq-ew.a.run.app/v1/competitions/$league';
       final response = await Globals.performCall(uri);
 
       displayedMatches.clear();

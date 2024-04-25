@@ -1,11 +1,10 @@
 import 'dart:convert';
-import "dart:io";
 import 'dart:core';
-
-import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
+import "dart:io";
 
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 // ignore: avoid_classes_with_only_static_members
 class Globals {
@@ -79,10 +78,10 @@ class Globals {
       return regex.hasMatch(uri);
     }
 
-    final RegExp usersInLeague = RegExp(r'https:\/\/bet-app-e520a\.ew\.r\.appspot\.com\/v1\/leagues\/.+\/users');
-    final RegExp eventsInCompetition = RegExp(r'https:\/\/bet-app-e520a\.ew\.r\.appspot\.com\/v1\/competitions\/.');
-    final RegExp leaguesOfUser = RegExp(r'https:\/\/bet-app-e520a\.ew\.r\.appspot\.com\/v1\/users\/.+\/leagues');
-    final RegExp betsOfUser = RegExp(r'https:\/\/bet-app-e520a\.ew\.r\.appspot\.com\/v1\/bets\/.');
+    final RegExp usersInLeague = RegExp(r'https:\/\/flask-vhn3gxevdq-ew\.a\.run\.app\/v1\/leagues\/.+\/users');
+    final RegExp eventsInCompetition = RegExp(r'https:\/\/flask-vhn3gxevdq-ew\.a\.run\.app\/v1\/competitions\/.');
+    final RegExp leaguesOfUser = RegExp(r'https:\/\/flask-vhn3gxevdq-ew\.a\.run\.app\/v1\/users\/.+\/leagues');
+    final RegExp betsOfUser = RegExp(r'https:\/\/flask-vhn3gxevdq-ew\.a\.run\.app\/v1\/bets\/.');
 
     if (isUriMatching(uri, usersInLeague)){
       // if has never made this call -> should call

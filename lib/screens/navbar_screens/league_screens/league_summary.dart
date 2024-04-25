@@ -181,7 +181,7 @@ class _LeagueSummaryState extends State<LeagueSummary> {
 
   Future<void> leaveLeague() async {
     final uid = FirebaseAuth.instance.currentUser!.uid;
-    await http.delete(Uri.parse('https://bet-app-e520a.ew.r.appspot.com/v1/users/$uid/leagues/${widget.leagueID}'));
+    await http.delete(Uri.parse('https://flask-vhn3gxevdq-ew.a.run.app/v1/users/$uid/leagues/${widget.leagueID}'));
   }
 
   Future<void> fetchLeagueData() async {
@@ -196,7 +196,7 @@ class _LeagueSummaryState extends State<LeagueSummary> {
       useRootNavigator: false,
     );
 
-    final uri = 'https://bet-app-e520a.ew.r.appspot.com/v1/leagues/${widget.leagueID}/users';
+    final uri = 'https://flask-vhn3gxevdq-ew.a.run.app/v1/leagues/${widget.leagueID}/users';
     final response = await Globals.performCall(uri);
     // print(response.body);
     setState((){

@@ -54,7 +54,7 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
     );
 
 
-    final uri = 'https://bet-app-e520a.ew.r.appspot.com/v1/users/$uid/leagues';
+    final uri = 'https://flask-vhn3gxevdq-ew.a.run.app/v1/users/$uid/leagues';
     final response = await Globals.performCall(uri);
    
     // print(response.body);
