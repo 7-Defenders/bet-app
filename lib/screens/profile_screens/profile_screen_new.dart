@@ -44,22 +44,34 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
         size: Theme.of(context).iconTheme.size,
       ),
       title: Text(
-        "Settings",
+        "App Settings",
         style: Theme.of(context).textTheme.displayMedium,
       ),
       onTap: () => {GoRouter.of(context).go('/profile/settings')},
     ),
     ListTile(
       leading: Icon(
-        Icons.notifications,
+        Icons.person,
         color: Theme.of(context).iconTheme.color,
         size: Theme.of(context).iconTheme.size,
       ),
       title: Text(
-        "Notification Settings",
+        "Profile Settings",
         style: Theme.of(context).textTheme.displayMedium,
       ),
-      onTap: () => {GoRouter.of(context).go('/profile/notifications')},
+      onTap: () => {GoRouter.of(context).go('/profile/profile_settings')},
+    ),
+    ListTile(
+      leading: Icon(
+        Icons.palette,
+        color: Theme.of(context).iconTheme.color,
+        size: Theme.of(context).iconTheme.size,
+      ),
+      title: Text(
+        "Cosmetics",
+        style: Theme.of(context).textTheme.displayMedium,
+      ),
+      onTap: () => {GoRouter.of(context).go('/profile/cosmetics')},
     ),
     ListTile(
       leading: Icon(
@@ -121,6 +133,16 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
       // the page is of the current user. set flag and use the user data from the provider
       isCurrentUser = true;
       userData = Provider.of<UserDataProvider>(context, listen: false).userData;
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    // this is actually goated
+    // called right after initState - you cant listen to provider in initState
+    super.didChangeDependencies();
+    if (isCurrentUser) {
+      userData = Provider.of<UserDataProvider>(context).userData;
     }
   }
 
