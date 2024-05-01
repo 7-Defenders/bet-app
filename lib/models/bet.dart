@@ -28,13 +28,13 @@ class Bet {
     amount = json['amount'] as int?;
     bet = json['bet'] as String?;
     betodds = json['betodds'] as double?;
-    competition = json["competition"] as String?;
+    competition = json["competition"] as String? ?? json["gameRef"].toString().split('/')[3];
     game = json['game'] != null
         ? Game.fromJson(json['game'] as Map<String, dynamic>)
         : null;
     madeAt = json['madeAt'] == null ? DateTime(2000,) : dateFormat.parse(json['madeAt'] as String);
     result = json['result'] as int?;
-    sport = json["sport"] as String?;
+    sport = json["sport"] as String? ?? json["gameRef"].toString().split('/')[1];
   }
 
   Map<String, dynamic> toJson() {
@@ -114,8 +114,14 @@ List<Bet> betFromJson(String str) {
   final jsonData = json.decode(str);
   final List<Bet> data = [];
 
-  for (final item in jsonData as List) {
-    data.add(Bet.fromJson(item as Map<String, dynamic>));
+  try {
+    for (final item in (jsonData as Map<String, dynamic>).values) {
+      data.add(Bet.fromJson(item as Map<String, dynamic>));
+    }
+  } on TypeError{
+    for (final item in jsonData as List<dynamic>) {
+      data.add(Bet.fromJson(item as Map<String, dynamic>));
+    }
   }
 
   return data;

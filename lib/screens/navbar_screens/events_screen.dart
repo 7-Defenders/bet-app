@@ -8,7 +8,6 @@ import 'package:app/globals.dart';
 import 'package:app/models/football_event.dart';
 import 'package:app/models/structure.dart';
 import 'package:app/providers/button_states_provider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_svg/svg.dart';
@@ -75,7 +74,7 @@ class EventsScreenState extends State<EventsScreen> {
     //     );
     //   },
     // );
-    final String uid = FirebaseAuth.instance.currentUser!.uid;
+    final String uid = Globals.uid;
 
     print(
       jsonEncode(
@@ -90,10 +89,10 @@ class EventsScreenState extends State<EventsScreen> {
       ),
     );
 
+    const uri = 'https://flask-vhn3gxevdq-ew.a.run.app/v1/bets';
+
     final response = await http.post(
-      Uri.parse(
-        'https://flask-vhn3gxevdq-ew.a.run.app/v1/bets', // Change the endpoint to /bets
-      ),
+      Uri.parse(uri,),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -104,14 +103,23 @@ class EventsScreenState extends State<EventsScreen> {
           'bet': betType,
           'betodds': betOdds,
           'gameRef': matchRef,
-          'result': null,
         },
       ),
     );
 
     print(response.body);
-
-    return (response.statusCode == 201);
+    print(response.statusCode);
+    
+    if (response.statusCode != 201) {
+      print("Failed to create bet");
+      return false;
+    }
+    else {
+      // await Globals.saveNewBet("$uri/$uid", response.body);
+      print("Bet created successfully");
+      Globals.hasNewBet = true;
+      return true;
+    }
   }
 
   Future<void> fetchMatchesGivenLeague(String league) async {

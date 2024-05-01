@@ -1,12 +1,8 @@
 import 'package:app/components/history_screen/history_bet_widget.dart';
-import 'package:app/components/other/nunito_text.dart';
 import 'package:app/globals.dart';
 import 'package:app/components/other/appbar/custom_appbar.dart';
 import 'package:app/models/bet.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class HistoryScreen extends StatefulWidget {
@@ -52,12 +48,15 @@ class _HistoryScreenState extends State<HistoryScreen> {
       useRootNavigator: false,
     );
 
-    final String userID =
-        widget.userID ?? FirebaseAuth.instance.currentUser!.uid;
+    final String userID = Globals.uid;
     // print('userID: $userID');
 
-    final uri = 'https://flask-vhn3gxevdq-ew.a.run.app/v1/bets/$userID';
-    final response = await Globals.performCall(uri);
+    final dateTime = DateTime.now().subtract(const Duration(days: 7)).toUtc();
+    final day = DateTime.now().subtract(const Duration(days: 1)).toUtc();
+    final uriWeek = 'https://flask-vhn3gxevdq-ew.a.run.app/v1/bets/$userID?startDate=${dateTime.year}/${dateTime.month}/${dateTime.day}/${dateTime.hour}';
+    final uriDay = 'https://flask-vhn3gxevdq-ew.a.run.app/v1/bets/$userID?startDate=${day.year}/${day.month}/${day.day}/${day.hour}';
+
+    final response = Globals.shouldCall(uriWeek) ? await Globals.performCall(uriWeek) : Globals.hasNewBet ? await Globals.loadMoreBets(uriDay) : Globals.getBets();
 
     setState(() {
       // print(response.body);

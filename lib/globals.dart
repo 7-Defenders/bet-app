@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:core';
 import "dart:io";
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,27 +15,37 @@ class Globals {
   static bool joinedNewLeague = false;
   static final Map<String, DateTime> _callTimes = {};
   static final Map<String, String> _callResponses = {};
+  static bool hasNewBet = false;
 
   static const String callsSP = "calls";
+  static final uid = FirebaseAuth.instance.currentUser!.uid;
 
-  static Future<String> performCall(String uri) async {
+  static String getBets(){
+    return _callResponses["https://flask-vhn3gxevdq-ew.a.run.app/v1/bets/$uid"] ?? "[]";
+  }
+
+  static Future<String> performCall(String uri, {bool forceCall=false}) async {
     sharedPreferences ??= await SharedPreferences.getInstance();
     if (_callTimes.isEmpty) {
       loadData();
     }
+    final baseUri = uri.split("?")[0];
 
-    if (shouldCall(uri))
+    if (forceCall || shouldCall(uri))
     {
       print("will call");
       final http.Response response = await http.get(Uri.parse(uri));
-      _callTimes[uri] = DateTime.now();
-      _callResponses[uri] = response.body;
+      _callTimes[baseUri] = DateTime.now();
+      _callResponses[baseUri] = response.body;
+      if(uri != baseUri){
+        hasNewBet = false;
+      }
       saveData();
       return response.body;
     }
     else{
       print("wont call");
-      return _callResponses[uri]!;
+      return _callResponses[baseUri]!;
     }
   }
 
@@ -73,24 +84,59 @@ class Globals {
     return await sharedPreferences!.setString(callsSP, jsonEncode(data));
   }
 
+  static Future<String> loadMoreBets(String uri) async {
+    final baseUri = uri.split("?")[0];
+    final List<dynamic> currentAsList = jsonDecode(_callResponses[baseUri] ?? "[]") as List<dynamic>;
+
+    final http.Response response = await http.get(Uri.parse(uri));
+
+    final Map<String, dynamic> newAsMap = {};
+    for (final item in jsonDecode(response.body) as List<dynamic>) {
+      final id = (item as Map<String, dynamic>)["id"] as String;
+      newAsMap[id] = item;
+    }
+
+    for (final item in currentAsList){
+      final id = (item as Map<String, dynamic>)["id"] as String?;
+      if (!newAsMap.containsKey(id)){
+        newAsMap[id ?? ""] = item;
+      }
+    }
+
+    _callResponses[baseUri] = jsonEncode(newAsMap);
+    hasNewBet = false;
+    saveData();
+    return _callResponses[baseUri] ?? "[]";
+  }
+
+  static Future<void> saveNewBet(String uri, String body) async {
+    final List<dynamic> newResponse = jsonDecode(_callResponses[uri] ?? "[]") as List<dynamic>;
+    newResponse.add(jsonDecode(body) as Map<String, dynamic>);
+    
+    _callResponses[uri] = jsonEncode(newResponse);
+    hasNewBet = false;
+    await saveData();
+  }
+
   static bool shouldCall(String uri){
     bool isUriMatching(String uri, RegExp regex) {
       return regex.hasMatch(uri);
     }
+    final baseUri = uri.split("?")[0];
 
     final RegExp usersInLeague = RegExp(r'https:\/\/flask-vhn3gxevdq-ew\.a\.run\.app\/v1\/leagues\/.+\/users');
     final RegExp eventsInCompetition = RegExp(r'https:\/\/flask-vhn3gxevdq-ew\.a\.run\.app\/v1\/competitions\/.');
     final RegExp leaguesOfUser = RegExp(r'https:\/\/flask-vhn3gxevdq-ew\.a\.run\.app\/v1\/users\/.+\/leagues');
-    final RegExp betsOfUser = RegExp(r'https:\/\/flask-vhn3gxevdq-ew\.a\.run\.app\/v1\/bets\/.');
+    final RegExp betsOfUser = RegExp(r'https:\/\/flask-vhn3gxevdq-ew\.a\.run\.app\/v1\/bets\/.*');
 
-    if (isUriMatching(uri, usersInLeague)){
+    if (isUriMatching(baseUri, usersInLeague)){
       // if has never made this call -> should call
-      if (!_callTimes.containsKey(uri))
+      if (!_callTimes.containsKey(baseUri))
       {
         return true;
       }
 
-      final callTime = _callTimes[uri]!;
+      final callTime = _callTimes[baseUri]!;
 
       // if has made this call more than day ago -> should call
       if (callTime.add(const Duration(days: 1)).isBefore(DateTime.now()))
@@ -101,14 +147,15 @@ class Globals {
       return callTime.day < DateTime.now().day;
     } 
     
-    else if (isUriMatching(uri, eventsInCompetition)){
+    else if (isUriMatching(baseUri, eventsInCompetition)){
+
       // if has never made this call -> should call
-      if (!_callTimes.containsKey(uri))
+      if (!_callTimes.containsKey(baseUri))
       {
         return true;
       }
 
-      final callTime = _callTimes[uri]!;
+      final callTime = _callTimes[baseUri]!;
 
       // if has made this call today before an update -> should call
       final now = DateTime.now();
@@ -126,30 +173,30 @@ class Globals {
       return callTime.isBefore(lastUpdate);
     } 
     
-    else if (isUriMatching(uri, leaguesOfUser)){
+    else if (isUriMatching(baseUri, leaguesOfUser)){
       if (joinedNewLeague){
         joinedNewLeague = false;
         return true;
       }
 
       // if has never made this call -> should call
-      if (!_callTimes.containsKey(uri))
+      if (!_callTimes.containsKey(baseUri))
       {
         return true;
       }
 
       // if has made this call yesterday -> should call
-      return _callTimes[uri]!.day < DateTime.now().day;
+      return _callTimes[baseUri]!.day < DateTime.now().day;
     } 
     
-    else if (isUriMatching(uri, betsOfUser)){
+    else if (isUriMatching(baseUri, betsOfUser)){
       // if has never made this call -> should call
-      if (!_callTimes.containsKey(uri))
+      if (!_callTimes.containsKey(baseUri))
       {
         return true;
       }
 
-      final callTime = _callTimes[uri]!;
+      final callTime = _callTimes[baseUri]!;
 
       // if has made this call more than day ago -> should call
       if (callTime.add(const Duration(days: 1)).isBefore(DateTime.now()))
