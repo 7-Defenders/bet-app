@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:app/blocs/league_joining_bloc/league_joining_bloc.dart';
 import 'package:app/globals.dart';
 import 'package:app/other/firebase_options.dart';
 import 'package:app/other/scaffold_with_navbar.dart';
@@ -436,46 +435,65 @@ void main() async {
     _router.refresh();
   });
 
+  // runApp(
+  //   MultiBlocProvider(
+  //     providers: [
+  //       // BlocProvider(
+  //       //   create: (context) => NetworkBloc()..add(NetworkObserve()),
+  //       //   // child: const Home(),
+  //       //   child: BlocBuilder<NetworkBloc, NetworkState>(
+  //       //   builder: (context, state) {
+  //       //     if (state is NetworkFailure) {
+  //       //       return const Text("No Internet Connection");
+  //       //     } else if (state is NetworkSuccess) {
+  //       //       return const Text("You're Connected to Internet");
+  //       //     } else {
+  //       //       return const SizedBox.shrink();
+  //       //     }
+  //       //   },
+  //       // ),
+  //       // ),
+  //     ],
+  //     child: MultiProvider(
+  //       providers: [
+  //         ChangeNotifierProvider<ButtonStatesProvider>(
+  //           create: (context) => ButtonStatesProvider(),
+  //         ),
+  //         Provider<GlobalKey<EventsScreenState>>(
+  //           create: (_) => EventsScreenState.key,
+  //         ),
+  //         ChangeNotifierProvider(
+  //           create: (context) => UserDataProvider(),
+  //         ),
+  //         ChangeNotifierProvider(
+  //           create: (context) => ThemeModeProvider(),
+  //         ),
+  //       ],
+  //       child: MaterialApp(
+  //         home: BetApp(),
+  //       ),
+  //     ),
+  //   ),
+  // );
+
   runApp(
-    MultiBlocProvider(
+    MultiProvider(
       providers: [
-        BlocProvider<LeagueJoiningBloc>(
-          create: (context) => LeagueJoiningBloc(),
+        ChangeNotifierProvider<ButtonStatesProvider>(
+          create: (context) => ButtonStatesProvider(),
         ),
-        // BlocProvider(
-        //   create: (context) => NetworkBloc()..add(NetworkObserve()),
-        //   // child: const Home(),
-        //   child: BlocBuilder<NetworkBloc, NetworkState>(
-        //   builder: (context, state) {
-        //     if (state is NetworkFailure) {
-        //       return const Text("No Internet Connection");
-        //     } else if (state is NetworkSuccess) {
-        //       return const Text("You're Connected to Internet");
-        //     } else {
-        //       return const SizedBox.shrink();
-        //     }
-        //   },
-        // ),
-        // ),
+        Provider<GlobalKey<EventsScreenState>>(
+          create: (_) => EventsScreenState.key,
+        ),
+        ChangeNotifierProvider(
+          create: (context) => UserDataProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ThemeModeProvider(),
+        ),
       ],
-      child: MultiProvider(
-        providers: [
-          ChangeNotifierProvider<ButtonStatesProvider>(
-            create: (context) => ButtonStatesProvider(),
-          ),
-          Provider<GlobalKey<EventsScreenState>>(
-            create: (_) => EventsScreenState.key,
-          ),
-          ChangeNotifierProvider(
-            create: (context) => UserDataProvider(),
-          ),
-          ChangeNotifierProvider(
-            create: (context) => ThemeModeProvider(),
-          ),
-        ],
-        child: MaterialApp(
-          home: BetApp(),
-        ),
+      child: MaterialApp(
+        home: BetApp(),
       ),
     ),
   );

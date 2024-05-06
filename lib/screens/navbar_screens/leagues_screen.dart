@@ -1,4 +1,3 @@
-import 'package:app/blocs/league_joining_bloc/league_joining_bloc.dart';
 import 'package:app/components/league_screen/join_league_widget.dart';
 import 'package:app/components/league_screen/league_widget.dart';
 import 'package:app/components/other/appbar/custom_appbar.dart';
@@ -34,10 +33,6 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
     });
   }
 
-  void resetBlocState() {
-    BlocProvider.of<LeagueJoiningBloc>(context).add(CancelLeagueJoinEvent());
-  }
-
   Future<void> fetchPlayersLeagues() async {
     showDialog(
       context: context,
@@ -53,18 +48,16 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
       useRootNavigator: false,
     );
 
-
     final uri = 'https://flask-vhn3gxevdq-ew.a.run.app/v1/users/$uid/leagues';
     final response = await Globals.performCall(uri);
-   
+
     // print(response.body);
-    setState((){
+    setState(() {
       leaguePreviewFromJson(response).forEach((element) {
-            rank.add('${element.rank}/${element.playerCount}');
-            names.add(element.leagueName);
-            leagueIDs.add(element.leagueID);
-          }
-        );
+        rank.add('${element.rank}/${element.playerCount}');
+        names.add(element.leagueName);
+        leagueIDs.add(element.leagueID);
+      });
     });
 
     if (mounted) {

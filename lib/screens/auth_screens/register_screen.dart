@@ -65,6 +65,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
             (result) => result.user!.updateDisplayName(emailController.text),
           );
 
+      // if (mounted) {
+      //   if (Navigator.canPop(context)) {
+      //     Navigator.pop(context);
+      //   }
+      // }
+
       return true;
     } on FirebaseAuthException catch (e) {
       if (mounted) {

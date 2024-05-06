@@ -63,7 +63,7 @@ class _LogInScreenState extends State<LogInScreen> {
         if (context.mounted) {
           Navigator.pop(context);
           utils.showSnackbarMessage(
-            "error: ${e.code}",
+            "error: ${e.code} LINE 66",
             context,
           );
         }
