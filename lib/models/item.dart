@@ -149,6 +149,8 @@ void selectItem(
       frameURL: itemType == 'frame' ? item.link : userData.frameURL,
       photoURL: userData.photoURL,
       displayName: userData.displayName,
+      betsWon: userData.betsWon,
+      leaguesJoined: userData.leaguesJoined,
     );
   });
 }

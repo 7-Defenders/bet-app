@@ -2,13 +2,11 @@ import 'package:app/components/auth_screens/button.dart';
 import 'package:app/components/auth_screens/image_tile.dart';
 import 'package:app/components/auth_screens/text_field.dart';
 import 'package:app/components/other/nunito_text.dart';
-import 'package:app/providers/user_data_provider.dart';
 import 'package:app/services/auth_service.dart';
 import 'package:app/utils/functions.dart' as utils;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 
 class RegisterScreen extends StatefulWidget {
   final Function()? toggleScreen;
@@ -22,79 +20,56 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
+  bool isLoading = false;
 
-  Future<void> registerUser() async {
-    final bool registerSuccessful = await tryRegisterUser();
-    // can do smth here, but if want to use [context],
-    // need to find a way for it to be mounted
+  Future<void> registerUser(BuildContext context) async {
+    setState(() {
+      isLoading = true;
+    });
+    final bool loginSuccessful = await tryRegisterUser();
+    if (mounted) {
+      // it might be that we are redirected to another screen before this is called,
+      // that's why we need to check if it's mounted
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   Future<bool> tryRegisterUser() async {
     FocusManager.instance.primaryFocus?.unfocus();
-    showDialog(
-      context: context,
-      builder: (context) {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      },
-    );
     try {
       if (passwordController.text.length < 8 ||
           passwordController.text.length > 16) {
         utils.showSnackbarMessage(
-          "Password must be between 8 and 16 characters.",
-          context,
-        );
-        if (mounted) {
-          Navigator.pop(context);
-        }
+            "Password must be between 8 and 16 characters.", context);
+        return false;
       }
       if (passwordController.text != confirmPasswordController.text) {
         utils.showSnackbarMessage("Passwords do not match.", context);
-        if (mounted) {
-          Navigator.pop(context);
-        }
+        return false;
       }
       await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
-            email: emailController.text,
-            password: passwordController.text,
-          )
-          .then(
-            (result) => result.user!.updateDisplayName(emailController.text),
-          );
-
+        email: emailController.text,
+        password: passwordController.text,
+      )
+          .then((result) {
+        result.user!.updateDisplayName(emailController.text);
+      });
       return true;
     } on FirebaseAuthException catch (e) {
-      if (mounted) {
-        Navigator.pop(context);
+      String errorMessage = '';
+      if (e.code == 'weak-password') {
+        errorMessage = "Password is too weak.";
+      } else if (e.code == 'email-already-in-use') {
+        errorMessage = "This email is already in use by another account.";
+      } else {
+        errorMessage = "An error occurred: ${e.code}";
       }
-      if (e.code == 'user-not-found') {
-        if (mounted) {
-          utils.showSnackbarMessage(
-            "No user found for that email.",
-            context,
-          );
-        }
-      } else if (e.code == 'wrong-password') {
-        if (mounted) {
-          utils.showSnackbarMessage(
-            "E-mail and password do not match.",
-            context,
-          );
-        }
-      }
+      utils.showSnackbarMessage(errorMessage, context);
+      return false;
     }
-    if (mounted) {
-      if (Navigator.canPop(context)) {
-        Navigator.pop(context);
-      }
-    }
-    if (mounted) {
-      Provider.of<UserDataProvider>(context, listen: false).userData = null;
-    }
-    return false;
   }
 
   @override
@@ -142,7 +117,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 const SizedBox(height: 10),
                 const SizedBox(height: 15),
-                MyButton(text: "Sign up", onTap: registerUser),
+                MyButton(
+                  text: "Sign up",
+                  onTap: () => registerUser(context),
+                  isClickable: !isLoading,
+                ),
                 const SizedBox(height: 20),
                 Row(
                   children: [

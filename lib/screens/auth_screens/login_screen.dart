@@ -17,25 +17,23 @@ class LogInScreen extends StatefulWidget {
 
 class _LogInScreenState extends State<LogInScreen> {
   final emailController = TextEditingController();
-
   final passwordController = TextEditingController();
+  bool isLoading = false;
 
   Future<void> logInUser() async {
+    setState(() {
+      isLoading = true;
+    });
     final bool loginSuccessful = await tryLogInUser();
-    // can do smth here, but if want to use [context],
-    // need to find a way for it to be mounted
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   Future<bool> tryLogInUser() async {
     FocusManager.instance.primaryFocus?.unfocus();
-    showDialog(
-      context: context,
-      builder: (context) {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      },
-    );
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: emailController.text,
@@ -43,31 +41,15 @@ class _LogInScreenState extends State<LogInScreen> {
       );
       return true;
     } on FirebaseAuthException catch (e) {
+      String errorMessage = '';
       if (e.code == 'user-not-found') {
-        if (context.mounted) {
-          Navigator.pop(context);
-          utils.showSnackbarMessage(
-            "No user found for given email.",
-            context,
-          );
-        }
+        errorMessage = "No user found for given email.";
       } else if (e.code == 'wrong-password') {
-        if (context.mounted) {
-          Navigator.pop(context);
-          utils.showSnackbarMessage(
-            "E-mail and password do not match.",
-            context,
-          );
-        }
+        errorMessage = "E-mail and password do not match.";
       } else {
-        if (context.mounted) {
-          Navigator.pop(context);
-          utils.showSnackbarMessage(
-            "error: ${e.code}",
-            context,
-          );
-        }
+        errorMessage = "error: ${e.code}";
       }
+      utils.showSnackbarMessage(errorMessage, context);
       return false;
     }
   }
@@ -128,7 +110,11 @@ class _LogInScreenState extends State<LogInScreen> {
                   ),
                 ),
                 const SizedBox(height: 25),
-                MyButton(text: "Log In", onTap: logInUser),
+                MyButton(
+                  text: "Log In",
+                  onTap: logInUser,
+                  isClickable: !isLoading,
+                ),
                 const SizedBox(height: 35),
                 Row(
                   children: [

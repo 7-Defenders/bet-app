@@ -57,6 +57,7 @@ class ScaffoldWithNavBar extends StatelessWidget {
         (int idx) => _onItemTapped(idx, context),
       ),
       extendBody: true,
+      resizeToAvoidBottomInset: false,
     );
   }
 

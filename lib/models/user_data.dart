@@ -12,6 +12,8 @@ class UserData {
   String? bgURL;
   String? frameURL;
   String? tshirtURL;
+  num betsWon;
+  num leaguesJoined;
 
   UserData({
     this.displayName,
@@ -23,6 +25,8 @@ class UserData {
     required this.bgURL,
     required this.frameURL,
     required this.tshirtURL,
+    required this.betsWon,
+    required this.leaguesJoined,
   });
 
   UserData get userData => UserData(
@@ -35,6 +39,8 @@ class UserData {
         bgURL: bgURL,
         frameURL: frameURL,
         tshirtURL: tshirtURL,
+        betsWon: betsWon,
+        leaguesJoined: leaguesJoined,
       );
 
   set userData(UserData userData) => UserData(
@@ -47,6 +53,8 @@ class UserData {
         bgURL: userData.bgURL,
         frameURL: userData.frameURL,
         tshirtURL: userData.tshirtURL,
+        betsWon: userData.betsWon,
+        leaguesJoined: userData.leaguesJoined,
       );
 
   static UserData? fromJson(String jsonString) {
@@ -54,6 +62,8 @@ class UserData {
       final Map<String, dynamic> userDataMap =
           jsonDecode(jsonString) as Map<String, dynamic>;
 
+      print(userDataMap);
+
       return UserData(
         displayName: userDataMap['displayName'] as String,
         email: userDataMap['email'] as String,
@@ -67,15 +77,19 @@ class UserData {
             dotenv.env['DEFAULT_FRAME_URL']!,
         tshirtURL: userDataMap['tshirtURL'] as String? ??
             dotenv.env['DEFAULT_TSHIRT_URL']!,
+        betsWon: userDataMap['bets_won'] as num,
+        leaguesJoined: userDataMap['leagues_joined'] as num,
       );
     } catch (e) {
-      debugPrint('Error: $e');
+      debugPrint('Error: $e FILE USERDATA LIKE 84');
       return null;
     }
   }
 
   static UserData? fromMap(Map<String, dynamic> userDataMap) {
     try {
+      // print user data
+      print(userDataMap);
       return UserData(
         displayName: userDataMap['displayName'] as String,
         email: userDataMap['email'] as String,
@@ -89,9 +103,11 @@ class UserData {
             dotenv.env['DEFAULT_FRAME_URL']!,
         tshirtURL: userDataMap['tshirtURL'] as String? ??
             dotenv.env['DEFAULT_TSHIRT_URL']!,
+        betsWon: userDataMap['bets_won'] as num,
+        leaguesJoined: userDataMap['leagues_joined'] as num,
       );
     } catch (e) {
-      debugPrint('Error: $e');
+      debugPrint('Error: $e FILE USERDATA LINE 110');
       return null;
     }
   }
