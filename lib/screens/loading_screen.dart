@@ -1,5 +1,7 @@
 import 'package:app/models/user_data.dart';
 import 'package:app/providers/user_data_provider.dart';
+import 'package:app/screens/auth_screens/login_or_register_screen.dart';
+import 'package:app/screens/auth_screens/register_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class LoadingScreen extends StatefulWidget {
+  const LoadingScreen({super.key});
   @override
   _LoadingScreenState createState() => _LoadingScreenState();
 }
@@ -62,6 +65,8 @@ class _LoadingScreenState extends State<LoadingScreen> {
             content: Text('An error occurred - please log in again.'),
           ),
         );
+        FirebaseAuth.instance.signOut();
+        Navigator.pop(context);
         GoRouter.of(context).go('/auth');
       }
     } else {
@@ -71,9 +76,11 @@ class _LoadingScreenState extends State<LoadingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: Center(
-        child: CircularProgressIndicator(),
+        child: CircularProgressIndicator(
+          backgroundColor: Colors.amber[400],
+        ),
       ),
     );
   }
