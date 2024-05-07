@@ -29,7 +29,6 @@ import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
@@ -50,14 +49,18 @@ final _router = GoRouter(
     // auth flow route
     GoRoute(
       path: '/auth',
-      builder: (BuildContext context, GoRouterState state) {
-        return const LoginOrRegisterScreen();
-      },
+      // builder: (BuildContext context, GoRouterState state) {
+      // return const LoginOrRegisterScreen();
+      // },
+      pageBuilder: fadePageBuilder(
+        (context, state, uid) => const LoginOrRegisterScreen(),
+        null,
+      ),
     ),
     GoRoute(
       path: '/loading',
       pageBuilder: fadePageBuilder(
-        (context, state, _) => LoadingScreen(),
+        (context, state, _) => const LoadingScreen(),
         null,
       ),
     ),
@@ -69,7 +72,6 @@ final _router = GoRouter(
       },
       routes: <RouteBase>[
         /// first navbar screen
-        ///
         GoRoute(
           path: '/user/:uid',
           builder: (context, state) => ProfileScreenNew(

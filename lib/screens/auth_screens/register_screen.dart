@@ -118,9 +118,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const SizedBox(height: 10),
                 const SizedBox(height: 15),
                 MyButton(
-                  text: isLoading
-                      ? "Loading..."
-                      : "Sign up", // Change the button text based on isLoading
+                  text: "Sign up",
                   onTap: () => registerUser(context),
                   isClickable: !isLoading,
                 ),

@@ -105,7 +105,6 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
   ];
 
   Future<void> logOutUser() async {
-    Provider.of<UserDataProvider>(context, listen: false).userData = null;
     await FirebaseAuth.instance.signOut();
   }
 

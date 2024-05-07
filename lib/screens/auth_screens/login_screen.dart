@@ -111,7 +111,7 @@ class _LogInScreenState extends State<LogInScreen> {
                 ),
                 const SizedBox(height: 25),
                 MyButton(
-                  text: isLoading ? "Loading..." : "Log In",
+                  text: "Log In",
                   onTap: logInUser,
                   isClickable: !isLoading,
                 ),
