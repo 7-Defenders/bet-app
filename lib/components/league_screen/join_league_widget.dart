@@ -91,9 +91,9 @@ void onJoinButtonClicked(
     });
 
     print('Successfully joined the league');
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Successfully joined the league')),
-    );
+    // ScaffoldMessenger.of(context).showSnackBar(
+    //   const SnackBar(content: Text('Successfully joined the league')),
+    // );
   }).catchError((error) {
     print(error);
     FocusManager.instance.primaryFocus?.unfocus();
