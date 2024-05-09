@@ -4,12 +4,15 @@ import 'package:app/components/other/appbar/custom_appbar.dart';
 import 'package:app/components/other/nunito_text.dart';
 import 'package:app/globals.dart';
 import 'package:app/models/league_preview.dart';
+import 'package:app/models/user_data.dart';
+import 'package:app/providers/user_data_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:provider/provider.dart';
 
 class LeaguesScreen extends StatefulWidget {
   const LeaguesScreen({super.key});
@@ -20,6 +23,7 @@ class LeaguesScreen extends StatefulWidget {
 
 class _LeaguesScreenState extends State<LeaguesScreen> {
   final String uid = FirebaseAuth.instance.currentUser!.uid;
+  late UserData? userData;
 
   List<String> rank = [];
   List<String> names = [];
@@ -31,6 +35,12 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       fetchPlayersLeagues();
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    userData = Provider.of<UserDataProvider>(context).userData;
   }
 
   Future<void> fetchPlayersLeagues() async {
@@ -140,6 +150,14 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
             // const SizedBox(
             //   height: 40,
             // ),
+            ElevatedButton(
+              onPressed: () {
+                print('Name: ${userData?.email}');
+                print('balance: ${userData?.balance}');
+                print('leagues joined: ${userData?.leaguesJoined}');
+              },
+              child: Text('Print User Data'),
+            )
           ],
         ),
       ),

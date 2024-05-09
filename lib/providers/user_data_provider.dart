@@ -21,16 +21,82 @@ class UserDataProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setUserDataOnServerAndLocally(Map<String, String> updateDict) {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      http
+          .put(
+        Uri.parse('https://flask-vhn3gxevdq-ew.a.run.app/v1/users/${user.uid}'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: updateDict,
+      )
+          .then((value) {
+        debugPrint('Successfully updated user data');
+
+        // update the local user data based on updateDict
+        updateDict.forEach((key, value) {
+          switch (key) {
+            case 'balance':
+              _userData?.balance = double.parse(value);
+              notifyListeners();
+              break;
+            case 'bets_won':
+              _userData?.betsWon = int.parse(value);
+              notifyListeners();
+              break;
+            case 'leagues_joined':
+              _userData?.leaguesJoined = int.parse(value);
+              notifyListeners();
+              break;
+            case 'emailVerified':
+              _userData?.emailVerified = value.toLowerCase() == 'true';
+              notifyListeners();
+              break;
+            default:
+              _userData?.setValue(key, value);
+              notifyListeners();
+              break;
+          }
+        });
+
+        notifyListeners();
+      }).catchError((error) => debugPrint('Failed to update user data'));
+    }
+  }
+
+  void updateSingleField(String field, String value) {
+    switch (field) {
+      case 'balance':
+        _userData?.balance = double.parse(value);
+        notifyListeners();
+        break;
+      case 'bets_won':
+        _userData?.betsWon = int.parse(value);
+        notifyListeners();
+        break;
+      case 'leagues_joined':
+        _userData?.leaguesJoined = int.parse(value);
+        notifyListeners();
+        break;
+      case 'emailVerified':
+        _userData?.emailVerified = value.toLowerCase() == 'true';
+        notifyListeners();
+        break;
+      default:
+        _userData?.setValue(field, value);
+        notifyListeners();
+        break;
+    }
+  }
+
   Future<UserData?> requestUserData(String uid) async {
     final response = await http
         .get(Uri.parse('https://flask-vhn3gxevdq-ew.a.run.app/v1/users/$uid'));
     if (response.statusCode == 200) {
-      debugPrint('successful call');
-      debugPrint(response.body);
-      debugPrint(UserData.fromJson(response.body).toString());
       return UserData.fromJson(response.body);
     } else {
-      debugPrint('failed to call user data');
       throw Exception('Failed to load user data');
     }
   }
