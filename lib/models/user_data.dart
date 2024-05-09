@@ -57,6 +57,47 @@ class UserData {
         leaguesJoined: userData.leaguesJoined,
       );
 
+  void setValue(String key, dynamic value) {
+    switch (key) {
+      case 'displayName':
+        displayName = value as String;
+        break;
+      case 'email':
+        email = value as String;
+        break;
+      case 'photoURL':
+        photoURL = value as String;
+        break;
+      case 'emailVerified':
+        emailVerified = value as bool;
+        break;
+      case 'uid':
+        uid = value as String;
+        break;
+      case 'balance':
+        balance = value as num;
+        break;
+      case 'bgURL':
+        bgURL = value as String;
+        break;
+      case 'frameURL':
+        frameURL = value as String;
+        break;
+      case 'tshirtURL':
+        tshirtURL = value as String;
+        break;
+      case 'betsWon':
+        betsWon = value as num;
+        break;
+      case 'leaguesJoined':
+        leaguesJoined = value as num;
+        break;
+      default:
+        debugPrint('Invalid key: $key');
+        break;
+    }
+  }
+
   static UserData? fromJson(String jsonString) {
     try {
       final Map<String, dynamic> userDataMap =

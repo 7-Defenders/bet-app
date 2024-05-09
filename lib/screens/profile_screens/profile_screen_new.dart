@@ -115,13 +115,6 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
 
     if ((widget.uid != null) &&
         (widget.uid != FirebaseAuth.instance.currentUser!.uid)) {
-      debugPrint('User is not current user');
-      debugPrint("(widget.uid != null) returned ${widget.uid != null}");
-      debugPrint(
-          "(widget.uid != FirebaseAuth.instance.currentUser!.uid) returned ${widget.uid != FirebaseAuth.instance.currentUser!.uid}");
-      debugPrint("widget.uid: ${widget.uid}");
-      debugPrint(
-          "FirebaseAuth.instance.currentUser!.uid: ${FirebaseAuth.instance.currentUser!.uid}");
       // the page is not of the current user. set flag and fetch the user data.
       isCurrentUser = false;
       Provider.of<UserDataProvider>(context, listen: false)
@@ -132,6 +125,9 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
       // the page is of the current user. set flag and use the user data from the provider
       isCurrentUser = true;
       userData = Provider.of<UserDataProvider>(context, listen: false).userData;
+      // Provider.of<UserDataProvider>(context, listen: false)
+      //     .requestUserData(FirebaseAuth.instance.currentUser!.uid)
+      //     .then((value) => userData = value);
     }
   }
 
@@ -146,10 +142,16 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
   }
 
   Widget buildProfileScreen() {
-    return isCurrentUser ? buildCurrentUserProfile() : buildOtherUserProfile();
+    final UserData? userData = Provider.of<UserDataProvider>(context).userData;
+    if (userData == null) {
+      FirebaseAuth.instance.signOut();
+    }
+    return isCurrentUser
+        ? buildCurrentUserProfile(userData!)
+        : buildOtherUserProfile(userData!);
   }
 
-  Widget buildCurrentUserProfile() {
+  Widget buildCurrentUserProfile(UserData userData) {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return Scaffold(
@@ -157,11 +159,19 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
             children: [
               SizedBox(
                 height: constraints.maxHeight * 0.5,
-                child: buildProfileArea(),
+                child: buildProfileArea(userData),
               ),
               Expanded(
                 child: buildOptionsList(profileOptions),
               ),
+              ElevatedButton(
+                onPressed: () {
+                  print('Name: ${userData.email}');
+                  print('balance: ${userData.balance}');
+                  print('leagues joined: ${userData.leaguesJoined}');
+                },
+                child: Text('Print User Data'),
+              )
             ],
           ),
         );
@@ -169,15 +179,15 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
     );
   }
 
-  Widget buildOtherUserProfile() {
+  Widget buildOtherUserProfile(UserData userData) {
     return Column(
       children: [
         const Text("OTHER USER PROFILE"),
-        Text('Display Name: ${userData!.displayName ?? 'N/A'}'),
-        Text('Email: ${userData!.email ?? 'N/A'}'),
-        Text('Photo URL: ${userData!.photoURL ?? 'N/A'}'),
-        Text('Email Verified: ${userData!.emailVerified ? 'Yes' : 'No'}'),
-        Text('UID: ${userData!.uid}'),
+        Text('Display Name: ${userData.displayName ?? 'N/A'}'),
+        Text('Email: ${userData.email ?? 'N/A'}'),
+        Text('Photo URL: ${userData.photoURL ?? 'N/A'}'),
+        Text('Email Verified: ${userData.emailVerified ? 'Yes' : 'No'}'),
+        Text('UID: ${userData.uid}'),
       ],
     );
   }
@@ -193,16 +203,16 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
     );
   }
 
-  Stack buildProfileArea() {
+  Stack buildProfileArea(UserData userData) {
     return Stack(
       children: [
-        buildProfileAreaBackground(),
-        buildProfileAreaForeground(),
+        buildProfileAreaBackground(userData),
+        buildProfileAreaForeground(userData),
       ],
     );
   }
 
-  Container buildProfileAreaBackground() {
+  Container buildProfileAreaBackground(UserData userData) {
     return Container(
       decoration: BoxDecoration(
         boxShadow: [
@@ -218,14 +228,14 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
           bottomRight: Radius.circular(20),
         ),
         child: SvgPicture.network(
-          userData!.bgURL!,
+          userData.bgURL!,
           fit: BoxFit.fill,
         ),
       ),
     );
   }
 
-  Stack buildProfileAreaForeground() {
+  Stack buildProfileAreaForeground(UserData userData) {
     // align the profile area widgets accordingly to their parent (proifleArea's) height
     return Stack(
       children: [
@@ -249,7 +259,7 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
                         Align(
                           alignment: const Alignment(0, -0.5),
                           child: SvgPicture.network(
-                            userData!.tshirtURL!,
+                            userData.tshirtURL!,
                             height: constraints.maxHeight * 0.5,
                             fit: BoxFit.fill,
                           ),
@@ -259,14 +269,14 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
                     Align(
                       alignment: const Alignment(0, 0.5),
                       child: Image.network(
-                        userData!.photoURL!,
+                        userData.photoURL!,
                         height: constraints.maxHeight * 0.25,
                       ),
                     ),
                   ],
                 ),
                 SizedBox(height: constraints.maxHeight * 0.05),
-                buildUserFactsWidget(constraints),
+                buildUserFactsWidget(constraints, userData),
                 SizedBox(height: constraints.maxHeight * 0.05),
               ],
             );
@@ -276,7 +286,7 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
     );
   }
 
-  Padding buildUserFactsWidget(BoxConstraints constraints) {
+  Padding buildUserFactsWidget(BoxConstraints constraints, UserData userData) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: constraints.maxHeight * 0.04),
       child: Container(
@@ -294,11 +304,11 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Text(
-                "Verified: ${userData!.emailVerified}",
+                "Verified: ${userData.emailVerified}",
                 style: Theme.of(context).textTheme.displaySmall,
               ),
               Text(
-                "Balance: ${userData!.balance}",
+                "Balance: ${userData.balance}",
                 style: Theme.of(context).textTheme.displaySmall,
               ),
             ],

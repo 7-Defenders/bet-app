@@ -1,7 +1,11 @@
+import 'package:app/models/user_data.dart';
+import 'package:app/providers/user_data_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+
+import 'package:provider/provider.dart';
 
 class JoinLeagueWidget extends StatefulWidget {
   const JoinLeagueWidget({super.key});
@@ -75,19 +79,17 @@ void showLeagueCodeInputDialog(BuildContext context) {
 
 void onJoinButtonClicked(
     BuildContext context, String leagueCode, String userID) {
-  showDialog(
-    context: context,
-    builder: (context) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
-    },
-    barrierDismissible: false,
-  );
-
   joinLeague(leagueCode, userID).then((_) {
     FocusManager.instance.primaryFocus?.unfocus();
-    Navigator.of(context).pop();
+
+    Provider.of<UserDataProvider>(context, listen: false)
+        .requestUserData(FirebaseAuth.instance.currentUser!.uid)
+        .then((UserData? newData) {
+      Provider.of<UserDataProvider>(context, listen: false).userData = newData;
+    }).then((_) {
+      Navigator.of(context).pop(); // pop the loading dialog
+    });
+
     print('Successfully joined the league');
     // ScaffoldMessenger.of(context).showSnackBar(
     //   const SnackBar(content: Text('Successfully joined the league')),
