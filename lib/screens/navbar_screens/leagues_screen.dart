@@ -115,7 +115,7 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
             const SizedBox(
               height: 40,
             ),
-            JoinLeagueWidget(),
+            JoinLeagueWidget(fetchPlayersLeagues),
             const SizedBox(
               height: 40,
             ),

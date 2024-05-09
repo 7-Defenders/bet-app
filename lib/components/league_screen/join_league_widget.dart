@@ -7,14 +7,18 @@ import 'dart:convert';
 
 import 'package:provider/provider.dart';
 
+import '../../globals.dart';
+
 class JoinLeagueWidget extends StatefulWidget {
-  const JoinLeagueWidget({super.key});
+  Function() onJoined;
+
+  JoinLeagueWidget(this.onJoined,{super.key});
 
   @override
   State<JoinLeagueWidget> createState() => _JoinLeagueWidgetState();
 }
 
-Future<void> joinLeague(String leagueCode, String userID) async {
+Future<void> joinLeague(String leagueCode, String userID, Function() onJoined) async {
   print("joining league with code $leagueCode and userID $userID");
   final response = await http.post(
     Uri.parse('https://flask-vhn3gxevdq-ew.a.run.app/v1/leagues/join'),
@@ -31,13 +35,15 @@ Future<void> joinLeague(String leagueCode, String userID) async {
 
   if ((response.statusCode / 100).floor() == 2) {
     print('Successfully joined the league');
+    Globals.joinedNewLeague = true;
+    await onJoined();
   } else {
     print('Failed to join league: ${response.body}');
     throw Exception('Failed to join league: ${response.body}');
   }
 }
 
-void showLeagueCodeInputDialog(BuildContext context) {
+void showLeagueCodeInputDialog(BuildContext context, Function() onJoined) {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController leagueCodeController = TextEditingController();
   final focusNode = FocusNode();
@@ -66,7 +72,7 @@ void showLeagueCodeInputDialog(BuildContext context) {
             onPressed: () {
               if (_formKey.currentState!.validate()) {
                 final uid = FirebaseAuth.instance.currentUser!.uid;
-                onJoinButtonClicked(context, leagueCodeController.text, uid);
+                onJoinButtonClicked(context, leagueCodeController.text, uid, onJoined);
                 focusNode.unfocus();
               }
             },
@@ -78,8 +84,8 @@ void showLeagueCodeInputDialog(BuildContext context) {
 }
 
 void onJoinButtonClicked(
-    BuildContext context, String leagueCode, String userID) {
-  joinLeague(leagueCode, userID).then((_) {
+    BuildContext context, String leagueCode, String userID, Function() onJoined) {
+  joinLeague(leagueCode, userID, onJoined).then((_) {
     FocusManager.instance.primaryFocus?.unfocus();
 
     Provider.of<UserDataProvider>(context, listen: false)
@@ -109,7 +115,7 @@ class _JoinLeagueWidgetState extends State<JoinLeagueWidget> {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
-        showLeagueCodeInputDialog(context);
+        showLeagueCodeInputDialog(context, widget.onJoined);
       },
       child: const Text('Join League'),
     );
