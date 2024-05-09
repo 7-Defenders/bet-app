@@ -150,14 +150,6 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
             // const SizedBox(
             //   height: 40,
             // ),
-            ElevatedButton(
-              onPressed: () {
-                print('Name: ${userData?.email}');
-                print('balance: ${userData?.balance}');
-                print('leagues joined: ${userData?.leaguesJoined}');
-              },
-              child: Text('Print User Data'),
-            )
           ],
         ),
       ),

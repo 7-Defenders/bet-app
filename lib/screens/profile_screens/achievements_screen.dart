@@ -3,7 +3,6 @@ import 'package:app/components/other/nunito_text.dart';
 import 'package:app/models/user_data.dart';
 import 'package:app/providers/user_data_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -230,7 +229,7 @@ class _AchievementWidgetState extends State<AchievementWidget> {
                       : const Color.fromARGB(255, 242, 148, 44),
                   center: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: !isAchievementDone 
+                    children: !isAchievementDone
                         ? [
                             nunitoText(
                               widget.type == AchievementType.betsWon
@@ -263,8 +262,9 @@ class _AchievementWidgetState extends State<AchievementWidget> {
                               )
                             else
                               const SizedBox(),
-                          ] 
-                          : isRewardCollected ? [
+                          ]
+                        : isRewardCollected
+                            ? [
                                 nunitoText(
                                   widget.type == AchievementType.betsWon
                                       ? "win ${widget.valueMax} bets"
@@ -285,7 +285,7 @@ class _AchievementWidgetState extends State<AchievementWidget> {
                                   FontWeight.normal,
                                   const Color.fromARGB(255, 30, 30, 27),
                                 ),
-                              ],
+                              ]
                             : [
                                 nunitoText(
                                   widget.type == AchievementType.betsWon
