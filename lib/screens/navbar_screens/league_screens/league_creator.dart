@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:app/components/other/nunito_text.dart';
 import 'package:app/models/structure.dart';
+import 'package:app/models/user_data.dart';
 import 'package:app/providers/user_data_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -194,8 +195,11 @@ class _LeagueCreatorState extends State<LeagueCreator> {
         );
       case 200:
         Provider.of<UserDataProvider>(context, listen: false)
-            .userData
-            ?.leaguesJoined++;
+            .requestUserData(FirebaseAuth.instance.currentUser!.uid)
+            .then((UserData? newData) {
+          Provider.of<UserDataProvider>(context, listen: false).userData =
+              newData;
+        });
     }
   }
 
