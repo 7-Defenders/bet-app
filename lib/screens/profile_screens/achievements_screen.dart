@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:app/components/other/appbar/custom_appbar.dart';
 import 'package:app/components/other/nunito_text.dart';
+import 'package:app/components/profile_screen/achievement_widget.dart';
 import 'package:app/globals.dart';
 import 'package:app/models/achievement.dart';
 import 'package:app/models/user_data.dart';
@@ -144,6 +145,22 @@ List<Widget> getAchievementsList(List<Achievement> achievementList) {
   final List<Achievement> uncompletedAchievements =
       achievementList.where((widget) => widget.isCompleted == true).toList();
 
+  final List<Widget> completedAchievementsWidgets = completedAchievements.map(
+    (achievement) {
+      return AchievementWidget(
+        achievement: achievement,
+      );
+    },
+  ).toList();
+
+  final List<Widget> uncompletedAchievementsWidgets = uncompletedAchievements
+      .map(
+        (achievement) => AchievementWidget(
+          achievement: achievement,
+        ),
+      )
+      .toList();
+
   return [
     const SizedBox(height: 40),
     Padding(
@@ -159,7 +176,7 @@ List<Widget> getAchievementsList(List<Achievement> achievementList) {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       crossAxisCount: 2,
-      children: uncompletedAchievements,
+      children: uncompletedAchievementsWidgets,
     ),
     Padding(
       padding: const EdgeInsets.only(left: 20),
@@ -174,7 +191,7 @@ List<Widget> getAchievementsList(List<Achievement> achievementList) {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       crossAxisCount: 2,
-      children: completedAchievements,
+      children: completedAchievementsWidgets,
     ),
   ];
 }

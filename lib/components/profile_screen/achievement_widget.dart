@@ -1,9 +1,7 @@
 import 'package:app/components/other/nunito_text.dart';
 import 'package:app/models/achievement.dart';
-import 'package:app/providers/user_data_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
+
 
 class AchievementWidget extends StatefulWidget {
   final Achievement achievement;
@@ -18,59 +16,13 @@ class AchievementWidget extends StatefulWidget {
 }
 
 class _AchievementWidgetState extends State<AchievementWidget> {
-  Future<void> giveReward(
-    BuildContext context,
-    AchievementType type,
-    String? awardCosmeticRef,
-    num? awardPoints,
-  ) async {
-    final uid =
-        Provider.of<UserDataProvider>(context, listen: false).userData?.uid;
-    final uri = Uri.encodeFull(
-      'https://flask-vhn3gxevdq-ew.a.run.app/v1/users/$uid/cosmetics/$cosmeticName',
-    );
-    final response = await http.post(Uri.parse(uri));
 
-    if (context.mounted) {
-      if (response.statusCode == 200) {
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setBool('$achievementName achievement', true);
-        setState(() {
-          isRewardCollected = true;
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("You recievsed a new cosmetic: $cosmeticName!"),
-            duration: const Duration(seconds: 2),
-          ),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Failed to give reward"),
-            duration: Duration(seconds: 2),
-          ),
-        );
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     final bool isAchievementDone = widget.achievement.isCompleted;
-
-    return FutureBuilder<SharedPreferences>(
-      future: SharedPreferences.getInstance(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return const CircularProgressIndicator();
-        }
-
-        final prefs = snapshot.data!;
-        isRewardCollected =
-            prefs.getBool('${widget.achievementName} achievement') ?? false;
-
-        return LayoutBuilder(
+  
+    return LayoutBuilder(
           builder: (context, constraints) {
             return Container(
               padding: const EdgeInsets.all(10),
