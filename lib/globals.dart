@@ -21,7 +21,7 @@ class Globals {
   static final uid = FirebaseAuth.instance.currentUser!.uid;
 
   static String getBets(){
-    return _callResponses["https://flask-vhn3gxevdq-ew.a.run.app/v1/bets/$uid"] ?? "[]";
+    return _callResponses["https://bet-app-e520a.ew.r.appspot.com/v1/bets/$uid"] ?? "[]";
   }
 
   static Future<String> performCall(String uri, {bool forceCall=false}) async {
@@ -33,7 +33,7 @@ class Globals {
 
     if (forceCall || shouldCall(uri))
     {
-      print("will call");
+      print("will call $uri");
       final http.Response response = await http.get(Uri.parse(uri));
       _callTimes[baseUri] = DateTime.now();
       _callResponses[baseUri] = response.body;

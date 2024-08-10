@@ -53,8 +53,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
     final dateTime = DateTime.now().subtract(const Duration(days: 7)).toUtc();
     final day = DateTime.now().subtract(const Duration(days: 1)).toUtc();
-    final uriWeek = 'https://flask-vhn3gxevdq-ew.a.run.app/v1/bets/$userID?startDate=${dateTime.year}/${dateTime.month}/${dateTime.day}/${dateTime.hour}';
-    final uriDay = 'https://flask-vhn3gxevdq-ew.a.run.app/v1/bets/$userID?startDate=${day.year}/${day.month}/${day.day}/${day.hour}';
+    final uriWeek = 'https://bet-app-e520a.ew.r.appspot.com/v1/bets/$userID?startDate=${dateTime.year}/${dateTime.month}/${dateTime.day}/${dateTime.hour}';
+    final uriDay = 'https://bet-app-e520a.ew.r.appspot.com/v1/bets/$userID?startDate=${day.year}/${day.month}/${day.day}/${day.hour}';
 
     final response = Globals.shouldCall(uriWeek) ? await Globals.performCall(uriWeek) : Globals.hasNewBet ? await Globals.loadMoreBets(uriDay) : Globals.getBets();
 

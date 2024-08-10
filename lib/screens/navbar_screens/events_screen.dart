@@ -89,7 +89,7 @@ class EventsScreenState extends State<EventsScreen> {
       ),
     );
 
-    const uri = 'https://flask-vhn3gxevdq-ew.a.run.app/v1/bets';
+    const uri = 'https://bet-app-e520a.ew.r.appspot.com/v1/bets';
 
     final response = await http.post(
       Uri.parse(uri,),
@@ -138,7 +138,7 @@ class EventsScreenState extends State<EventsScreen> {
     );
 
     try {
-      final uri = 'https://flask-vhn3gxevdq-ew.a.run.app/v1/competitions/$league';
+      final uri = 'https://bet-app-e520a.ew.r.appspot.com/v1/competitions/$league';
       final response = await Globals.performCall(uri);
 
       displayedMatches.clear();
