@@ -9,6 +9,8 @@ import 'package:http/http.dart' as http;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 
+import '../../../globals.dart';
+
 class LeagueCreator extends StatefulWidget {
   const LeagueCreator({super.key});
 
@@ -171,11 +173,6 @@ class _LeagueCreatorState extends State<LeagueCreator> {
 
     print("${response.statusCode}, ${response.body}");
 
-    if (mounted) {
-      Navigator.of(context).pop();
-    }
-    Navigator.of(context, rootNavigator: true).pop();
-
     switch (response.statusCode) {
       case 400:
         await showDialog<void>(
@@ -193,9 +190,16 @@ class _LeagueCreatorState extends State<LeagueCreator> {
           ),
         );
       case 200:
-        Provider.of<UserDataProvider>(context, listen: false)
-            .userData
-            ?.leaguesJoined++;
+        {
+          if (mounted) {
+            Navigator.of(context).pop();
+          }
+          Navigator.of(context, rootNavigator: true).pop();
+          Provider.of<UserDataProvider>(context, listen: false).userData?.leaguesJoined++;
+          setState(() {
+            Globals.joinedNewLeague = true;
+          });            
+        }
     }
   }
 
