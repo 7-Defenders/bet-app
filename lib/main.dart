@@ -16,7 +16,7 @@ import 'package:app/screens/navbar_screens/league_screens/league_creator.dart';
 import 'package:app/screens/navbar_screens/league_screens/league_summary.dart';
 import 'package:app/screens/navbar_screens/leagues_screen.dart';
 import 'package:app/screens/navbar_screens/shop_screen.dart';
-import 'package:app/screens/profile_screens/achievements_screen.dart';
+// import 'package:app/screens/profile_screens/achievements_screen.dart';
 import 'package:app/screens/profile_screens/cosmetics.dart';
 import 'package:app/screens/profile_screens/profile_screen_new.dart';
 import 'package:app/screens/profile_screens/profile_settings_screen.dart';
@@ -174,13 +174,13 @@ final _router = GoRouter(
             /// Same as "/profile/history", but displayed on the root Navigator
             /// by specifying [parentNavigatorKey]. This will cover both events
             /// screen and the application shell.
-            GoRoute(
-              path: 'achievements',
-              pageBuilder: fadePageBuilder(
-                (context, state, _) => const AchievementsScreen(),
-                null,
-              ),
-            ),
+            // GoRoute(
+            //   path: 'achievements',
+            //   pageBuilder: fadePageBuilder(
+            //     (context, state, _) => const AchievementsScreen(),
+            //     null,
+            //   ),
+            // ),
           ],
         ),
 
@@ -300,13 +300,13 @@ final _router = GoRouter(
             /// Same as "/profile/history", but displayed on the root Navigator
             /// by specifying [parentNavigatorKey]. This will cover both events
             /// screen and the application shell.
-            GoRoute(
-              path: 'achievements',
-              parentNavigatorKey: _rootNavigatorKey,
-              builder: (BuildContext context, GoRouterState state) {
-                return const AchievementsScreen();
-              },
-            ),
+            // GoRoute(
+            //   path: 'achievements',
+            //   parentNavigatorKey: _rootNavigatorKey,
+            //   builder: (BuildContext context, GoRouterState state) {
+            //     return const AchievementsScreen();
+            //   },
+            // ),
           ],
         ),
 

@@ -73,18 +73,18 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
       ),
       onTap: () => {GoRouter.of(context).go('/profile/cosmetics')},
     ),
-    ListTile(
-      leading: Icon(
-        Icons.check,
-        color: Theme.of(context).iconTheme.color,
-        size: Theme.of(context).iconTheme.size,
-      ),
-      title: Text(
-        "Achievements",
-        style: Theme.of(context).textTheme.displayMedium,
-      ),
-      onTap: () => {GoRouter.of(context).go('/profile/achievements')},
-    ),
+    // ListTile(
+    //   leading: Icon(
+    //     Icons.check,
+    //     color: Theme.of(context).iconTheme.color,
+    //     size: Theme.of(context).iconTheme.size,
+    //   ),
+    //   title: Text(
+    //     "Achievements",
+    //     style: Theme.of(context).textTheme.displayMedium,
+    //   ),
+    //   onTap: () => {GoRouter.of(context).go('/profile/achievements')},
+    // ),
     const Divider(
       color: Colors.black,
     ),
