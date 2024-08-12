@@ -50,7 +50,7 @@ class _ShopScreenState extends State<ShopScreen> {
           // awarding coins
           final response = await http.post(
             Uri.parse(
-              'https://flask-vhn3gxevdq-ew.a.run.app/v1/users/$uid/coins',
+              'https://bet-app-e520a.ew.r.appspot.com/v1/users/$uid/coins',
             ),
             headers: <String, String>{
               'Content-Type': 'application/json; charset=UTF-8',

@@ -128,12 +128,12 @@
 //   ];
 // }
 
-// class AchievementWidget extends StatefulWidget {
-//   final String achievementName;
-//   final AchievementType type;
-//   final num? valueCurrent;
-//   final num valueMax;
-//   final String cosmeticName;
+  // final uid =
+  //     Provider.of<UserDataProvider>(context, listen: false).userData?.uid;
+  // final uri = Uri.encodeFull(
+  //   'https://bet-app-e520a.ew.r.appspot.com/v1/users/$uid/cosmetics/$cosmeticName',
+  // );
+  // final response = await http.get(Uri.parse(uri));
 
 //   const AchievementWidget({
 //     required this.achievementName,

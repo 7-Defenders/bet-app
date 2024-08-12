@@ -10,6 +10,8 @@ import 'package:http/http.dart' as http;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 
+import '../../../globals.dart';
+
 class LeagueCreator extends StatefulWidget {
   const LeagueCreator({super.key});
 
@@ -163,7 +165,7 @@ class _LeagueCreatorState extends State<LeagueCreator> {
 
     // print(body);
     final response = await http.post(
-      Uri.parse('https://flask-vhn3gxevdq-ew.a.run.app/v1/leagues'),
+      Uri.parse('https://bet-app-e520a.ew.r.appspot.com/v1/leagues'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -171,11 +173,6 @@ class _LeagueCreatorState extends State<LeagueCreator> {
     );
 
     print("${response.statusCode}, ${response.body}");
-
-    if (mounted) {
-      Navigator.of(context).pop();
-    }
-    Navigator.of(context, rootNavigator: true).pop();
 
     switch (response.statusCode) {
       case 400:
@@ -194,12 +191,18 @@ class _LeagueCreatorState extends State<LeagueCreator> {
           ),
         );
       case 200:
-        Provider.of<UserDataProvider>(context, listen: false)
-            .requestUserData(FirebaseAuth.instance.currentUser!.uid)
-            .then((UserData? newData) {
-          Provider.of<UserDataProvider>(context, listen: false).userData =
-              newData;
-        });
+        {
+          if (mounted) {
+            Navigator.of(context).pop();
+          }
+          Navigator.of(context, rootNavigator: true).pop();
+          Provider.of<UserDataProvider>(context, listen: false)
+              .userData
+              ?.leaguesJoined++;
+          setState(() {
+            Globals.joinedNewLeague = true;
+          });
+        }
     }
   }
 
