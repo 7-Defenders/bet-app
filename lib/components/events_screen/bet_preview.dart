@@ -49,9 +49,12 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
     BuildContext context, {
     Color color = Colors.transparent,
   }) {
+    
+    final double panelHeight = MediaQuery.of(context).size.height;
+    final double panelWidth = MediaQuery.of(context).size.width;
     const Color textColor = Colors.white;
 
-    final width = MediaQuery.of(context).size.width * 0.2 * 0.9;
+    final width = panelWidth * 0.2 * 0.9;
     final translationMultiplier = width * 0.1;
 
     double translation;
@@ -74,7 +77,7 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
       onTap: () => onItemTapped(option),
       child: Container(
         width: width,
-        height: MediaQuery.of(context).size.height * 0.08,
+        height: panelHeight * 0.08,
         color: color,
         child: Center(
           child: Column(
@@ -97,6 +100,9 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
     Function(String?) onItemTapped, {
     String? option,
   }) {
+    
+    final double panelHeight = MediaQuery.of(context).size.height;
+    final double panelWidth = MediaQuery.of(context).size.width;
     String betWidgetPath;
     switch (option) {
       case null:
@@ -118,7 +124,7 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
     final sportIcon = SvgPicture.asset(
       widget.sportIconPath,
       fit: BoxFit.cover,
-      width: MediaQuery.of(context).size.width * 0.9 * 0.2 * 0.4,
+      width: panelWidth * 0.9 * 0.2 * 0.4,
     );
 
     return Stack(
@@ -128,7 +134,7 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
         SvgPicture.asset(
           betWidgetPath,
           fit: BoxFit.cover,
-          width: MediaQuery.of(context).size.width * 0.9,
+          width: panelWidth * 0.9,
         ),
         // on top, invisible buttons to make the navbar items clickable
         Row(
@@ -142,19 +148,25 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
           ],
         ),
         Positioned(
-            top: MediaQuery.of(context).size.height * 0.015,
-            left: MediaQuery.of(context).size.height * 0.05,
+            top: panelHeight * 0.015,
+            left: panelHeight * 0.05,
             child: sportIcon),
         Positioned(
-          top: MediaQuery.of(context).size.height * 0.013,
-          left: MediaQuery.of(context).size.height * 0.9 * 0.12,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              nunitoText(widget.eventName, 14, FontWeight.bold, Colors.black),
-              nunitoText(
-                  widget.eventDetails, 12, FontWeight.normal, Colors.black),
-            ],
+          top: panelHeight * 0.013,
+          left: panelHeight * 0.9 * 0.12,
+          child: SizedBox(
+            width: panelWidth * 0.9 * 0.7,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: nunitoText(widget.eventName, 14, FontWeight.bold, Colors.black, maxLines: 1)
+                  ),
+                nunitoText(
+                    widget.eventDetails, 12, FontWeight.normal, Colors.black),
+              ],
+            ),
           ),
         ),
       ],
@@ -164,7 +176,7 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
   @override
   Widget build(BuildContext context) {
     //final buttonStatesProvider = Provider.of<ButtonStatesProvider>(context);
-    // final double containerWidth = MediaQuery.of(context).size.width * 0.9;
+    // final double containerWidth = panelWidth * 0.9;
     // const double padding = 8.0;
 
     return krzeminBetWidget(context, (p0) => onItemTapped(p0),

@@ -164,6 +164,7 @@ class EventsScreenState extends State<EventsScreen> {
                 final String key = '${element.homename} - ${element.awayname}';
                 final double odds;
                 final String matchRef = element.matchRef;
+                final String date = element.date.toString();
 
                 switch (selectedOption) {
                   case '1':
@@ -202,7 +203,7 @@ class EventsScreenState extends State<EventsScreen> {
                 } else {
                   buttonStatesProvider.updateButtonState(
                     key,
-                    '$selectedOption,$odds,$matchRef',
+                    '$selectedOption,$odds,$matchRef,$date',
                   );
                 }
 
@@ -377,9 +378,12 @@ class EventsScreenState extends State<EventsScreen> {
               final entry =
                   buttonStatesProvider.buttonStates.entries.elementAt(index);
               final gameName = entry.key;
-              final betType = entry.value.split(',')[0];
-              final double odds = double.parse(entry.value.split(',')[1]);
-              final matchRef = entry.value.split(',')[2];
+              final split = entry.value.split(',');
+              print(split);
+              final betType = split[0];
+              final double odds = double.parse(split[1]);
+              final matchRef = split[2];
+              final date = split[3];
 
               print("matchRef: $matchRef");
 
@@ -392,6 +396,7 @@ class EventsScreenState extends State<EventsScreen> {
                 gameName: gameName,
                 betType: betType,
                 odds: odds,
+                date: date,
                 matchRef: matchRef,
                 amountController: amountController,
                 onRemove: () {

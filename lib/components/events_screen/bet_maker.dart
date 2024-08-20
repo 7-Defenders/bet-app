@@ -7,6 +7,7 @@ class BetMaker extends StatefulWidget {
   final String gameName;
   final String betType;
   final double odds;
+  final String date;
   final String matchRef;
   final TextEditingController amountController;
   final VoidCallback onRemove;
@@ -21,6 +22,7 @@ class BetMaker extends StatefulWidget {
     required this.gameName,
     required this.betType,
     required this.odds,
+    required this.date,
     required this.matchRef,
     required this.amountController,
     required this.onRemove,
@@ -34,6 +36,8 @@ class BetMaker extends StatefulWidget {
 class _BetMakerState extends State<BetMaker> {
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(
         12,
@@ -102,20 +106,23 @@ class _BetMakerState extends State<BetMaker> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   SizedBox(
-                                    child: nunitoText(
-                                      widget.gameName,
-                                      14,
-                                      FontWeight.w700,
-                                      const Color(0xFF1E1E1B),
+                                    width: width * 0.65,
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      child: nunitoText(
+                                        widget.gameName,
+                                        14,
+                                        FontWeight.w700,
+                                        const Color(0xFF1E1E1B),
+                                        maxLines: 1,
+                                      ),
                                     ),
                                   ),
-                                  SizedBox(
-                                    child: nunitoText(
-                                      'Date of the match TBAdded', // TODO: Replace with actual date
-                                      12,
-                                      FontWeight.w400,
-                                      const Color(0xFF1E1E1B),
-                                    ),
+                                  nunitoText(
+                                    widget.date, // TODO: Replace with actual date
+                                    12,
+                                    FontWeight.w400,
+                                    const Color(0xFF1E1E1B),
                                   ),
                                 ],
                               ),
