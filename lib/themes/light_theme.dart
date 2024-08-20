@@ -25,7 +25,7 @@ ThemeData lightTheme = ThemeData(
     secondary: Color.fromARGB(255, 255, 255, 255),
     tertiary: Colors.grey,
     onTertiary: Color.fromARGB(
-        255, 255, 255, 255), // there was no other appropriate name lol
+        255, 255, 255, 255,), // there was no other appropriate name lol
     error: Color.fromARGB(255, 224, 227, 255),
 
     surface: Color.fromARGB(255, 250, 250, 250),
