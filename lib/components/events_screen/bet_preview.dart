@@ -33,7 +33,7 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
   void initState() {
     super.initState();
     _selectedOption = widget.initialSelection;
-    //print(widget.initialSelection);
+    //debugPrint(widget.initialSelection);
   }
 
   void onItemTapped(String? option) {
@@ -87,7 +87,7 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
               Transform.translate(
                   offset: Offset(translation, 0),
                   child: nunitoText(widget.bets[option].toString(), 14,
-                      FontWeight.bold, textColor)),
+                      FontWeight.bold, textColor,),),
             ],
           ),
         ),
@@ -150,7 +150,7 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
         Positioned(
             top: panelHeight * 0.015,
             left: panelHeight * 0.05,
-            child: sportIcon),
+            child: sportIcon,),
         Positioned(
           top: panelHeight * 0.013,
           left: panelHeight * 0.9 * 0.12,
@@ -161,10 +161,10 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
               children: [
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  child: nunitoText(widget.eventName, 14, FontWeight.bold, Colors.black, maxLines: 1)
+                  child: nunitoText(widget.eventName, 14, FontWeight.bold, Colors.black, maxLines: 1),
                   ),
                 nunitoText(
-                    widget.eventDetails, 12, FontWeight.normal, Colors.black),
+                    widget.eventDetails, 12, FontWeight.normal, Colors.black,),
               ],
             ),
           ),
@@ -180,6 +180,6 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
     // const double padding = 8.0;
 
     return krzeminBetWidget(context, (p0) => onItemTapped(p0),
-        option: _selectedOption);
+        option: _selectedOption,);
   }
 }

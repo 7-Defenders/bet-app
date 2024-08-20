@@ -12,7 +12,7 @@ class AddPointsWidget extends StatefulWidget {
 class _AddPointsWidgetState extends State<AddPointsWidget> {
 
   Future<void> addPoints(String uid, int pointsToAdd) async {
-    DocumentReference userDocRef = FirebaseFirestore.instance.collection('Users').doc(uid);
+    final DocumentReference userDocRef = FirebaseFirestore.instance.collection('Users').doc(uid);
     final int currentPoints = await userDocRef.get().then((doc) => doc['balance'] as int);
     final int newPoints = currentPoints + pointsToAdd;
     await userDocRef.get().then((doc) => doc.reference.update({'balance': newPoints}));

@@ -75,7 +75,7 @@ class _SettingsExpansionButtonState extends State<SettingsExpansionButton> {
                         final prefs = await SharedPreferences.getInstance();
                         prefs.setString(sharedPrefsKeyName, choice);
                       },
-                      child: nunitoText(choice, 5*widget.vw, FontWeight.normal, Theme.of(context).colorScheme.onBackground),
+                      child: nunitoText(choice, 5*widget.vw, FontWeight.normal, Theme.of(context).colorScheme.onSurface),
                     ),
                   ),
               ],
@@ -109,7 +109,7 @@ class _SettingsExpansionButtonState extends State<SettingsExpansionButton> {
             widget.title,
             2.5*widget.vh,
             FontWeight.bold,
-            Theme.of(context).colorScheme.onBackground,
+            Theme.of(context).colorScheme.onSurface,
           ),
           children: <Widget>[
             Padding(
@@ -137,8 +137,8 @@ class _SettingsExpansionButtonState extends State<SettingsExpansionButton> {
       padding: const EdgeInsets.all(12.0),
       children: <Widget>[
         ListTile(
-          title: nunitoText("Betting odds format", 4*widget.vw, FontWeight.bold, Theme.of(context).colorScheme.onBackground),
-          subtitle: nunitoText(selectedOddsFormat, 3.5*widget.vw, FontWeight.normal, Theme.of(context).colorScheme.onBackground),
+          title: nunitoText("Betting odds format", 4*widget.vw, FontWeight.bold, Theme.of(context).colorScheme.onSurface),
+          subtitle: nunitoText(selectedOddsFormat, 3.5*widget.vw, FontWeight.normal, Theme.of(context).colorScheme.onSurface),
           onTap: () {
             _showDialog(
               "Select odds format:",
@@ -149,8 +149,8 @@ class _SettingsExpansionButtonState extends State<SettingsExpansionButton> {
         ),
         ListTile(
           // title: Text('Notifications'),
-          title: nunitoText("Notifications", 4*widget.vw, FontWeight.bold, Theme.of(context).colorScheme.onBackground),
-          subtitle: nunitoText(selectedNotificationsOption, 3.5*widget.vw, FontWeight.normal, Theme.of(context).colorScheme.onBackground),
+          title: nunitoText("Notifications", 4*widget.vw, FontWeight.bold, Theme.of(context).colorScheme.onSurface),
+          subtitle: nunitoText(selectedNotificationsOption, 3.5*widget.vw, FontWeight.normal, Theme.of(context).colorScheme.onSurface),
           onTap: () {
             _showDialog(
               "Select notification option:",

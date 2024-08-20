@@ -58,7 +58,7 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
     final uri = 'https://bet-app-e520a.ew.r.appspot.com/v1/users/$uid/leagues';
     final response = await Globals.performCall(uri);
 
-    // print(response.body);
+    // debugPrint(response.body);
     setState(() {
       leaguePreviewFromJson(response).forEach((element) {
         rank.add('${element.rank}/${element.playerCount}');
@@ -87,25 +87,26 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("building");
+    debugPrint("building");
     final List<Widget> leadingWidgets = rank
         .map(
           (e) => ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Container(
-                color: Color.fromRGBO(255, 115, 115, 1),
-                width: 40,
-                height: 18,
-                child: Center(
-                  child: Text(
-                    e,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                    ),
+            borderRadius: BorderRadius.circular(8),
+            child: Container(
+              color: const Color.fromRGBO(255, 115, 115, 1),
+              width: 40,
+              height: 18,
+              child: Center(
+                child: Text(
+                  e,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
                   ),
                 ),
-              )),
+              ),
+            ),
+          ),
         )
         .toList();
 
@@ -124,7 +125,7 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
             ),
             LeagueListWidget(
               header: nunitoText("Your leagues", 20, FontWeight.bold,
-                  Color.fromRGBO(30, 30, 27, 1)),
+                  const Color.fromRGBO(30, 30, 27, 1),),
               leadingWidgets: leadingWidgets,
               titles: names,
               // addons: null,
@@ -133,7 +134,7 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
                   (index) => const Icon(
                         Icons.arrow_forward_ios_rounded,
                         color: Colors.red,
-                      )),
+                      ),),
               onTap: (int index) {
                 goToLeagueSummary(context, index);
               },
@@ -155,12 +156,12 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
             // ),
             ElevatedButton(
               onPressed: () {
-                print('Name: ${userData?.email}');
-                print('balance: ${userData?.balance}');
-                print('leagues joined: ${userData?.leaguesJoined}');
+                debugPrint('Name: ${userData?.email}');
+                debugPrint('balance: ${userData?.balance}');
+                debugPrint('leagues joined: ${userData?.leaguesJoined}');
               },
-              child: Text('Print User Data'),
-            )
+              child: const Text('Print User Data'),
+            ),
           ],
         ),
       ),

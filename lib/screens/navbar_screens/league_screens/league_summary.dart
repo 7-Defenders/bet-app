@@ -198,10 +198,10 @@ class _LeagueSummaryState extends State<LeagueSummary> {
 
     final uri = 'https://bet-app-e520a.ew.r.appspot.com/v1/leagues/${widget.leagueID}/users';
     final response = await Globals.performCall(uri);
-    // print(response.body);
+    // debugPrint(response.body);
     setState((){
       final body = leagueSummaryFromJson(response);
-      // print(body.competitionsIncluded);
+      // debugPrint(body.competitionsIncluded);
 
       leagueName = body.leagueName;
       leagueCode = body.leagueCode;
@@ -210,7 +210,6 @@ class _LeagueSummaryState extends State<LeagueSummary> {
       private = body.private;
 
       final users = body.users!;
-      final int playerCount = users.length;
 
       users.asMap().forEach((index, element) {
         ranks.add('${index+1}');
@@ -232,19 +231,19 @@ class _LeagueSummaryState extends State<LeagueSummary> {
       ClipRRect(
         borderRadius: BorderRadius.circular(8),
         child: Container(
-          color: Color.fromRGBO(255, 115, 115, 1),
+          color: const Color.fromRGBO(255, 115, 115, 1),
           width: 40,
           height: 18,
           child: Center(
             child: Text(
               e,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 14,
               ),
             ),
           ),
-        )
+        ),
       ),
     ).toList();
 

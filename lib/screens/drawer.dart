@@ -23,7 +23,7 @@ BackdropFilter drawer(BuildContext context, double vw, double vh) {
                 children: [
                   Padding(
                     padding: EdgeInsets.fromLTRB(0, 4 * vh, 0, 2.5 * vh),
-                    child: nunitoText("Menu", 3 * vh, FontWeight.bold, Theme.of(context).colorScheme.background),
+                    child: nunitoText("Menu", 3 * vh, FontWeight.bold, Theme.of(context).colorScheme.surface),
                   ),
                 ],
               ),
@@ -33,7 +33,7 @@ BackdropFilter drawer(BuildContext context, double vw, double vh) {
                     topRight: Radius.circular(20),
                   ),
                   child: ColoredBox(
-                    color: Theme.of(context).colorScheme.background,
+                    color: Theme.of(context).colorScheme.surface,
                     child: Column(
                       children: [
                         Padding(

@@ -81,7 +81,7 @@ class _BetMakerState extends State<BetMaker> {
                       Container(
                         decoration: const ShapeDecoration(
                           color: Color.fromRGBO(238, 238, 238,
-                              1), //TODO: change color BECAUSE IM BLIND AND CANT SEE GREY ON WHITE BACKGROUND
+                              1,), //TODO: change color BECAUSE IM BLIND AND CANT SEE GREY ON WHITE BACKGROUND
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(8),
@@ -142,7 +142,7 @@ class _BetMakerState extends State<BetMaker> {
                             decoration: BoxDecoration(
                               color: const Color.fromRGBO(238, 238, 238, 1),
                               border:
-                                  Border.all(color: Colors.black, width: 0.5),
+                                  Border.all(width: 0.5),
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: Stack(
@@ -187,7 +187,7 @@ class _BetMakerState extends State<BetMaker> {
                           const SizedBox(
                             width: 12, //separating amount and button
                           ),
-                          Container(
+                          SizedBox(
                             width: 100,
                             height: 34,
                             child: Stack(
@@ -205,9 +205,9 @@ class _BetMakerState extends State<BetMaker> {
                                           decoration: BoxDecoration(
                                             borderRadius:
                                                 BorderRadius.circular(4),
-                                            color: Color.fromRGBO(
-                                                238, 238, 238, 1),
-                                          )),
+                                            color: const Color.fromRGBO(
+                                                238, 238, 238, 1,),
+                                          ),),
                                       Positioned(
                                         right: 12,
                                         child: Container(
@@ -218,7 +218,7 @@ class _BetMakerState extends State<BetMaker> {
                                             15,
                                             FontWeight.w700,
                                             const Color.fromARGB(
-                                                255, 38, 32, 32),
+                                                255, 38, 32, 32,),
                                           ),
                                         ),
                                       ),

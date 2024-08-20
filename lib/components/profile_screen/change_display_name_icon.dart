@@ -15,7 +15,7 @@ Widget nickButton(
         height: 5.5*vh,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          color: Theme.of(context).colorScheme.background,
+          color: Theme.of(context).colorScheme.surface,
         ),
         child: Icon(
           icon,

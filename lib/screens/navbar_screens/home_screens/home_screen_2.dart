@@ -24,7 +24,6 @@ class _HomeScreen2State extends State<HomeScreen2> {
   Widget build(BuildContext context) {
     //TODO: move all vw and vh calculations to constants file or find a better way to handle them
     final double vw = MediaQuery.of(context).size.width / 100;
-    final double vh = MediaQuery.of(context).size.height / 100;
 
     return Scaffold(
       appBar: CustomAppbar(

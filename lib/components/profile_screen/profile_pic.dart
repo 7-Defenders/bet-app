@@ -14,7 +14,7 @@ Widget pictureWithBorder(
       // ignore: require_trailing_commas
       border: Border.all(
         width: 10,
-        color: Theme.of(context).colorScheme.background,
+        color: Theme.of(context).colorScheme.surface,
       ),
       image: DecorationImage(
         fit: BoxFit.fill,
@@ -42,7 +42,7 @@ Widget smallButton(
         height: 5.5 * vh,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          color: Theme.of(context).colorScheme.background,
+          color: Theme.of(context).colorScheme.surface,
         ),
         child: Icon(
           icon,

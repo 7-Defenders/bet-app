@@ -166,12 +166,12 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
               ),
               ElevatedButton(
                 onPressed: () {
-                  print('Name: ${userData.email}');
-                  print('balance: ${userData.balance}');
-                  print('leagues joined: ${userData.leaguesJoined}');
+                  debugPrint('Name: ${userData.email}');
+                  debugPrint('balance: ${userData.balance}');
+                  debugPrint('leagues joined: ${userData.leaguesJoined}');
                 },
-                child: Text('Print User Data'),
-              )
+                child: const Text('Print User Data'),
+              ),
             ],
           ),
         );

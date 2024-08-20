@@ -27,20 +27,20 @@ class ButtonStatesProvider with ChangeNotifier {
 
   void removeButtonStateAndRefresh(String buttonId) {
     //print value notifier
-    //print(_buttonStatesNotifier);
+    //debugPrint(_buttonStatesNotifier);
     removeButtonState(buttonId);
     notifyListeners();
 
     //print eagues screen state key
     // WidgetsBinding.instance?.addPostFrameCallback((_) {
     //   final leaguesScreenState = LeaguesScreenState.key.currentState;
-    //   print(leaguesScreenState.toString() + ' leagues screen state');
+    //   debugPrint(leaguesScreenState.toString() + ' leagues screen state');
     //   //leaguesScreenState?.rebuild();
     // });
 
     //rebuild leagues screen
     //leaguesScreenStateKey.currentState?.rebuild();
 
-    //print(_buttonStatesNotifier.hasListeners);
+    //debugPrint(_buttonStatesNotifier.hasListeners);
   }
 }

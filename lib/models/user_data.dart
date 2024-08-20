@@ -61,37 +61,26 @@ class UserData {
     switch (key) {
       case 'displayName':
         displayName = value as String;
-        break;
       case 'email':
         email = value as String;
-        break;
       case 'photoURL':
         photoURL = value as String;
-        break;
       case 'emailVerified':
         emailVerified = value as bool;
-        break;
       case 'uid':
         uid = value as String;
-        break;
       case 'balance':
         balance = value as num;
-        break;
       case 'bgURL':
         bgURL = value as String;
-        break;
       case 'frameURL':
         frameURL = value as String;
-        break;
       case 'tshirtURL':
         tshirtURL = value as String;
-        break;
       case 'betsWon':
         betsWon = value as num;
-        break;
       case 'leaguesJoined':
         leaguesJoined = value as num;
-        break;
       default:
         debugPrint('Invalid key: $key');
         break;
@@ -103,7 +92,7 @@ class UserData {
       final Map<String, dynamic> userDataMap =
           jsonDecode(jsonString) as Map<String, dynamic>;
 
-      print(userDataMap);
+      debugPrint(userDataMap.toString());
 
       return UserData(
         displayName: userDataMap['displayName'] as String,
@@ -130,7 +119,7 @@ class UserData {
   static UserData? fromMap(Map<String, dynamic> userDataMap) {
     try {
       // print user data
-      print(userDataMap);
+      debugPrint(userDataMap.toString());
       return UserData(
         displayName: userDataMap['displayName'] as String,
         email: userDataMap['email'] as String,

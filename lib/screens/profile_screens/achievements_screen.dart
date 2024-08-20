@@ -58,8 +58,8 @@ Widget achievement(
                   ? () => giveReward(context, cosmeticName, achievementName)
                   : null,
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                  (Set<MaterialState> states) {
+                backgroundColor: WidgetStateProperty.resolveWith<Color>(
+                  (Set<WidgetState> states) {
                     if (!isAchievementDone) {
                       return Colors.grey;
                     } else if (isRewardCollected) {

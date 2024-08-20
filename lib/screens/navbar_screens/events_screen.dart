@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_dynamic_calls
+
 import 'dart:async';
 import 'dart:convert';
 
@@ -39,7 +41,7 @@ class EventsScreenState extends State<EventsScreen> {
   void initState() {
     super.initState();
     loadStructure();
-    //print('LeaguesScreenState key: ${widget.key}');
+    //debugPrint('LeaguesScreenState key: ${widget.key}');
   }
 
   void rebuild() {
@@ -76,7 +78,7 @@ class EventsScreenState extends State<EventsScreen> {
     // );
     final String uid = Globals.uid;
 
-    print(
+    debugPrint(
       jsonEncode(
         <String, dynamic>{
           'userID': uid,
@@ -107,16 +109,16 @@ class EventsScreenState extends State<EventsScreen> {
       ),
     );
 
-    print(response.body);
-    print(response.statusCode);
+    debugPrint(response.body);
+    debugPrint(response.statusCode.toString());
     
     if (response.statusCode != 201) {
-      print("Failed to create bet");
+      debugPrint("Failed to create bet");
       return false;
     }
     else {
       // await Globals.saveNewBet("$uri/$uid", response.body);
-      print("Bet created successfully");
+      debugPrint("Bet created successfully");
       Globals.hasNewBet = true;
       return true;
     }
@@ -182,10 +184,10 @@ class EventsScreenState extends State<EventsScreen> {
                 }
                 //replace this with proper way to fetch odds
 
-                //print("Selected option: $selectedOption" + " key: $key");
+                //debugPrint("Selected option: $selectedOption" + " key: $key");
 
                 //print selectedOption and buttonStatesProvider.buttonStates[key]
-                // print("Selected option: $selectedOption" +
+                // debugPrint("Selected option: $selectedOption" +
                 //     " buttonStatesProvider.buttonStates[key]: " +
                 //     "${buttonStatesProvider.buttonStates[key]}");
 
@@ -195,7 +197,7 @@ class EventsScreenState extends State<EventsScreen> {
                     ? currentOptionAndOdds[0]
                     : null;
 
-                //print("Current option: $currentOption");
+                //debugPrint("Current option: $currentOption");
 
                 if (buttonStatesProvider.buttonStates.containsKey(key) &&
                     selectedOption == currentOption) {
@@ -207,7 +209,7 @@ class EventsScreenState extends State<EventsScreen> {
                   );
                 }
 
-                //print(
+                //debugPrint(
                 //"ButtonStatesProvider values: ${buttonStatesProvider.buttonStates}");
                 //print whole map
               },
@@ -217,7 +219,7 @@ class EventsScreenState extends State<EventsScreen> {
             ),
           );
           
-                print(displayedMatches.length);}
+                debugPrint(displayedMatches.length.toString());}
         );
       });
     } finally {
@@ -255,7 +257,7 @@ class EventsScreenState extends State<EventsScreen> {
                   padding: const EdgeInsets.only(top: 5),
                   width: 115,
                   color: item == selectedItem
-                      ? Theme.of(context).colorScheme.background
+                      ? Theme.of(context).colorScheme.surface
                       : Theme.of(context).colorScheme.error,
                   child: Column(
                     children: [
@@ -268,7 +270,7 @@ class EventsScreenState extends State<EventsScreen> {
                       else if (item is Sport)
                         Icon(
                           item.icon,
-                          color: Theme.of(context).colorScheme.onBackground,
+                          color: Theme.of(context).colorScheme.onSurface,
                           size: 35,
                         ),
                       Expanded(
@@ -280,7 +282,7 @@ class EventsScreenState extends State<EventsScreen> {
                               itemName,
                               14,
                               FontWeight.normal,
-                              Theme.of(context).colorScheme.onBackground,
+                              Theme.of(context).colorScheme.onSurface,
                             ),
                           ),
                         ),
@@ -379,13 +381,13 @@ class EventsScreenState extends State<EventsScreen> {
                   buttonStatesProvider.buttonStates.entries.elementAt(index);
               final gameName = entry.key;
               final split = entry.value.split(',');
-              print(split);
+              debugPrint(split.toString());
               final betType = split[0];
               final double odds = double.parse(split[1]);
               final matchRef = split[2];
               final date = split[3];
 
-              print("matchRef: $matchRef");
+              debugPrint("matchRef: $matchRef");
 
               final amountController = amountControllers.putIfAbsent(
                 entry.key,
@@ -417,11 +419,11 @@ class EventsScreenState extends State<EventsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //print("LeaguesScreen context: $context");
-    // print(
+    //debugPrint("LeaguesScreen context: $context");
+    // debugPrint(
     //     "Provider available: ${Provider.of<ButtonStatesProvider>(context, listen: false) != null}");
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: Stack(
         children: [
           SingleChildScrollView(
@@ -509,7 +511,7 @@ class EventsScreenState extends State<EventsScreen> {
                       child: Icon(
                         Icons.keyboard_arrow_up_rounded,
                         size: 40,
-                        color: Theme.of(context).colorScheme.background,
+                        color: Theme.of(context).colorScheme.surface,
                       ),
                     ),
                   ),

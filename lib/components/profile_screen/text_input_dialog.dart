@@ -53,7 +53,7 @@ class _TextInputDialogState extends State<TextInputDialog> {
           height: 40*widget.vh,
           width: 85*widget.vw,
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.background,
+            color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(16),
             boxShadow: const [
               BoxShadow(
@@ -75,7 +75,7 @@ class _TextInputDialogState extends State<TextInputDialog> {
                       style: GoogleFonts.nunito(
                         fontSize: 30,
                         fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.onBackground,
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                   ),
@@ -86,7 +86,7 @@ class _TextInputDialogState extends State<TextInputDialog> {
                     widget.subtext,
                     style: TextStyle(
                       fontSize: 13,
-                      color: Theme.of(context).colorScheme.onBackground,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                 ),

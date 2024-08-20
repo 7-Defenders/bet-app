@@ -313,7 +313,7 @@ final _router = GoRouter(
         GoRoute(
           path: '/events',
           pageBuilder: fadePageBuilder(
-              (context, state, _) => const EventsScreen(), null),
+              (context, state, _) => const EventsScreen(), null,),
         ),
 
         GoRoute(
@@ -324,7 +324,7 @@ final _router = GoRouter(
             GoRoute(
               path: '2',
               pageBuilder: fadePageBuilder(
-                  (context, state, _) => const HomeScreen2(), null),
+                  (context, state, _) => const HomeScreen2(), null,),
             ),
           ],
         ),
@@ -366,8 +366,7 @@ class BetApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // ignore: cancel_subscriptions
-    final StreamSubscription<ConnectivityResult> connectivityPlus =
-        connectivity.onConnectivityChanged.listen((ConnectivityResult result) {
+    connectivity.onConnectivityChanged.listen((ConnectivityResult result) {
       if (ConnectivityResult.none == result) {
         showDialog(
           context: context,
@@ -436,47 +435,6 @@ void main() async {
   FirebaseAuth.instance.authStateChanges().listen((User? user) {
     _router.refresh();
   });
-
-  // runApp(
-  //   MultiBlocProvider(
-  //     providers: [
-  //       // BlocProvider(
-  //       //   create: (context) => NetworkBloc()..add(NetworkObserve()),
-  //       //   // child: const Home(),
-  //       //   child: BlocBuilder<NetworkBloc, NetworkState>(
-  //       //   builder: (context, state) {
-  //       //     if (state is NetworkFailure) {
-  //       //       return const Text("No Internet Connection");
-  //       //     } else if (state is NetworkSuccess) {
-  //       //       return const Text("You're Connected to Internet");
-  //       //     } else {
-  //       //       return const SizedBox.shrink();
-  //       //     }
-  //       //   },
-  //       // ),
-  //       // ),
-  //     ],
-  //     child: MultiProvider(
-  //       providers: [
-  //         ChangeNotifierProvider<ButtonStatesProvider>(
-  //           create: (context) => ButtonStatesProvider(),
-  //         ),
-  //         Provider<GlobalKey<EventsScreenState>>(
-  //           create: (_) => EventsScreenState.key,
-  //         ),
-  //         ChangeNotifierProvider(
-  //           create: (context) => UserDataProvider(),
-  //         ),
-  //         ChangeNotifierProvider(
-  //           create: (context) => ThemeModeProvider(),
-  //         ),
-  //       ],
-  //       child: MaterialApp(
-  //         home: BetApp(),
-  //       ),
-  //     ),
-  //   ),
-  // );
 
   runApp(
     MultiProvider(

@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:app/components/other/appbar/balance_widget.dart';
 import 'package:app/components/other/nunito_text.dart';
 import 'package:app/components/profile_screen/change_display_name_icon.dart';
 import 'package:app/components/profile_screen/gesture_detector_button.dart';
@@ -147,13 +146,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       child: IconButton(
                         icon: Icon(
                           Icons.menu_rounded,
-                          color: Theme.of(context).colorScheme.background,
+                          color: Theme.of(context).colorScheme.surface,
                           size: 8 * vw,
                         ),
                         onPressed: () {
                           if (mounted) {
                             Scaffold.of(context).openDrawer();
-                            print("drawer opened");
+                            debugPrint("drawer opened");
                           }
                         },
                       ),
@@ -180,7 +179,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     const BorderRadius.vertical(top: Radius.circular(35)),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.background,
+                    color: Theme.of(context).colorScheme.surface,
                   ),
                   child: Column(
                     children: [
@@ -210,7 +209,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             fontSize: 30,
                                             color: Theme.of(context)
                                                 .colorScheme
-                                                .onBackground,
+                                                .onSurface,
                                           ),
                                           maxLines: 1,
                                         ),

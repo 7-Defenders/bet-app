@@ -1,10 +1,11 @@
 import 'package:app/components/history_screen/history_bet_widget.dart';
-import 'package:app/globals.dart';
 import 'package:app/components/other/appbar/custom_appbar.dart';
+import 'package:app/globals.dart';
 import 'package:app/models/bet.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
+// ignore: must_be_immutable
 class HistoryScreen extends StatefulWidget {
 
   final String? userID;
@@ -31,7 +32,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
   }
 
   Future<void> getBetList() async {
-    // print(widget.userID);
+    // debugPrint(widget.userID);
     widget.betList.clear();
 
     showDialog(
@@ -49,7 +50,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
     );
 
     final String userID = Globals.uid;
-    // print('userID: $userID');
+    // debugPrint('userID: $userID');
 
     final dateTime = DateTime.now().subtract(const Duration(days: 7)).toUtc();
     final day = DateTime.now().subtract(const Duration(days: 1)).toUtc();
@@ -59,7 +60,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
     final response = Globals.shouldCall(uriWeek) ? await Globals.performCall(uriWeek) : Globals.hasNewBet ? await Globals.loadMoreBets(uriDay) : Globals.getBets();
 
     setState(() {
-      // print(response.body);
+      // debugPrint(response.body);
       widget.betList = betFromJson(response);
       widget.betList.sort(
         (a,b) {
@@ -104,7 +105,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
     //   }
     // } catch (e) {
     //   if (kDebugMode) {
-    //     print('Error fetching bet list: $e');
+    //     debugPrint('Error fetching bet list: $e');
     //   }
     // }
     // setState(() {});
@@ -119,7 +120,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
       //   goBack();
       // },
       // child: Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: CustomAppbar(
         56,
         IconButton(

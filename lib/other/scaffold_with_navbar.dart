@@ -1,12 +1,7 @@
 import 'package:app/components/other/navbar/custom_navbar.dart';
-import 'package:app/models/user_data.dart';
-import 'package:app/providers/user_data_provider.dart';
 import 'package:app/screens/drawer.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
 /// Builds the "shell" for the app by building a [Scaffold] with a
 /// [BottomNavigationBar], where [child] is placed in the body of the [Scaffold].
@@ -84,19 +79,14 @@ class ScaffoldWithNavBar extends StatelessWidget {
     switch (index) {
       case 0:
         GoRouter.of(context).go('/profile');
-        break;
       case 1:
         GoRouter.of(context).go('/events');
-        break;
       case 2:
         GoRouter.of(context).go('/home');
-        break;
       case 3:
         GoRouter.of(context).go('/leagues');
-        break;
       case 4:
         GoRouter.of(context).go('/shop');
-        break;
     }
   }
 }

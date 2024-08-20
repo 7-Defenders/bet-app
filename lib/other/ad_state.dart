@@ -1,6 +1,6 @@
-import "dart:io";
+// ignore_for_file: avoid_classes_with_only_static_members
 
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+import "dart:io";
 
 class AdState {
   static String? get rewardedAdUnit {

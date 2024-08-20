@@ -1,8 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:app/providers/user_data_provider.dart';
 import 'package:app/models/user_data.dart';
+import 'package:app/providers/user_data_provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
@@ -28,12 +27,12 @@ class Item {
   });
 }
 
-void purchase(Item item, BuildContext ctx) async {
+Future<void> purchase(Item item, BuildContext ctx) async {
   final userDataProvider = Provider.of<UserDataProvider>(ctx, listen: false);
   final userData = userDataProvider.userData;
 
   if (userData == null) {
-    print('User data not found.');
+    debugPrint('User data not found.');
     return;
   }
 
@@ -118,7 +117,7 @@ void showPurchasePopup(
   );
 }
 
-void selectItem(
+Future<void> selectItem(
   BuildContext ctx,
   Item item,
 ) async {
@@ -126,7 +125,7 @@ void selectItem(
     final userDataProvider = Provider.of<UserDataProvider>(ctx, listen: false);
     final userData = userDataProvider.userData;
     if (userData == null) {
-      print('User data not found.');
+      debugPrint('User data not found.');
       return;
     }
     final userDoc =

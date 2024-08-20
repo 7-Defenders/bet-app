@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:app/components/other/nunito_text.dart';
+import 'package:app/globals.dart';
 import 'package:app/models/structure.dart';
 import 'package:app/providers/user_data_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,8 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
-
-import '../../../globals.dart';
 
 class LeagueCreator extends StatefulWidget {
   const LeagueCreator({super.key});
@@ -77,7 +76,7 @@ class _LeagueCreatorState extends State<LeagueCreator> {
         context: context,
         builder: (context) => AlertDialog(
           content: resultPopup("Invalid league name",
-              subtext: "League name must be at least 3 characters long"),
+              subtext: "League name must be at least 3 characters long",),
         ),
       );
 
@@ -92,7 +91,7 @@ class _LeagueCreatorState extends State<LeagueCreator> {
         context: context,
         builder: (context) => AlertDialog(
           content: resultPopup("Invalid league name",
-              subtext: "League name must be at most 25 characters long"),
+              subtext: "League name must be at most 25 characters long",),
         ),
       );
       return;
@@ -106,7 +105,7 @@ class _LeagueCreatorState extends State<LeagueCreator> {
         context: context,
         builder: (context) => AlertDialog(
           content: resultPopup("No selected competitions",
-              subtext: "You have selected no competitions"),
+              subtext: "You have selected no competitions",),
         ),
       );
       return;
@@ -121,7 +120,7 @@ class _LeagueCreatorState extends State<LeagueCreator> {
           context: context,
           builder: (context) => AlertDialog(
             content: resultPopup("Invalid entry fee",
-                subtext: "Entry fee cannot be lower than 0"),
+                subtext: "Entry fee cannot be lower than 0",),
           ),
         );
         return;
@@ -134,7 +133,7 @@ class _LeagueCreatorState extends State<LeagueCreator> {
         context: context,
         builder: (context) => AlertDialog(
           content: resultPopup("Invalid entry fee",
-              subtext: "Entry fee has to be an integer value"),
+              subtext: "Entry fee has to be an integer value",),
         ),
       );
       return;
@@ -162,7 +161,7 @@ class _LeagueCreatorState extends State<LeagueCreator> {
       'private': _selected[0] ? null : _selected[1],
     });
 
-    // print(body);
+    // debugPrint(body);
     final response = await http.post(
       Uri.parse('https://bet-app-e520a.ew.r.appspot.com/v1/leagues'),
       headers: <String, String>{
@@ -171,7 +170,7 @@ class _LeagueCreatorState extends State<LeagueCreator> {
       body: body,
     );
 
-    print("${response.statusCode}, ${response.body}");
+    debugPrint("${response.statusCode}, ${response.body}");
 
     switch (response.statusCode ~/ 100) {
       case 4:
@@ -186,7 +185,7 @@ class _LeagueCreatorState extends State<LeagueCreator> {
           context: context,
           builder: (context) => AlertDialog(
             content: resultPopup("Server error",
-                subtext: "There was an error on our side. Sorry!"),
+                subtext: "There was an error on our side. Sorry!",),
           ),
         );
       case 2:
@@ -202,7 +201,7 @@ class _LeagueCreatorState extends State<LeagueCreator> {
   }
 
   Widget resultPopup(String text,
-      {String? subtext, double height = 120.0, double width = 300.0}) {
+      {String? subtext, double height = 120.0, double width = 300.0,}) {
     final closePopupButton = ElevatedButton(
       onPressed: () {
         setState(() {});
@@ -252,11 +251,11 @@ class _LeagueCreatorState extends State<LeagueCreator> {
               itemBuilder: (BuildContext context, int index) {
                 return ExpansionTile(
                   title: nunitoText(sportsObject[index].name, 18,
-                      FontWeight.bold, Colors.black),
+                      FontWeight.bold, Colors.black,),
                   children: sportsObject[index].countries.map((country) {
                     return ExpansionTile(
                       title: nunitoText(
-                          country.name, 16, FontWeight.w700, Colors.black),
+                          country.name, 16, FontWeight.w700, Colors.black,),
                       children: country.leagues.map((league) {
                         final path =
                             '${sportsObject[index].name}/${country.name}/${league.name}';
@@ -265,7 +264,7 @@ class _LeagueCreatorState extends State<LeagueCreator> {
                               (BuildContext context, StateSetter setState) {
                             return CheckboxListTile(
                               title: nunitoText(league.name, 14,
-                                  FontWeight.normal, Colors.black),
+                                  FontWeight.normal, Colors.black,),
                               value: selectedLeagues.contains(path),
                               onChanged: (val) {
                                 setState(() {
@@ -304,7 +303,7 @@ class _LeagueCreatorState extends State<LeagueCreator> {
   }
 
   Widget getTabWidget(
-      String title, double padding, bool isTabSelected, Color backgroundColor) {
+      String title, double padding, bool isTabSelected, Color backgroundColor,) {
     return isTabSelected
         ? Center(child: nunitoText(title, 16, FontWeight.bold, Colors.white))
         : Container(
@@ -312,7 +311,7 @@ class _LeagueCreatorState extends State<LeagueCreator> {
             height: double.infinity,
             color: backgroundColor,
             child: Center(
-                child: nunitoText(title, 16, FontWeight.bold, Colors.white)));
+                child: nunitoText(title, 16, FontWeight.bold, Colors.white),),);
   }
 
   @override
@@ -356,15 +355,15 @@ class _LeagueCreatorState extends State<LeagueCreator> {
                 borderRadius: toggleButtonBorderRadius,
                 fillColor: const Color.fromARGB(255, 96, 179, 255),
                 constraints: BoxConstraints.expand(
-                    width: textFieldWidth / 3, height: 40),
+                    width: textFieldWidth / 3, height: 40,),
                 isSelected: _selected,
                 children: [
                   getTabWidget("Friend", 5, _selected[0],
-                      const Color.fromARGB(255, 255, 186, 75)),
+                      const Color.fromARGB(255, 255, 186, 75),),
                   getTabWidget("Private", 5, _selected[1],
-                      const Color.fromARGB(255, 255, 186, 75)),
+                      const Color.fromARGB(255, 255, 186, 75),),
                   getTabWidget("Public", 5, _selected[2],
-                      const Color.fromARGB(255, 255, 186, 75)),
+                      const Color.fromARGB(255, 255, 186, 75),),
                 ],
               ),
               const SizedBox(
@@ -376,9 +375,9 @@ class _LeagueCreatorState extends State<LeagueCreator> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     nunitoText(
-                        "League Name", 18, FontWeight.normal, Colors.black),
+                        "League Name", 18, FontWeight.normal, Colors.black,),
                     nunitoText("This name will be visible in league overview",
-                        14, FontWeight.normal, Colors.grey),
+                        14, FontWeight.normal, Colors.grey,),
                     const SizedBox(
                       height: 8,
                     ),
@@ -409,9 +408,9 @@ class _LeagueCreatorState extends State<LeagueCreator> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     nunitoText(
-                        "Entry fee", 18, FontWeight.normal, Colors.black),
+                        "Entry fee", 18, FontWeight.normal, Colors.black,),
                     nunitoText("Mandatory fee to enter the league", 14,
-                        FontWeight.normal, Colors.grey),
+                        FontWeight.normal, Colors.grey,),
                     const SizedBox(
                       height: 8,
                     ),
@@ -443,12 +442,12 @@ class _LeagueCreatorState extends State<LeagueCreator> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     nunitoText("Competitions included", 18, FontWeight.normal,
-                        Colors.black),
+                        Colors.black,),
                     nunitoText(
                         "Select competitions players will gain points for",
                         14,
                         FontWeight.normal,
-                        Colors.grey),
+                        Colors.grey,),
                     const SizedBox(
                       height: 8,
                     ),
@@ -492,7 +491,7 @@ class _LeagueCreatorState extends State<LeagueCreator> {
                     elevation: 10,
                     backgroundColor: const Color.fromARGB(255, 5, 160, 221),
                     shape: const RoundedRectangleBorder(
-                        borderRadius: buttonBorderRadius15),
+                        borderRadius: buttonBorderRadius15,),
                   ),
                   onPressed: () async {
                     await createLeague();

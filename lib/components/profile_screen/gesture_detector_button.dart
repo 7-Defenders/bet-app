@@ -25,7 +25,7 @@ Widget gestureDetectorButton(
             child: Icon(icon, color: Theme.of(context).colorScheme.primary),
           ),
           nunitoText(text, 20, FontWeight.bold,
-              Theme.of(context).colorScheme.onBackground),
+              Theme.of(context).colorScheme.onSurface,),
         ],
       ),
     ),

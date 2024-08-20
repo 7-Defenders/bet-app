@@ -1,8 +1,4 @@
-import 'package:app/models/user_data.dart';
 import 'package:app/providers/user_data_provider.dart';
-import 'package:app/screens/auth_screens/login_or_register_screen.dart';
-import 'package:app/screens/auth_screens/register_screen.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -33,19 +29,6 @@ class _LoadingScreenState extends State<LoadingScreen> {
     final user = FirebaseAuth.instance.currentUser;
     await Future.delayed(const Duration(seconds: 5)); //TODO transaction
     if (mounted) {
-      // if (user != null) {
-      //   final userDataProvider =
-      //       Provider.of<UserDataProvider>(context, listen: false);
-      //   final Map<String, dynamic> userData = await FirebaseFirestore.instance
-      //       .runTransaction<Map<String, dynamic>>((transaction) async {
-      //     final userDataSnapshot = await transaction.get(
-      //       FirebaseFirestore.instance.collection('users').doc(user.uid),
-      //     );
-      //     return Future.value(userDataSnapshot.data());
-      //   });
-      //   final UserData? ud = UserData.fromMap(userData);
-      //   userDataProvider.userData = ud;
-      // }
       if (user != null) {
         // wait for API call to request user data and then manually set it
         debugPrint("wait is over. lets fetch data!");

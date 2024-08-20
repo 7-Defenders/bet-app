@@ -8,7 +8,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:http/http.dart' as http;
 
 class ShopScreen extends StatefulWidget {
   const ShopScreen({super.key});
@@ -48,14 +47,6 @@ class _ShopScreenState extends State<ShopScreen> {
       Globals.rewardedAd!.show(
         onUserEarnedReward: (ad, reward) async {
           // awarding coins
-          final response = await http.post(
-            Uri.parse(
-              'https://bet-app-e520a.ew.r.appspot.com/v1/users/$uid/coins',
-            ),
-            headers: <String, String>{
-              'Content-Type': 'application/json; charset=UTF-8',
-            },
-          );
 
           // displaying a snackbar
           // ignore: use_build_context_synchronously
@@ -186,7 +177,7 @@ class _ShopScreenState extends State<ShopScreen> {
         title: nunitoText('Shop', 26, FontWeight.bold, Colors.black),
         centerTitle: true,
       ),
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: SingleChildScrollView(
         child: Center(
           child: Column(
@@ -202,7 +193,7 @@ class _ShopScreenState extends State<ShopScreen> {
                     ),
                     nunitoText("Bet coins", 18, FontWeight.bold, Colors.black),
                     nunitoText("Get free coins or buy coin multipliers", 14,
-                        FontWeight.normal, Colors.grey),
+                        FontWeight.normal, Colors.grey,),
                     const SizedBox(
                       height: 8,
                     ),
@@ -232,7 +223,7 @@ class _ShopScreenState extends State<ShopScreen> {
                                     14,
                                     FontWeight.normal,
                                     Colors.black,
-                                    textAlign: TextAlign.center),
+                                    textAlign: TextAlign.center,),
                               ),
                               IconButton(
                                 onPressed: () => showRewardedAd(),

@@ -24,7 +24,6 @@ class _LogInScreenState extends State<LogInScreen> {
     setState(() {
       isLoading = true;
     });
-    final bool loginSuccessful = await tryLogInUser();
     if (mounted) {
       setState(() {
         isLoading = false;
@@ -57,7 +56,7 @@ class _LogInScreenState extends State<LogInScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 242, 242, 242),
+      backgroundColor: const Color.fromARGB(255, 242, 242, 242),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -69,7 +68,7 @@ class _LogInScreenState extends State<LogInScreen> {
                   size: 135,
                   color: Theme.of(context)
                       .colorScheme
-                      .onBackground
+                      .onSurface
                       .withOpacity(0.8),
                 ),
                 const SizedBox(height: 20),
@@ -77,7 +76,7 @@ class _LogInScreenState extends State<LogInScreen> {
                   'Welcome back!',
                   25,
                   FontWeight.normal,
-                  Theme.of(context).colorScheme.onBackground,
+                  Theme.of(context).colorScheme.onSurface,
                 ),
                 const SizedBox(height: 25),
                 AuthTextField(
@@ -103,7 +102,7 @@ class _LogInScreenState extends State<LogInScreen> {
                         FontWeight.normal,
                         Theme.of(context)
                             .colorScheme
-                            .onBackground
+                            .onSurface
                             .withOpacity(0.8),
                       ),
                     ],
@@ -122,7 +121,7 @@ class _LogInScreenState extends State<LogInScreen> {
                       child: Divider(
                         color: Theme.of(context)
                             .colorScheme
-                            .onBackground
+                            .onSurface
                             .withOpacity(0.8),
                         thickness: 0.5,
                         indent: 20,
@@ -135,14 +134,14 @@ class _LogInScreenState extends State<LogInScreen> {
                       FontWeight.normal,
                       Theme.of(context)
                           .colorScheme
-                          .onBackground
+                          .onSurface
                           .withOpacity(0.8),
                     ),
                     Expanded(
                       child: Divider(
                         color: Theme.of(context)
                             .colorScheme
-                            .onBackground
+                            .onSurface
                             .withOpacity(0.8),
                         thickness: 0.5,
                         indent: 10,
@@ -180,7 +179,7 @@ class _LogInScreenState extends State<LogInScreen> {
                       FontWeight.normal,
                       Theme.of(context)
                           .colorScheme
-                          .onBackground
+                          .onSurface
                           .withOpacity(0.8),
                     ),
                     const SizedBox(width: 5),

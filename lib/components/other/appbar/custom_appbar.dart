@@ -20,7 +20,7 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
       actions: actions ?? [],
       centerTitle: true,
       titleTextStyle: TextStyle(
-        color: Theme.of(context).colorScheme.onBackground,
+        color: Theme.of(context).colorScheme.onSurface,
         fontSize: 20,
         fontWeight: FontWeight.w600,
       ),

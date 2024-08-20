@@ -41,19 +41,15 @@ class UserDataProvider extends ChangeNotifier {
             case 'balance':
               _userData?.balance = double.parse(value);
               notifyListeners();
-              break;
             case 'bets_won':
               _userData?.betsWon = int.parse(value);
               notifyListeners();
-              break;
             case 'leagues_joined':
               _userData?.leaguesJoined = int.parse(value);
               notifyListeners();
-              break;
             case 'emailVerified':
               _userData?.emailVerified = value.toLowerCase() == 'true';
               notifyListeners();
-              break;
             default:
               _userData?.setValue(key, value);
               notifyListeners();
@@ -62,6 +58,7 @@ class UserDataProvider extends ChangeNotifier {
         });
 
         notifyListeners();
+      // ignore: invalid_return_type_for_catch_error
       }).catchError((error) => debugPrint('Failed to update user data'));
     }
   }
@@ -71,19 +68,15 @@ class UserDataProvider extends ChangeNotifier {
       case 'balance':
         _userData?.balance = double.parse(value);
         notifyListeners();
-        break;
       case 'bets_won':
         _userData?.betsWon = int.parse(value);
         notifyListeners();
-        break;
       case 'leagues_joined':
         _userData?.leaguesJoined = int.parse(value);
         notifyListeners();
-        break;
       case 'emailVerified':
         _userData?.emailVerified = value.toLowerCase() == 'true';
         notifyListeners();
-        break;
       default:
         _userData?.setValue(field, value);
         notifyListeners();

@@ -17,7 +17,6 @@ class GlowingCircle extends StatelessWidget {
             color: color.withOpacity(0.4), // Adjust opacity for the glow effect
             spreadRadius: 2,
             blurRadius: 5,
-            offset: Offset(0, 0),
           ),
         ],
       ),

@@ -1,14 +1,14 @@
+import 'dart:convert';
+
+import 'package:app/globals.dart';
 import 'package:app/models/user_data.dart';
 import 'package:app/providers/user_data_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
-
 import 'package:provider/provider.dart';
 
-import '../../globals.dart';
-
+// ignore: must_be_immutable
 class JoinLeagueWidget extends StatefulWidget {
   Function() onJoined;
 
@@ -19,7 +19,7 @@ class JoinLeagueWidget extends StatefulWidget {
 }
 
 Future<void> joinLeague(String leagueCode, String userID, Function() onJoined) async {
-  print("joining league with code $leagueCode and userID $userID");
+  debugPrint("joining league with code $leagueCode and userID $userID");
   final response = await http.post(
     Uri.parse('https://bet-app-e520a.ew.r.appspot.com/v1/leagues/join'),
     headers: <String, String>{
@@ -31,20 +31,20 @@ Future<void> joinLeague(String leagueCode, String userID, Function() onJoined) a
     }),
   );
 
-  print("STATUS CODE IS ${response.statusCode}");
+  debugPrint("STATUS CODE IS ${response.statusCode}");
 
   if ((response.statusCode / 100).floor() == 2) {
-    print('Successfully joined the league');
+    debugPrint('Successfully joined the league');
     Globals.joinedNewLeague = true;
     await onJoined();
   } else {
-    print('Failed to join league: ${response.body}');
+    debugPrint('Failed to join league: ${response.body}');
     throw Exception('Failed to join league: ${response.body}');
   }
 }
 
 void showLeagueCodeInputDialog(BuildContext context, Function() onJoined) {
-  final _formKey = GlobalKey<FormState>();
+  final formKey = GlobalKey<FormState>();
   final TextEditingController leagueCodeController = TextEditingController();
   final focusNode = FocusNode();
 
@@ -54,7 +54,7 @@ void showLeagueCodeInputDialog(BuildContext context, Function() onJoined) {
       return AlertDialog(
         title: const Text('Input League Code'),
         content: Form(
-          key: _formKey,
+          key: formKey,
           child: TextFormField(
             focusNode: focusNode,
             controller: leagueCodeController,
@@ -70,7 +70,7 @@ void showLeagueCodeInputDialog(BuildContext context, Function() onJoined) {
           TextButton(
             child: const Text('Join League'),
             onPressed: () {
-              if (_formKey.currentState!.validate()) {
+              if (formKey.currentState!.validate()) {
                 final uid = FirebaseAuth.instance.currentUser!.uid;
                 onJoinButtonClicked(context, leagueCodeController.text, uid, onJoined);
                 focusNode.unfocus();
@@ -84,7 +84,7 @@ void showLeagueCodeInputDialog(BuildContext context, Function() onJoined) {
 }
 
 void onJoinButtonClicked(
-    BuildContext context, String leagueCode, String userID, Function() onJoined) {
+    BuildContext context, String leagueCode, String userID, Function() onJoined,) {
   joinLeague(leagueCode, userID, onJoined).then((_) {
     FocusManager.instance.primaryFocus?.unfocus();
 
@@ -96,12 +96,12 @@ void onJoinButtonClicked(
       Navigator.of(context).pop(); // pop the loading dialog
     });
 
-    print('Successfully joined the league');
+    debugPrint('Successfully joined the league');
     // ScaffoldMessenger.of(context).showSnackBar(
     //   const SnackBar(content: Text('Successfully joined the league')),
     // );
   }).catchError((error) {
-    print(error);
+    debugPrint(error.toString());
     FocusManager.instance.primaryFocus?.unfocus();
     Navigator.of(context).pop();
     // ScaffoldMessenger.of(context).showSnackBar(

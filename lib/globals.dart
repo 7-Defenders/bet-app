@@ -1,8 +1,11 @@
+// ignore_for_file: avoid_dynamic_calls
+
 import 'dart:convert';
 import 'dart:core';
 import "dart:io";
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -33,7 +36,7 @@ class Globals {
 
     if (forceCall || shouldCall(uri))
     {
-      print("will call $uri");
+      debugPrint("will call $uri");
       final http.Response response = await http.get(Uri.parse(uri));
       _callTimes[baseUri] = DateTime.now();
       _callResponses[baseUri] = response.body;
@@ -44,7 +47,7 @@ class Globals {
       return response.body;
     }
     else{
-      print("wont call");
+      debugPrint("wont call");
       return _callResponses[baseUri]!;
     }
   }
@@ -56,14 +59,14 @@ class Globals {
     if (json != null){
       final Map<String, dynamic> data = jsonDecode(json) as Map<String, dynamic>;
 
-      data.entries.forEach((element) {
+      for (final element in data.entries) {
         final key = element.key;
         final time = element.value["time"] as String;
         final response = element.value["response"] as String;
 
         _callTimes[key] = DateTime.parse(time);
         _callResponses[key] = response;
-      });
+      }
     }
   }
 

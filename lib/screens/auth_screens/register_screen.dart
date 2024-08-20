@@ -26,7 +26,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     setState(() {
       isLoading = true;
     });
-    final bool loginSuccessful = await tryRegisterUser();
     if (mounted) {
       // it might be that we are redirected to another screen before this is called,
       // that's why we need to check if it's mounted
@@ -42,7 +41,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       if (passwordController.text.length < 8 ||
           passwordController.text.length > 16) {
         utils.showSnackbarMessage(
-            "Password must be between 8 and 16 characters.", context);
+            "Password must be between 8 and 16 characters.", context,);
         return false;
       }
       if (passwordController.text != confirmPasswordController.text) {
@@ -75,7 +74,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 242, 242, 242),
+      backgroundColor: const Color.fromARGB(255, 242, 242, 242),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -87,7 +86,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   size: 135,
                   color: Theme.of(context)
                       .colorScheme
-                      .onBackground
+                      .onSurface
                       .withOpacity(0.8),
                 ),
                 const SizedBox(height: 20),
@@ -95,7 +94,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   "Let's get started:",
                   25,
                   FontWeight.normal,
-                  Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
+                  Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
                 ),
                 const SizedBox(height: 25),
                 AuthTextField(
@@ -129,7 +128,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       child: Divider(
                         color: Theme.of(context)
                             .colorScheme
-                            .onBackground
+                            .onSurface
                             .withOpacity(0.8),
                         thickness: 0.5,
                         indent: 20,
@@ -142,14 +141,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       FontWeight.normal,
                       Theme.of(context)
                           .colorScheme
-                          .onBackground
+                          .onSurface
                           .withOpacity(0.8),
                     ),
                     Expanded(
                       child: Divider(
                         color: Theme.of(context)
                             .colorScheme
-                            .onBackground
+                            .onSurface
                             .withOpacity(0.8),
                         thickness: 0.5,
                         indent: 10,
@@ -187,7 +186,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       FontWeight.normal,
                       Theme.of(context)
                           .colorScheme
-                          .onBackground
+                          .onSurface
                           .withOpacity(0.8),
                     ),
                     const SizedBox(width: 5),

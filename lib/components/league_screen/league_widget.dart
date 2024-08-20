@@ -66,17 +66,17 @@ class LeagueListWidget extends StatelessWidget {
               borderRadius: BorderRadius.circular(15),
               child: ListView.separated(
                 shrinkWrap: true,
-                padding: EdgeInsets.symmetric(horizontal: 0, vertical: 3),
+                padding: const EdgeInsets.symmetric(vertical: 3),
                 physics: const ClampingScrollPhysics(),
                 itemCount: leadingWidgets.length,
-                separatorBuilder: (context, index) => SizedBox.shrink(),
+                separatorBuilder: (context, index) => const SizedBox.shrink(),
                 itemBuilder: (context, index) {
-                  Color backgroundColor = index.isEven
-                    ? Color.fromRGBO(255, 186, 75, 1)
-                    : Color.fromRGBO(255, 255, 255, 1);
-                  Color textColor = index.isEven
-                    ? Color.fromRGBO(255, 255, 255, 1)
-                    : Color.fromRGBO(30, 30, 27, 1);
+                  final Color backgroundColor = index.isEven
+                    ? const Color.fromRGBO(255, 186, 75, 1)
+                    : const Color.fromRGBO(255, 255, 255, 1);
+                  final Color textColor = index.isEven
+                    ? const Color.fromRGBO(255, 255, 255, 1)
+                    : const Color.fromRGBO(30, 30, 27, 1);
 
                   return Material(
                     color: backgroundColor,
@@ -91,7 +91,7 @@ class LeagueListWidget extends StatelessWidget {
                             Expanded(
                               child: Padding(
                                 padding: const EdgeInsets.only(left: 8), 
-                                child: nunitoText(titles[index], 16, FontWeight.normal, textColor)
+                                child: nunitoText(titles[index], 16, FontWeight.normal, textColor),
                               ),
                             ),
                             trailingWidgets[index],
