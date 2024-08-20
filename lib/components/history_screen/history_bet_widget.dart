@@ -30,30 +30,46 @@ class HistoryBetWidget extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         decoration: BoxDecoration(
           border: Border.all(
-            color: Colors.orange, // Add orange border color
-            width: 5, // Add border width
+            color: Colors.orange,
+            width: 5,
           ),
           color: Theme.of(context).colorScheme.secondary,
           borderRadius: BorderRadius.circular(15),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: Offset(0, 3),
+            ),
+          ],
         ),
         child: Row(
           children: [
             SvgPicture.asset(sportSvg, width: cardWidth * 0.1,),
             SizedBox(width: cardWidth * 0.02,),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                nunitoText(
-                  bet.game != null ? '${bet.game!.homename} - ${bet.game!.awayname}' : 'N/A',
-                  16,
-                  FontWeight.bold,
-                  Colors.black,
-                  textAlign: TextAlign.center,
-                ),
-                nunitoText("${bet.competition}\n${bet.game == null ? "Date N/A" : bet.game!.date}", 11, FontWeight.normal, Colors.black),
-                nunitoText("Bet: ${bet.bet} at $oddsTrailingZeros | Stake: ${bet.amount}", 12, FontWeight.bold, Colors.black),
-              ],
+            SizedBox(
+              width: cardWidth * 0.6,
+              height: cardHeight,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: nunitoText(
+                      bet.game != null ? '${bet.game!.homename} - ${bet.game!.awayname}' : 'N/A',
+                      16,
+                      FontWeight.bold,
+                      Colors.black,
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                    ),
+                  ),
+                  nunitoText("${bet.competition}\n${bet.game == null ? "Date N/A" : bet.game!.date}", 11, FontWeight.normal, Colors.black),
+                  nunitoText("Bet: ${bet.bet} at $oddsTrailingZeros | Stake: ${bet.amount}", 12, FontWeight.bold, Colors.black),
+                ],
+              ),
             ),
             const Spacer(),
             SizedBox(

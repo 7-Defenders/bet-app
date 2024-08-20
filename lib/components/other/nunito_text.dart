@@ -6,7 +6,10 @@ Widget nunitoText(
   double fontSize,
   FontWeight fontWeight,
   Color color,
-  {TextAlign textAlign=TextAlign.start,}
+  {
+    TextAlign textAlign=TextAlign.start,
+    int? maxLines,
+  }
 ) {
   return Text(
     text,
@@ -15,6 +18,7 @@ Widget nunitoText(
       fontWeight: fontWeight,
       color: color,
     ),
+    maxLines: maxLines,
     textAlign: textAlign,
   );
 }
