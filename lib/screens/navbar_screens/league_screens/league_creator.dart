@@ -173,15 +173,15 @@ class _LeagueCreatorState extends State<LeagueCreator> {
 
     print("${response.statusCode}, ${response.body}");
 
-    switch (response.statusCode) {
-      case 400:
+    switch (response.statusCode ~/ 100) {
+      case 4:
         await showDialog<void>(
           context: context,
           builder: (context) => AlertDialog(
             content: resultPopup("Bad request", subtext: "Incorrect data"),
           ),
         );
-      case 500:
+      case 5:
         await showDialog<void>(
           context: context,
           builder: (context) => AlertDialog(
@@ -189,16 +189,14 @@ class _LeagueCreatorState extends State<LeagueCreator> {
                 subtext: "There was an error on our side. Sorry!"),
           ),
         );
-      case 200:
+      case 2:
         {
+          Globals.joinedNewLeague = true;
+          Provider.of<UserDataProvider>(context, listen: false).userData?.leaguesJoined++; 
           if (mounted) {
-            Navigator.of(context).pop();
+            Navigator.of(context).pop(true);
           }
-          Navigator.of(context, rootNavigator: true).pop();
-          Provider.of<UserDataProvider>(context, listen: false).userData?.leaguesJoined++;
-          setState(() {
-            Globals.joinedNewLeague = true;
-          });            
+          Navigator.of(context, rootNavigator: true).pop(true);     
         }
     }
   }

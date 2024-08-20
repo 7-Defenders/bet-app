@@ -1,6 +1,5 @@
 import 'package:app/components/league_screen/join_league_widget.dart';
 import 'package:app/components/league_screen/league_widget.dart';
-import 'package:app/components/other/appbar/custom_appbar.dart';
 import 'package:app/components/other/nunito_text.dart';
 import 'package:app/globals.dart';
 import 'package:app/models/league_preview.dart';
@@ -8,9 +7,7 @@ import 'package:app/models/user_data.dart';
 import 'package:app/providers/user_data_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:http/http.dart' as http;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -75,8 +72,13 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
     }
   }
 
-  void goToLeagueCreator(BuildContext context) {
-    context.go("/leagues/creator");
+  Future<void> goToLeagueCreator(BuildContext context) async {
+    final shouldRefresh = await context.push<bool>('/leagues/creator');
+    if (shouldRefresh ?? false) {
+      setState(() {
+        fetchPlayersLeagues();
+      });
+    }
   }
 
   void goToLeagueSummary(BuildContext context, int index) {
@@ -85,6 +87,7 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print("building");
     final List<Widget> leadingWidgets = rank
         .map(
           (e) => ClipRRect(
@@ -141,7 +144,7 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color.fromARGB(255, 5, 160, 221),
               ),
-              onPressed: () => goToLeagueCreator(context),
+              onPressed: () async {await goToLeagueCreator(context);},
               child: const Text(
                 'Create league',
                 style: TextStyle(color: Colors.white),
@@ -164,19 +167,4 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
     );
   }
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   return const Scaffold(
-  //     backgroundColor: Colors.red,
-  //     body: Center(
-  //       child: Text(
-  //         "xd",
-  //         style: TextStyle(
-  //           color: Colors.white,
-  //           fontSize: 30,
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
 }
