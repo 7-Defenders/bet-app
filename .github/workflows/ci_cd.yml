@@ -47,13 +47,14 @@ jobs:
         run: flutter test
 
   build:
-    name: Flutter linter + test
+    name: Build APK, AAB, IPA
     runs-on: ubuntu-latest
     needs: linter_test
 
     strategy:
       matrix:
-        platform: [android, ios]
+        # platform: [android, ios]
+        platform: [android]
 
     steps:
       - uses: actions/checkout@v3
