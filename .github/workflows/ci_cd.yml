@@ -103,12 +103,12 @@ jobs:
           name: app-release.aab
           path: build/app/outputs/bundle/release/app-release.aab
 
-      - name: Upload IPA
-        if: matrix.platform == 'ios'
-        uses: actions/upload-artifact@v3
-        with:
-          name: Runner.app
-          path: build/ios/iphoneos/Runner.app
+      # - name: Upload IPA
+      #   if: matrix.platform == 'ios'
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: Runner.app
+      #     path: build/ios/iphoneos/Runner.app
 
   release:
     name: Create GitHub Release
@@ -129,11 +129,11 @@ jobs:
           name: app-release.aab
           path: ./release
 
-      - name: Download IPA Artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: Runner.app
-          path: ./release
+      # - name: Download IPA Artifact
+      #   uses: actions/download-artifact@v3
+      #   with:
+      #     name: Runner.app
+      #     path: ./release
 
       - name: Create GitHub Release
         id: create_release
