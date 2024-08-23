@@ -166,12 +166,12 @@ jobs:
           asset_name: app-release.aab
           asset_content_type: application/vnd.android.package-archive
 
-      - name: Upload IPA to Release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./release/Runner.app
-          asset_name: Runner.app
-          asset_content_type: application/octet-stream
+      # - name: Upload IPA to Release
+      #   uses: actions/upload-release-asset@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
+      #     asset_path: ./release/Runner.app
+      #     asset_name: Runner.app
+      #     asset_content_type: application/octet-stream
