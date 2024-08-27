@@ -26,6 +26,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     setState(() {
       isLoading = true;
     });
+    await tryRegisterUser();
     if (mounted) {
       // it might be that we are redirected to another screen before this is called,
       // that's why we need to check if it's mounted
