@@ -24,6 +24,7 @@ class _LogInScreenState extends State<LogInScreen> {
     setState(() {
       isLoading = true;
     });
+    await tryLogInUser();
     if (mounted) {
       setState(() {
         isLoading = false;
