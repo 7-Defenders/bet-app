@@ -36,10 +36,9 @@ class _HomeScreenState extends State<HomeScreen> {
       final response = await Globals.performCall(uri);
 
       displayedMatches.clear();
+      final buttonStatesProvider = context.read<ButtonStatesProvider>();
 
       setState(() {
-        final buttonStatesProvider = context.read<ButtonStatesProvider>();
-
         final List<FootballEvent> fe = footballEventFromJson(response);
 
         fe.where((element) => element.date.isAfter(DateTime.now()))
@@ -169,8 +168,13 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     getPopularMatches();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final usableWidth = MediaQuery.of(context).size.width * 0.9;
     final cardWidth = usableWidth * 0.45;
     final cardHeight = MediaQuery.of(context).size.height * 0.15;
