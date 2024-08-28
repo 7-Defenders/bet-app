@@ -22,7 +22,7 @@ class JoinLeagueWidget extends StatefulWidget {
 Future<void> joinLeague(String leagueCode, String userID, Function() onJoined) async {
   debugPrint("joining league with code $leagueCode and userID $userID");
   final response = await http.post(
-    Uri.parse('https://bet-app-e520a.ew.r.appspot.com/v1/leagues/join'),
+    Uri.parse('https://flask-vhn3gxevdq-ew.a.run.app/v1/leagues/join'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     },

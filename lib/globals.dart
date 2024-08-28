@@ -24,7 +24,7 @@ class Globals {
   static final uid = FirebaseAuth.instance.currentUser!.uid;
 
   static String getBets(){
-    return _callResponses["https://bet-app-e520a.ew.r.appspot.com/v1/bets/$uid"] ?? "[]";
+    return _callResponses["https://flask-vhn3gxevdq-ew.a.run.app/v1/bets/$uid"] ?? "[]";
   }
 
   static Future<String> performCall(String uri, {bool forceCall=false}) async {
@@ -127,10 +127,11 @@ class Globals {
     }
     final baseUri = uri.split("?")[0];
 
-    final RegExp usersInLeague = RegExp(r'https:\/\/bet-app-e520a\.ew\.r\.appspot\.com\/v1\/leagues\/.+\/users');
-    final RegExp eventsInCompetition = RegExp(r'https:\/\/bet-app-e520a\.ew\.r\.appspot\.com\/v1\/competitions\/.');
-    final RegExp leaguesOfUser = RegExp(r'https:\/\/bet-app-e520a\.ew\.r\.appspot\.com\/v1\/users\/.+\/leagues');
-    final RegExp betsOfUser = RegExp(r'https:\/\/bet-app-e520a\.ew\.r\.appspot\.com\/v1\/bets\/.*');
+    final RegExp usersInLeague = RegExp(r'https:\/\/flask-vhn3gxevdq-ew\.a\.run\.app\/v1\/leagues\/.+\/users');
+    final RegExp popular = RegExp(r'https:\/\/flask-vhn3gxevdq-ew\.a\.run\.app\/v1\/popular_bets');
+    final RegExp eventsInCompetition = RegExp(r'https:\/\/flask-vhn3gxevdq-ew\.a\.run\.app\/v1\/competitions\/.');
+    final RegExp leaguesOfUser = RegExp(r'https:\/\/flask-vhn3gxevdq-ew\.a\.run\.app\/v1\/users\/.+\/leagues');
+    final RegExp betsOfUser = RegExp(r'https:\/\/flask-vhn3gxevdq-ew\.a\.run\.app\/v1\/bets\/.*');
 
     if (isUriMatching(baseUri, usersInLeague)){
       // if has never made this call -> should call
@@ -148,6 +149,19 @@ class Globals {
       }
       // if has made this call yesterday -> should call
       return callTime.day < DateTime.now().day;
+    } 
+    
+    else if (isUriMatching(baseUri, popular)){
+      // if has never made this call -> should call
+      if (!_callTimes.containsKey(baseUri))
+      {
+        return true;
+      }
+
+      final callTime = _callTimes[baseUri]!;
+
+      // if has made this call more than hour ago -> should call
+      return callTime.add(const Duration(hours: 1)).isBefore(DateTime.now());
     } 
     
     else if (isUriMatching(baseUri, eventsInCompetition)){

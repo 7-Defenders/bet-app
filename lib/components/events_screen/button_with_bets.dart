@@ -108,7 +108,7 @@ class _ButtonWithBetsState extends State<ButtonWithBets> {
       ),
     );
 
-    const uri = 'https://bet-app-e520a.ew.r.appspot.com/v1/bets';
+    const uri = 'https://flask-vhn3gxevdq-ew.a.run.app/v1/bets';
 
     final response = await http.post(
       Uri.parse(

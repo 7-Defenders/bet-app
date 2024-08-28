@@ -26,7 +26,7 @@ class UserDataProvider extends ChangeNotifier {
     if (user != null) {
       http
           .put(
-        Uri.parse('https://bet-app-e520a.ew.r.appspot.com/v1/users/${user.uid}'),
+        Uri.parse('https://flask-vhn3gxevdq-ew.a.run.app/v1/users/${user.uid}'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -86,7 +86,7 @@ class UserDataProvider extends ChangeNotifier {
 
   Future<UserData?> requestUserData(String uid) async {
     final response = await http
-        .get(Uri.parse('https://bet-app-e520a.ew.r.appspot.com/v1/users/$uid'));
+        .get(Uri.parse('https://flask-vhn3gxevdq-ew.a.run.app/v1/users/$uid'));
     if (response.statusCode == 200) {
       return UserData.fromJson(response.body);
     } else {

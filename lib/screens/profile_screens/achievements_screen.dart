@@ -121,7 +121,7 @@ Future<void> giveReward(
   final uid =
       Provider.of<UserDataProvider>(context, listen: false).userData?.uid;
   final uri = Uri.encodeFull(
-    'https://bet-app-e520a.ew.r.appspot.com/v1/users/$uid/cosmetics/$cosmeticName',
+    'https://flask-vhn3gxevdq-ew.a.run.app/v1/users/$uid/cosmetics/$cosmeticName',
   );
   final response = await http.get(Uri.parse(uri));
 

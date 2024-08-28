@@ -163,7 +163,7 @@ class _LeagueCreatorState extends State<LeagueCreator> {
 
     // debugPrint(body);
     final response = await http.post(
-      Uri.parse('https://bet-app-e520a.ew.r.appspot.com/v1/leagues'),
+      Uri.parse('https://flask-vhn3gxevdq-ew.a.run.app/v1/leagues'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

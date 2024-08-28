@@ -74,7 +74,7 @@ class EventsScreenState extends State<EventsScreen> {
 
     try {
       final uri =
-          'https://bet-app-e520a.ew.r.appspot.com/v1/competitions/$league';
+          'https://flask-vhn3gxevdq-ew.a.run.app/v1/competitions/$league';
       final response = await Globals.performCall(uri);
 
       displayedMatches.clear();
