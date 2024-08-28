@@ -49,7 +49,6 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
     BuildContext context, {
     Color color = Colors.transparent,
   }) {
-    
     final double panelHeight = MediaQuery.of(context).size.height;
     final double panelWidth = MediaQuery.of(context).size.width;
     const Color textColor = Colors.white;
@@ -85,9 +84,14 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
             children: [
               nunitoText(option ?? 'null', 14, FontWeight.bold, textColor),
               Transform.translate(
-                  offset: Offset(translation, 0),
-                  child: nunitoText(widget.bets[option].toString(), 14,
-                      FontWeight.bold, textColor,),),
+                offset: Offset(translation, 0),
+                child: nunitoText(
+                  widget.bets[option].toString(),
+                  14,
+                  FontWeight.bold,
+                  textColor,
+                ),
+              ),
             ],
           ),
         ),
@@ -95,12 +99,13 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
     );
   }
 
-  Stack krzeminBetWidget(
+  Container krzeminBetWidget(
+    // add blue border
+
     BuildContext context,
     Function(String?) onItemTapped, {
     String? option,
   }) {
-    
     final double panelHeight = MediaQuery.of(context).size.height;
     final double panelWidth = MediaQuery.of(context).size.width;
     String betWidgetPath;
@@ -127,49 +132,79 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
       width: panelWidth * 0.9 * 0.2 * 0.4,
     );
 
-    return Stack(
-      alignment: Alignment.bottomCenter,
-      children: [
-        // on bottom, custom navbar svg image based on the selected index (1-5)
-        SvgPicture.asset(
-          betWidgetPath,
-          fit: BoxFit.cover,
-          width: panelWidth * 0.9,
-        ),
-        // on top, invisible buttons to make the navbar items clickable
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            buildBetItem('1', onItemTapped, context),
-            buildBetItem('1X', onItemTapped, context),
-            buildBetItem('X', onItemTapped, context),
-            buildBetItem('X2', onItemTapped, context),
-            buildBetItem('2', onItemTapped, context),
-          ],
-        ),
-        Positioned(
-            top: panelHeight * 0.015,
-            left: panelHeight * 0.05,
-            child: sportIcon,),
-        Positioned(
-          top: panelHeight * 0.013,
-          left: panelHeight * 0.9 * 0.12,
-          child: SizedBox(
-            width: panelWidth * 0.9 * 0.7,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: nunitoText(widget.eventName, 14, FontWeight.bold, Colors.black, maxLines: 1),
+    return Container(
+      decoration: const BoxDecoration(
+        // adjust this shadow if you dont like it
+        boxShadow: [
+          BoxShadow(
+            color: Color.fromARGB(48, 0, 0, 0),
+            spreadRadius: 0.1,
+            blurRadius: 4,
+            offset: Offset(0, 3),
+          ),
+        ],
+        // border: Border.all(
+        //   color: Colors.blue,
+        //   width: 2.0,
+        // ),
+      ),
+      width: panelWidth * 0.95,
+      child: Stack(
+        alignment: Alignment.bottomCenter,
+        children: [
+          // on bottom, custom navbar svg image based on the selected index (1-5)
+          SvgPicture.asset(
+            betWidgetPath,
+            clipBehavior: Clip.hardEdge,
+            //fit: BoxFit.cover,
+            width: panelWidth * 1,
+          ),
+          // on top, invisible buttons to make the navbar items clickable
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              buildBetItem('1', onItemTapped, context),
+              buildBetItem('1X', onItemTapped, context),
+              buildBetItem('X', onItemTapped, context),
+              buildBetItem('X2', onItemTapped, context),
+              buildBetItem('2', onItemTapped, context),
+            ],
+          ),
+          Positioned(
+            top: panelHeight * 0.020,
+            left: panelHeight * 0.04,
+            child: sportIcon,
+          ),
+          Positioned(
+            top: panelHeight * 0.013,
+            left: panelHeight * 0.9 * 0.12,
+            child: SizedBox(
+              width: panelWidth * 0.9 * 0.7,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: nunitoText(
+                      widget.eventName,
+                      14,
+                      FontWeight.bold,
+                      Colors.black,
+                      maxLines: 1,
+                    ),
                   ),
-                nunitoText(
-                    widget.eventDetails, 12, FontWeight.normal, Colors.black,),
-              ],
+                  nunitoText(
+                    widget.eventDetails,
+                    12,
+                    FontWeight.normal,
+                    Colors.black,
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -179,7 +214,10 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
     // final double containerWidth = panelWidth * 0.9;
     // const double padding = 8.0;
 
-    return krzeminBetWidget(context, (p0) => onItemTapped(p0),
-        option: _selectedOption,);
+    return krzeminBetWidget(
+      context,
+      (p0) => onItemTapped(p0),
+      option: _selectedOption,
+    );
   }
 }
