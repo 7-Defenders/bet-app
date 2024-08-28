@@ -87,7 +87,6 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint("building");
     final List<Widget> leadingWidgets = rank
         .map(
           (e) => ClipRRect(
@@ -110,59 +109,68 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
         )
         .toList();
 
-    return SingleChildScrollView(
-      physics: const NeverScrollableScrollPhysics(),
-      child: SizedBox(
-        height: MediaQuery.of(context).size.height * 0.8,
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 40,
+    final height = MediaQuery.of(context).size.height;
+
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        title: nunitoText('Leagues', 26, FontWeight.bold, Colors.black),
+        centerTitle: true,
+      ),
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      body: SingleChildScrollView(
+        physics: const NeverScrollableScrollPhysics(),
+        child: Center(
+          child: SizedBox(
+            height: height * 0.8,
+            child: Column(
+              children: [
+                SizedBox(
+                  height: height * 0.05,
+                ),
+                LeagueListWidget(
+                  header: nunitoText("Your leagues", 20, FontWeight.bold,
+                      const Color.fromRGBO(30, 30, 27, 1),),
+                  leadingWidgets: leadingWidgets,
+                  titles: names,
+                  // addons: null,
+                  trailingWidgets: List.generate(
+                      rank.length,
+                      (index) => const Icon(
+                            Icons.arrow_forward_ios_rounded,
+                            color: Colors.red,
+                          ),),
+                  onTap: (int index) {
+                    goToLeagueSummary(context, index);
+                  },
+                  height: height * 0.5,
+                ),
+                const Spacer(),
+                JoinLeagueWidget(fetchPlayersLeagues),
+                SizedBox(
+                  height: height * 0.025,
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 5, 160, 221),
+                  ),
+                  onPressed: () async {await goToLeagueCreator(context);},
+                  child: nunitoText("Create a league", 16, FontWeight.normal, Colors.white),
+                ),
+                SizedBox(
+                  height: height * 0.05,
+                ),
+                // ElevatedButton(
+                //   onPressed: () {
+                //     debugPrint('Name: ${userData?.email}');
+                //     debugPrint('balance: ${userData?.balance}');
+                //     debugPrint('leagues joined: ${userData?.leaguesJoined}');
+                //   },
+                //   child: const Text('Print User Data'),
+                // ),
+              ],
             ),
-            JoinLeagueWidget(fetchPlayersLeagues),
-            const SizedBox(
-              height: 40,
-            ),
-            LeagueListWidget(
-              header: nunitoText("Your leagues", 20, FontWeight.bold,
-                  const Color.fromRGBO(30, 30, 27, 1),),
-              leadingWidgets: leadingWidgets,
-              titles: names,
-              // addons: null,
-              trailingWidgets: List.generate(
-                  rank.length,
-                  (index) => const Icon(
-                        Icons.arrow_forward_ios_rounded,
-                        color: Colors.red,
-                      ),),
-              onTap: (int index) {
-                goToLeagueSummary(context, index);
-              },
-              height: MediaQuery.of(context).size.height * 0.5,
-            ),
-            const Spacer(),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color.fromARGB(255, 5, 160, 221),
-              ),
-              onPressed: () async {await goToLeagueCreator(context);},
-              child: const Text(
-                'Create league',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-            // const SizedBox(
-            //   height: 40,
-            // ),
-            ElevatedButton(
-              onPressed: () {
-                debugPrint('Name: ${userData?.email}');
-                debugPrint('balance: ${userData?.balance}');
-                debugPrint('leagues joined: ${userData?.leaguesJoined}');
-              },
-              child: const Text('Print User Data'),
-            ),
-          ],
+          ),
         ),
       ),
     );
