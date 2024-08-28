@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:app/components/other/nunito_text.dart';
 import 'package:app/globals.dart';
 import 'package:app/models/user_data.dart';
 import 'package:app/providers/user_data_provider.dart';
@@ -114,10 +115,13 @@ class _JoinLeagueWidgetState extends State<JoinLeagueWidget> {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
+      style: ButtonStyle(
+        backgroundColor: WidgetStateProperty.all(Theme.of(context).colorScheme.secondary),
+      ),
       onPressed: () {
         showLeagueCodeInputDialog(context, widget.onJoined);
       },
-      child: const Text('Join League'),
+      child: nunitoText("Join a league", 16, FontWeight.normal, Colors.white),
     );
   }
 }
