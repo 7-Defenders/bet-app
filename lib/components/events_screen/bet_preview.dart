@@ -155,7 +155,6 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
           // on bottom, custom navbar svg image based on the selected index (1-5)
           SvgPicture.asset(
             betWidgetPath,
-            clipBehavior: Clip.hardEdge,
             //fit: BoxFit.cover,
             width: panelWidth * 1,
           ),
