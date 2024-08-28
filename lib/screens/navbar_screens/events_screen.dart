@@ -455,7 +455,7 @@ class EventsScreenState extends State<EventsScreen> {
                   child: SingleChildScrollView(
                     // this helps avoid overflow during animation
                     child: Container(
-                      color: Theme.of(context).colorScheme.primary,
+                      color: Theme.of(context).colorScheme.tertiary,
                       padding: const EdgeInsets.only(
                         left: 20,
                         top: 55,
@@ -519,7 +519,7 @@ class EventsScreenState extends State<EventsScreen> {
                     child: FloatingActionButton(
                       elevation: 10,
                       onPressed: onMakeBetPressed,
-                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      backgroundColor: Theme.of(context).colorScheme.tertiary,
                       child: Icon(
                         Icons.keyboard_arrow_up_rounded,
                         size: 40,
