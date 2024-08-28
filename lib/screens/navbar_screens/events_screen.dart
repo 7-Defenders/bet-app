@@ -30,7 +30,7 @@ class EventsScreenState extends State<EventsScreen> {
       GlobalKey<EventsScreenState>();
 
   List<Sport> structure = [];
-  List<BetPreviewWidget> displayedMatches = [];
+  List<Widget> displayedMatches = [];
   Sport? selectedSport;
   Country? selectedCountry;
   League? selectedLeague;
@@ -152,74 +152,76 @@ class EventsScreenState extends State<EventsScreen> {
 
         fe.where((element) => element.date.isAfter(DateTime.now())).forEach(
           (element)  {displayedMatches.add(
-            BetPreviewWidget(
-              eventName: '${element.homename} - ${element.awayname}',
-              eventDetails: element.date.toString(),
-              bets: {
-                '1': element.homeodds,
-                '1X': element.homedrawodds,
-                'X': element.tieodds,
-                'X2': element.drawawayodds,
-                '2': element.awayodds,
-              },
-              onOptionSelected: (String? selectedOption) {
-                final String key = '${element.homename} - ${element.awayname}';
-                final double odds;
-                final String matchRef = element.matchRef;
-                final String date = element.date.toString();
-
-                switch (selectedOption) {
-                  case '1':
-                    odds = element.homeodds;
-                  case 'X':
-                    odds = element.tieodds;
-                  case '2':
-                    odds = element.awayodds;
-                  case '1X':
-                    odds = element.homedrawodds;
-                  case 'X2':
-                    odds = element.drawawayodds;
-                  default:
-                    odds = 0;
-                }
-                //replace this with proper way to fetch odds
-
-                //debugPrint("Selected option: $selectedOption" + " key: $key");
-
-                //print selectedOption and buttonStatesProvider.buttonStates[key]
-                // debugPrint("Selected option: $selectedOption" +
-                //     " buttonStatesProvider.buttonStates[key]: " +
-                //     "${buttonStatesProvider.buttonStates[key]}");
-
-                final currentOptionAndOdds =
-                    buttonStatesProvider.buttonStates[key]?.split(',');
-                final currentOption = currentOptionAndOdds != null
-                    ? currentOptionAndOdds[0]
-                    : null;
-
-                //debugPrint("Current option: $currentOption");
-
-                if (buttonStatesProvider.buttonStates.containsKey(key) &&
-                    selectedOption == currentOption) {
-                  buttonStatesProvider.removeButtonState(key);
-                } else {
-                  buttonStatesProvider.updateButtonState(
-                    key,
-                    '$selectedOption,$odds,$matchRef,$date',
-                  );
-                }
-
-                //debugPrint(
-                //"ButtonStatesProvider values: ${buttonStatesProvider.buttonStates}");
-                //print whole map
-              },
-              initialSelection: buttonStatesProvider
-                  .buttonStates['${element.homename} - ${element.awayname}']
-                  ?.split(',')[0],
-            ),
-          );
-          
-                debugPrint(displayedMatches.length.toString());}
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+                child: BetPreviewWidget(
+                  eventName: '${element.homename} - ${element.awayname}',
+                  eventDetails: element.date.toString(),
+                  bets: {
+                    '1': element.homeodds,
+                    '1X': element.homedrawodds,
+                    'X': element.tieodds,
+                    'X2': element.drawawayodds,
+                    '2': element.awayodds,
+                  },
+                  onOptionSelected: (String? selectedOption) {
+                    final String key = '${element.homename} - ${element.awayname}';
+                    final double odds;
+                    final String matchRef = element.matchRef;
+                    final String date = element.date.toString();
+                
+                    switch (selectedOption) {
+                      case '1':
+                        odds = element.homeodds;
+                      case 'X':
+                        odds = element.tieodds;
+                      case '2':
+                        odds = element.awayodds;
+                      case '1X':
+                        odds = element.homedrawodds;
+                      case 'X2':
+                        odds = element.drawawayodds;
+                      default:
+                        odds = 0;
+                    }
+                    //replace this with proper way to fetch odds
+                
+                    //debugPrint("Selected option: $selectedOption" + " key: $key");
+                
+                    //print selectedOption and buttonStatesProvider.buttonStates[key]
+                    // debugPrint("Selected option: $selectedOption" +
+                    //     " buttonStatesProvider.buttonStates[key]: " +
+                    //     "${buttonStatesProvider.buttonStates[key]}");
+                
+                    final currentOptionAndOdds =
+                        buttonStatesProvider.buttonStates[key]?.split(',');
+                    final currentOption = currentOptionAndOdds != null
+                        ? currentOptionAndOdds[0]
+                        : null;
+                
+                    //debugPrint("Current option: $currentOption");
+                
+                    if (buttonStatesProvider.buttonStates.containsKey(key) &&
+                        selectedOption == currentOption) {
+                      buttonStatesProvider.removeButtonState(key);
+                    } else {
+                      buttonStatesProvider.updateButtonState(
+                        key,
+                        '$selectedOption,$odds,$matchRef,$date',
+                      );
+                    }
+                
+                    //debugPrint(
+                    //"ButtonStatesProvider values: ${buttonStatesProvider.buttonStates}");
+                    //print whole map
+                  },
+                  initialSelection: buttonStatesProvider
+                      .buttonStates['${element.homename} - ${element.awayname}']
+                      ?.split(',')[0],
+                ),
+              ),
+            );
+          }
         );
       });
     } finally {
@@ -419,9 +421,6 @@ class EventsScreenState extends State<EventsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //debugPrint("LeaguesScreen context: $context");
-    // debugPrint(
-    //     "Provider available: ${Provider.of<ButtonStatesProvider>(context, listen: false) != null}");
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: Stack(
