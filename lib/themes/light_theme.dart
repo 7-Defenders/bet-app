@@ -21,9 +21,9 @@ class NoTransitionsBuilder extends PageTransitionsBuilder {
 ThemeData lightTheme = ThemeData(
   brightness: Brightness.light,
   colorScheme: const ColorScheme.light(
-    primary: Color.fromARGB(255, 30, 30, 27),
-    secondary: Color.fromARGB(255, 255, 255, 255),
-    tertiary: Colors.grey,
+    primary: Color.fromARGB(255, 255, 163, 16),
+    secondary: Color.fromARGB(255, 255, 186, 75),
+    tertiary: Color.fromARGB(255, 96, 179, 255),
     onTertiary: Color.fromARGB(
         255, 255, 255, 255,), // there was no other appropriate name lol
     error: Color.fromARGB(255, 224, 227, 255),
