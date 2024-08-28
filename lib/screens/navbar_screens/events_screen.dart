@@ -1,10 +1,9 @@
 // ignore_for_file: avoid_dynamic_calls
 
 import 'dart:async';
-import 'dart:convert';
 
-import 'package:app/components/events_screen/bet_maker.dart';
 import 'package:app/components/events_screen/bet_preview.dart';
+import 'package:app/components/events_screen/button_with_bets.dart';
 import 'package:app/components/other/nunito_text.dart';
 import 'package:app/globals.dart';
 import 'package:app/models/football_event.dart';
@@ -13,7 +12,6 @@ import 'package:app/providers/button_states_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:http/http.dart' as http;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -59,71 +57,6 @@ class EventsScreenState extends State<EventsScreen> {
     });
   }
 
-  Future<bool> createBet(
-    int amount,
-    String betType,
-    double betOdds,
-    String matchRef,
-  ) async {
-    // showDialog(
-    //   context: context,
-    //   builder: (context) {
-    //     return Center(
-    //       child: LoadingAnimationWidget.hexagonDots(
-    //         color: Theme.of(context).colorScheme.primary,
-    //         size: 55,
-    //       ),
-    //     );
-    //   },
-    // );
-    final String uid = Globals.uid;
-
-    debugPrint(
-      jsonEncode(
-        <String, dynamic>{
-          'userID': uid,
-          'amount': amount,
-          'bet': betType,
-          'betodds': betOdds,
-          'gameRef': matchRef,
-          'result': null,
-        },
-      ),
-    );
-
-    const uri = 'https://bet-app-e520a.ew.r.appspot.com/v1/bets';
-
-    final response = await http.post(
-      Uri.parse(uri,),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(
-        <String, dynamic>{
-          'userID': uid,
-          'amount': amount,
-          'bet': betType,
-          'betodds': betOdds,
-          'gameRef': matchRef,
-        },
-      ),
-    );
-
-    debugPrint(response.body);
-    debugPrint(response.statusCode.toString());
-    
-    if (response.statusCode != 201) {
-      debugPrint("Failed to create bet");
-      return false;
-    }
-    else {
-      // await Globals.saveNewBet("$uri/$uid", response.body);
-      debugPrint("Bet created successfully");
-      Globals.hasNewBet = true;
-      return true;
-    }
-  }
-
   Future<void> fetchMatchesGivenLeague(String league) async {
     showDialog(
       context: context,
@@ -140,7 +73,8 @@ class EventsScreenState extends State<EventsScreen> {
     );
 
     try {
-      final uri = 'https://bet-app-e520a.ew.r.appspot.com/v1/competitions/$league';
+      final uri =
+          'https://bet-app-e520a.ew.r.appspot.com/v1/competitions/$league';
       final response = await Globals.performCall(uri);
 
       displayedMatches.clear();
@@ -150,8 +84,10 @@ class EventsScreenState extends State<EventsScreen> {
 
         final List<FootballEvent> fe = footballEventFromJson(response);
 
-        fe.where((element) => element.date.isAfter(DateTime.now())).forEach(
-          (element)  {displayedMatches.add(
+        fe
+            .where((element) => element.date.isAfter(DateTime.now()))
+            .forEach((element) {
+          displayedMatches.add(
             BetPreviewWidget(
               eventName: '${element.homename} - ${element.awayname}',
               eventDetails: element.date.toString(),
@@ -218,9 +154,9 @@ class EventsScreenState extends State<EventsScreen> {
                   ?.split(',')[0],
             ),
           );
-          
-                debugPrint(displayedMatches.length.toString());}
-        );
+
+          debugPrint(displayedMatches.length.toString());
+        });
       });
     } finally {
       if (mounted) {
@@ -360,63 +296,6 @@ class EventsScreenState extends State<EventsScreen> {
     );
   }
 
-  void onMakeBetPressed() {
-    showModalBottomSheet(
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(30),
-          topRight: Radius.circular(30),
-        ),
-      ),
-      isScrollControlled: true,
-      context: context,
-      builder: (context) {
-        final buttonStatesProvider = Provider.of<ButtonStatesProvider>(context);
-        return SizedBox(
-          height: MediaQuery.of(context).size.height * 0.7,
-          child: ListView.builder(
-            itemCount: buttonStatesProvider.buttonStates.length,
-            itemBuilder: (context, index) {
-              final entry =
-                  buttonStatesProvider.buttonStates.entries.elementAt(index);
-              final gameName = entry.key;
-              final split = entry.value.split(',');
-              debugPrint(split.toString());
-              final betType = split[0];
-              final double odds = double.parse(split[1]);
-              final matchRef = split[2];
-              final date = split[3];
-
-              debugPrint("matchRef: $matchRef");
-
-              final amountController = amountControllers.putIfAbsent(
-                entry.key,
-                () => TextEditingController(),
-              );
-
-              return BetMaker(
-                gameName: gameName,
-                betType: betType,
-                odds: odds,
-                date: date,
-                matchRef: matchRef,
-                amountController: amountController,
-                onRemove: () {
-                  final matchId = entry.key;
-                  chosenMatches
-                      .removeWhere((element) => element.eventName == matchId);
-                  buttonStatesProvider.removeButtonStateAndRefresh(matchId);
-                  rebuild();
-                },
-                createBet: createBet,
-              );
-            },
-          ),
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     //debugPrint("LeaguesScreen context: $context");
@@ -494,31 +373,7 @@ class EventsScreenState extends State<EventsScreen> {
           ),
         ],
       ),
-      floatingActionButton: ValueListenableBuilder(
-        valueListenable:
-            context.watch<ButtonStatesProvider>().buttonStatesNotifier,
-        builder: (context, Map<String, String> value, child) {
-          return value.isNotEmpty
-              ? Padding(
-                  padding: const EdgeInsets.all(15),
-                  child: SizedBox(
-                    width: 65,
-                    height: 65,
-                    child: FloatingActionButton(
-                      elevation: 10,
-                      onPressed: onMakeBetPressed,
-                      backgroundColor: Theme.of(context).colorScheme.tertiary,
-                      child: Icon(
-                        Icons.keyboard_arrow_up_rounded,
-                        size: 40,
-                        color: Theme.of(context).colorScheme.surface,
-                      ),
-                    ),
-                  ),
-                )
-              : const SizedBox.shrink();
-        },
-      ),
+      floatingActionButton: const ButtonWithBets(),
     );
   }
 }

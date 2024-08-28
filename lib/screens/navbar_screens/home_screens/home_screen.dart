@@ -1,3 +1,4 @@
+import 'package:app/components/events_screen/button_with_bets.dart';
 import 'package:app/components/other/nunito_text.dart';
 import 'package:app/providers/user_data_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -27,11 +28,11 @@ class _HomeScreenState extends State<HomeScreen> {
     double usableWidth,
     double cardHeight,
     double cardWidth,
-    List<Widget> widgets,
-    {String? description,
-    bool vertical=false,
-    bool hidden=false,}
-  ) {
+    List<Widget> widgets, {
+    String? description,
+    bool vertical = false,
+    bool hidden = false,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -39,23 +40,28 @@ class _HomeScreenState extends State<HomeScreen> {
           height: 8,
         ),
         nunitoText(title, 18, FontWeight.bold, Colors.black),
-        if (description != null) nunitoText(description, 14, FontWeight.normal, Colors.grey) else const SizedBox(),
+        if (description != null)
+          nunitoText(description, 14, FontWeight.normal, Colors.grey)
+        else
+          const SizedBox(),
         const SizedBox(
           height: 8,
         ),
         Stack(
           children: [
-            if (vertical) 
+            if (vertical)
               SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: widgets,
                 ),
               )
-            else 
+            else
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                child: Row(children: widgets,),
+                child: Row(
+                  children: widgets,
+                ),
               ),
             if (hidden)
               Positioned(
@@ -63,26 +69,29 @@ class _HomeScreenState extends State<HomeScreen> {
                 left: 0,
                 child: Container(
                   decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Theme.of(context).primaryColor.withOpacity(0.7),
+                    borderRadius: BorderRadius.circular(10),
+                    color: Theme.of(context).primaryColor.withOpacity(0.7),
                   ),
                   width: usableWidth,
                   height: cardHeight,
                   child: Center(
-                    child: nunitoText('Coming soon', 18, FontWeight.bold, Colors.white),
+                    child: nunitoText(
+                      'Coming soon',
+                      18,
+                      FontWeight.bold,
+                      Colors.white,
+                    ),
                   ),
                 ),
               ),
           ],
         ),
-
       ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    
     final usableWidth = MediaQuery.of(context).size.width * 0.9;
     final cardWidth = usableWidth * 0.45;
     final cardHeight = MediaQuery.of(context).size.height * 0.15;
@@ -124,7 +133,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                   hidden: true,
                 ),
-            
                 buildSection(
                   "Game modes",
                   usableWidth,
@@ -173,13 +181,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ],
                   description: "Most popular events today",
-                  vertical: true
+                  vertical: true,
                 ),
               ],
             ),
           ),
         ),
       ),
+      floatingActionButton: const ButtonWithBets(),
     );
   }
 }
