@@ -250,6 +250,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   description: "Most popular events today",
                   vertical: true,
                 ),
+                const SizedBox(
+                  height: 20,
+                ),
               ],
             ),
           ),
