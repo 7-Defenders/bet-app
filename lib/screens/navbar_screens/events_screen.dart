@@ -94,7 +94,9 @@ class EventsScreenState extends State<EventsScreen> {
     const uri = 'https://bet-app-e520a.ew.r.appspot.com/v1/bets';
 
     final response = await http.post(
-      Uri.parse(uri,),
+      Uri.parse(
+        uri,
+      ),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -111,12 +113,11 @@ class EventsScreenState extends State<EventsScreen> {
 
     debugPrint(response.body);
     debugPrint(response.statusCode.toString());
-    
+
     if (response.statusCode != 201) {
       debugPrint("Failed to create bet");
       return false;
-    }
-    else {
+    } else {
       // await Globals.saveNewBet("$uri/$uid", response.body);
       debugPrint("Bet created successfully");
       Globals.hasNewBet = true;
@@ -140,7 +141,8 @@ class EventsScreenState extends State<EventsScreen> {
     );
 
     try {
-      final uri = 'https://bet-app-e520a.ew.r.appspot.com/v1/competitions/$league';
+      final uri =
+          'https://bet-app-e520a.ew.r.appspot.com/v1/competitions/$league';
       final response = await Globals.performCall(uri);
 
       displayedMatches.clear();
@@ -150,10 +152,20 @@ class EventsScreenState extends State<EventsScreen> {
 
         final List<FootballEvent> fe = footballEventFromJson(response);
 
-        fe.where((element) => element.date.isAfter(DateTime.now())).forEach(
-          (element)  {displayedMatches.add(
-            Padding(
-              padding: const EdgeInsets.only(bottom: 10),
+        fe
+            .where((element) => element.date.isAfter(DateTime.now()))
+            .forEach((element) {
+          displayedMatches.add(
+            Container(
+              decoration: BoxDecoration(
+                // border: Border.all(
+                //   color: const Color.fromRGBO(192, 51, 51, 1),
+                //   width: 2,
+                // ),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 10),
                 child: BetPreviewWidget(
                   eventName: '${element.homename} - ${element.awayname}',
                   eventDetails: element.date.toString(),
@@ -165,11 +177,12 @@ class EventsScreenState extends State<EventsScreen> {
                     '2': element.awayodds,
                   },
                   onOptionSelected: (String? selectedOption) {
-                    final String key = '${element.homename} - ${element.awayname}';
+                    final String key =
+                        '${element.homename} - ${element.awayname}';
                     final double odds;
                     final String matchRef = element.matchRef;
                     final String date = element.date.toString();
-                
+
                     switch (selectedOption) {
                       case '1':
                         odds = element.homeodds;
@@ -185,22 +198,22 @@ class EventsScreenState extends State<EventsScreen> {
                         odds = 0;
                     }
                     //replace this with proper way to fetch odds
-                
+
                     //debugPrint("Selected option: $selectedOption" + " key: $key");
-                
+
                     //print selectedOption and buttonStatesProvider.buttonStates[key]
                     // debugPrint("Selected option: $selectedOption" +
                     //     " buttonStatesProvider.buttonStates[key]: " +
                     //     "${buttonStatesProvider.buttonStates[key]}");
-                
+
                     final currentOptionAndOdds =
                         buttonStatesProvider.buttonStates[key]?.split(',');
                     final currentOption = currentOptionAndOdds != null
                         ? currentOptionAndOdds[0]
                         : null;
-                
+
                     //debugPrint("Current option: $currentOption");
-                
+
                     if (buttonStatesProvider.buttonStates.containsKey(key) &&
                         selectedOption == currentOption) {
                       buttonStatesProvider.removeButtonState(key);
@@ -210,7 +223,7 @@ class EventsScreenState extends State<EventsScreen> {
                         '$selectedOption,$odds,$matchRef,$date',
                       );
                     }
-                
+
                     //debugPrint(
                     //"ButtonStatesProvider values: ${buttonStatesProvider.buttonStates}");
                     //print whole map
@@ -220,9 +233,9 @@ class EventsScreenState extends State<EventsScreen> {
                       ?.split(',')[0],
                 ),
               ),
-            );
-          }
-        );
+            ),
+          );
+        });
       });
     } finally {
       if (mounted) {
