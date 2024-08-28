@@ -1,4 +1,3 @@
-import 'package:app/components/other/appbar/custom_appbar.dart';
 import 'package:app/components/other/nunito_text.dart';
 import 'package:app/providers/user_data_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
