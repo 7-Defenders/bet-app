@@ -45,9 +45,9 @@ dependencies:
   cupertino_icons: ^1.0.2
   equatable: ^2.0.5
   firebase_app_check: ^0.2.1+6
-  firebase_auth: ^4.9.0
-  firebase_core: ^2.23.0
-  firebase_storage: ^11.6.0
+  firebase_auth: ^4.17.8
+  firebase_core: ^2.27.0
+  firebase_storage: 11.6.9
   flutter_animate: ^4.2.0+1
   flutter_bloc: ^8.1.4
   flutter_cache_manager: ^3.3.0
