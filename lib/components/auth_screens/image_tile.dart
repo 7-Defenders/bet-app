@@ -22,7 +22,7 @@ class ImageTile extends StatelessWidget {
           border: Border.all(
             color: Theme.of(context).colorScheme.onTertiary,
           ),
-          color: Theme.of(context).colorScheme.secondary,
+          color: Colors.white,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Image.asset(

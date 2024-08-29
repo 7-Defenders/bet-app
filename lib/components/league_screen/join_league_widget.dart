@@ -69,7 +69,7 @@ void showLeagueCodeInputDialog(BuildContext context, Function() onJoined) {
         ),
         actions: <Widget>[
           TextButton(
-            child: const Text('Join League'),
+            child: nunitoText("Join League", 16, FontWeight.normal, Colors.black),
             onPressed: () {
               if (formKey.currentState!.validate()) {
                 final uid = FirebaseAuth.instance.currentUser!.uid;
@@ -116,7 +116,7 @@ class _JoinLeagueWidgetState extends State<JoinLeagueWidget> {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ButtonStyle(
-        backgroundColor: WidgetStateProperty.all(Theme.of(context).colorScheme.secondary),
+        backgroundColor: WidgetStateProperty.all(Theme.of(context).colorScheme.primary),
       ),
       onPressed: () {
         showLeagueCodeInputDialog(context, widget.onJoined);
