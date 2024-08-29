@@ -84,7 +84,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: app-release.ipa
-          path: build/app/outputs/bundle/release/app-release.ipa
+          path: build/ios/ipa/Runner.ipa 
 
   release:
     name: Create GitHub Release
@@ -108,7 +108,7 @@ jobs:
       - name: Download IPA Artifact
         uses: actions/download-artifact@v3
         with:
-          name: Runner.app
+          name: app-release.ipa
           path: ./release
 
       - name: Create GitHub Release
@@ -148,6 +148,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./release/Runner.app
-          asset_name: Runner.app
+          asset_path: ./release/app-release.ipa
+          asset_name: app-release.ipa
           asset_content_type: application/octet-stream
