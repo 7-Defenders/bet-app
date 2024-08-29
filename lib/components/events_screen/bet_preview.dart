@@ -36,16 +36,16 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
 
   void resetChoice() {
     setState(() {
-      print('resetting $_selectedOption' ' for ${widget.eventName}');
+      debugPrint('resetting $_selectedOption' ' for ${widget.eventName}');
       _selectedOption = null;
-      print('selected option: $_selectedOption');
+      debugPrint('selected option: $_selectedOption');
     });
   }
 
   @override
   void initState() {
     super.initState();
-    print('initial selection: ${widget.initialSelection}');
+    debugPrint('initial selection: ${widget.initialSelection}');
 
     widget.onReset = resetChoice;
     _selectedOption = widget.initialSelection;
@@ -235,7 +235,7 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
     //final buttonStatesProvider = Provider.of<ButtonStatesProvider>(context);
     // final double containerWidth = panelWidth * 0.9;
     // const double padding = 8.0;
-    print('rebuilding bet preview widget with event: ${widget.eventName}'
+    debugPrint('rebuilding bet preview widget with event: ${widget.eventName}'
         ' and option: $_selectedOption');
 
     return Consumer<ButtonStatesProvider>(

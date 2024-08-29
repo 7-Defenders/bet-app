@@ -47,10 +47,10 @@ class EventsScreenState extends State<EventsScreen> {
     //only check for first one that matches the event name
     for (final element in displayedMatches) {
       if ((element is BetPreviewWidget) && !found) {
-        print('checking ${element.eventName}' ' for $eventName');
+        debugPrint('checking ${element.eventName}' ' for $eventName');
         if (element.eventName == eventName) {
-          print('resetting $eventName');
-          print("all element properties: ${element.onReset}");
+          debugPrint('resetting $eventName');
+          debugPrint("all element properties: ${element.onReset}");
           element.onReset?.call();
           buttonStatesProvider.removeButtonState(eventName);
           found = true;
@@ -65,7 +65,6 @@ class EventsScreenState extends State<EventsScreen> {
       if (selectedLeague != null) {
         fetchMatchesGivenLeague(selectedLeague!.id);
       }
-      print(context);
       build(context);
     });
   }

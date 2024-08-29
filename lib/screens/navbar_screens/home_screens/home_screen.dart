@@ -34,10 +34,10 @@ class _HomeScreenState extends State<HomeScreen> {
     //only check for first one that matches the event name
     for (final element in displayedMatches) {
       if ((element is BetPreviewWidget) && !found) {
-        print('checking ${element.eventName}' ' for $eventName');
+        //print('checking ${element.eventName}' ' for $eventName');
         if (element.eventName == eventName) {
-          print('resetting $eventName');
-          print("all element properties: ${element.onReset}");
+          //print('resetting $eventName');
+          //print("all element properties: ${element.onReset}");
           element.onReset?.call();
           buttonStatesProvider.removeButtonState(eventName);
           found = true;
