@@ -33,7 +33,7 @@ class HistoryBetWidget extends StatelessWidget {
             color: Colors.orange,
             width: 5,
           ),
-          color: Theme.of(context).colorScheme.secondary,
+          color: Colors.white,
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(

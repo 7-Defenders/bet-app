@@ -27,7 +27,7 @@ class AuthTextField extends StatelessWidget {
           focusedBorder: const OutlineInputBorder(
             borderSide: BorderSide(color: Colors.grey),
           ),
-          fillColor: Theme.of(context).colorScheme.secondary,
+          fillColor: Colors.white,
           filled: true,
         ),
       ),

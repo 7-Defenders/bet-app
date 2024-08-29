@@ -53,9 +53,9 @@ class _BetMakerState extends State<BetMaker> {
             Expanded(
               child: Container(
                 height: 100,
-                decoration: ShapeDecoration(
-                  color: Theme.of(context).colorScheme.secondary,
-                  shape: const RoundedRectangleBorder(
+                decoration: const ShapeDecoration(
+                  color: Colors.white,
+                  shape: RoundedRectangleBorder(
                     side: BorderSide(
                       width: 4,
                       color: Color(0xFFEFB566),
@@ -66,7 +66,7 @@ class _BetMakerState extends State<BetMaker> {
                       bottomRight: Radius.circular(15),
                     ),
                   ),
-                  shadows: const [
+                  shadows: [
                     BoxShadow(
                       color: Color(0x3F000000),
                       blurRadius: 4,
