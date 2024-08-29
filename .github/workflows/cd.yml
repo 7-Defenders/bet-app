@@ -84,7 +84,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: app-release.ipa
-          path: build/ios/ipa/Runner.ipa 
+          path: build/app/outputs/bundle/release/app-release.ipa
 
   release:
     name: Create GitHub Release
