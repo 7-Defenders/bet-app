@@ -33,13 +33,30 @@ class EventsScreenState extends State<EventsScreen> {
   Country? selectedCountry;
   League? selectedLeague;
 
-  List<BetPreviewWidget> chosenMatches = [];
-
   @override
   void initState() {
     super.initState();
     loadStructure();
     //debugPrint('LeaguesScreenState key: ${widget.key}');
+  }
+
+  void handleRemoveMatch(BuildContext context, String eventName) {
+    //for each element in displayed check eventName and imf matches change initialSelection to null
+    bool found = false;
+    final buttonStatesProvider = context.read<ButtonStatesProvider>();
+    //only check for first one that matches the event name
+    for (final element in displayedMatches) {
+      if ((element is BetPreviewWidget) && !found) {
+        print('checking ${element.eventName}' ' for $eventName');
+        if (element.eventName == eventName) {
+          print('resetting $eventName');
+          print("all element properties: ${element.onReset}");
+          element.onReset?.call();
+          buttonStatesProvider.removeButtonState(eventName);
+          found = true;
+        }
+      }
+    }
   }
 
   void rebuild() {
@@ -48,6 +65,8 @@ class EventsScreenState extends State<EventsScreen> {
       if (selectedLeague != null) {
         fetchMatchesGivenLeague(selectedLeague!.id);
       }
+      print(context);
+      build(context);
     });
   }
 
@@ -370,7 +389,10 @@ class EventsScreenState extends State<EventsScreen> {
           ),
         ],
       ),
-      floatingActionButton: const ButtonWithBets(),
+      floatingActionButton: ButtonWithBets(
+        onRemoveMatch: (String matchRef) =>
+            handleRemoveMatch(context, matchRef),
+      ),
     );
   }
 }

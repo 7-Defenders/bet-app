@@ -11,18 +11,39 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({
+    super.key,
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
+  ButtonStatesProvider? buttonStatesProvider;
   List<Widget> displayedMatches = [];
 
   void goHome2(BuildContext context) {
     GoRouter.of(context).go('/home/2');
+  }
+
+  void handleRemoveMatch(BuildContext context, String eventName) {
+    //for each element in displayed check eventName and imf matches change initialSelection to null
+    bool found = false;
+    final buttonStatesProvider = context.read<ButtonStatesProvider>();
+    //only check for first one that matches the event name
+    for (final element in displayedMatches) {
+      if ((element is BetPreviewWidget) && !found) {
+        print('checking ${element.eventName}' ' for $eventName');
+        if (element.eventName == eventName) {
+          print('resetting $eventName');
+          print("all element properties: ${element.onReset}");
+          element.onReset?.call();
+          buttonStatesProvider.removeButtonState(eventName);
+          found = true;
+        }
+      }
+    }
   }
 
   Future<void> logOutUser() async {
@@ -31,73 +52,72 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> getPopularMatches() async {
-      const uri =
-          'https://flask-vhn3gxevdq-ew.a.run.app/v1/popular_bets';
-      final response = await Globals.performCall(uri);
+    const uri = 'https://flask-vhn3gxevdq-ew.a.run.app/v1/popular_bets';
+    final response = await Globals.performCall(uri);
 
-      displayedMatches.clear();
-      final buttonStatesProvider = context.read<ButtonStatesProvider>();
+    displayedMatches.clear();
+    final buttonStatesProvider = context.read<ButtonStatesProvider>();
 
-      setState(() {
-        final List<FootballEvent> fe = footballEventFromJson(response);
+    setState(() {
+      final List<FootballEvent> fe = footballEventFromJson(response);
 
-        fe.where((element) => element.date.isAfter(DateTime.now()))
-            .forEach((element) {
-          displayedMatches.add(
-            BetPreviewWidget(
-              eventName: '${element.homename} - ${element.awayname}',
-              eventDetails: element.date.toString(),
-              bets: {
-                '1': element.homeodds,
-                '1X': element.homedrawodds,
-                'X': element.tieodds,
-                'X2': element.drawawayodds,
-                '2': element.awayodds,
-              },
-              onOptionSelected: (String? selectedOption) {
-                final String key = '${element.homename} - ${element.awayname}';
-                final double odds;
-                final String matchRef = element.matchRef;
-                final String date = element.date.toString();
+      fe
+          .where((element) => element.date.isAfter(DateTime.now()))
+          .forEach((element) {
+        displayedMatches.add(
+          BetPreviewWidget(
+            eventName: '${element.homename} - ${element.awayname}',
+            eventDetails: element.date.toString(),
+            bets: {
+              '1': element.homeodds,
+              '1X': element.homedrawodds,
+              'X': element.tieodds,
+              'X2': element.drawawayodds,
+              '2': element.awayodds,
+            },
+            onOptionSelected: (String? selectedOption) {
+              final String key = '${element.homename} - ${element.awayname}';
+              final double odds;
+              final String matchRef = element.matchRef;
+              final String date = element.date.toString();
 
-                switch (selectedOption) {
-                  case '1':
-                    odds = element.homeodds;
-                  case 'X':
-                    odds = element.tieodds;
-                  case '2':
-                    odds = element.awayodds;
-                  case '1X':
-                    odds = element.homedrawodds;
-                  case 'X2':
-                    odds = element.drawawayodds;
-                  default:
-                    odds = 0;
-                }
+              switch (selectedOption) {
+                case '1':
+                  odds = element.homeodds;
+                case 'X':
+                  odds = element.tieodds;
+                case '2':
+                  odds = element.awayodds;
+                case '1X':
+                  odds = element.homedrawodds;
+                case 'X2':
+                  odds = element.drawawayodds;
+                default:
+                  odds = 0;
+              }
 
-                final currentOptionAndOdds =
-                    buttonStatesProvider.buttonStates[key]?.split(',');
-                final currentOption = currentOptionAndOdds != null
-                    ? currentOptionAndOdds[0]
-                    : null;
+              final currentOptionAndOdds =
+                  buttonStatesProvider.buttonStates[key]?.split(',');
+              final currentOption =
+                  currentOptionAndOdds != null ? currentOptionAndOdds[0] : null;
 
-                if (buttonStatesProvider.buttonStates.containsKey(key) &&
-                    selectedOption == currentOption) {
-                  buttonStatesProvider.removeButtonState(key);
-                } else {
-                  buttonStatesProvider.updateButtonState(
-                    key,
-                    '$selectedOption,$odds,$matchRef,$date',
-                  );
-                }
-              },
-              initialSelection: buttonStatesProvider
-                  .buttonStates['${element.homename} - ${element.awayname}']
-                  ?.split(',')[0],
-            ),
-          );
-        });
+              if (buttonStatesProvider.buttonStates.containsKey(key) &&
+                  selectedOption == currentOption) {
+                buttonStatesProvider.removeButtonState(key);
+              } else {
+                buttonStatesProvider.updateButtonState(
+                  key,
+                  '$selectedOption,$odds,$matchRef,$date',
+                );
+              }
+            },
+            initialSelection: buttonStatesProvider
+                .buttonStates['${element.homename} - ${element.awayname}']
+                ?.split(',')[0],
+          ),
+        );
       });
+    });
   }
 
   Widget buildSection(
@@ -175,7 +195,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final usableWidth = MediaQuery.of(context).size.width * 0.9;
+    final usableWidth = MediaQuery.of(context).size.width * 0.95;
     final cardWidth = usableWidth * 0.45;
     final cardHeight = MediaQuery.of(context).size.height * 0.15;
     return Scaffold(
@@ -241,14 +261,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   hidden: true,
                   description: "Checkout other game modes we have on offer",
                 ),
-                buildSection(
-                  "Popular",
-                  usableWidth,
-                  cardHeight,
-                  cardWidth,
-                  displayedMatches,
-                  description: "Most popular events today",
-                  vertical: true,
+                Consumer<ButtonStatesProvider>(
+                  builder: (context, buttonStatesProvider, child) {
+                    return buildSection(
+                      "Popular",
+                      usableWidth,
+                      cardHeight,
+                      cardWidth,
+                      displayedMatches,
+                      description: "Most popular events today",
+                      vertical: true,
+                    );
+                  },
                 ),
                 const SizedBox(
                   height: 20,
@@ -258,7 +282,10 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      floatingActionButton: const ButtonWithBets(),
+      floatingActionButton: ButtonWithBets(
+        onRemoveMatch: (String matchRef) =>
+            handleRemoveMatch(context, matchRef),
+      ),
     );
   }
 }

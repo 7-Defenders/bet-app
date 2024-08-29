@@ -9,7 +9,8 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 class ButtonWithBets extends StatefulWidget {
-  const ButtonWithBets({super.key});
+  final Function(String) onRemoveMatch;
+  const ButtonWithBets({super.key, required this.onRemoveMatch});
 
   @override
   State<ButtonWithBets> createState() => _ButtonWithBetsState();
@@ -18,7 +19,6 @@ class ButtonWithBets extends StatefulWidget {
 class _ButtonWithBetsState extends State<ButtonWithBets> {
   final Map<String, TextEditingController> amountControllers = {};
   List<BetPreviewWidget> chosenMatches = [];
-  List<BetPreviewWidget> displayedMatches = [];
 
   void onMakeBetPressed() {
     showModalBottomSheet(
@@ -61,11 +61,12 @@ class _ButtonWithBetsState extends State<ButtonWithBets> {
                 date: date,
                 matchRef: matchRef,
                 amountController: amountController,
-                onRemove: () {
-                  final matchId = entry.key;
+                onRemove: (eventName) {
                   chosenMatches
-                      .removeWhere((element) => element.eventName == matchId);
-                  buttonStatesProvider.removeButtonStateAndRefresh(matchId);
+                      .removeWhere((element) => element.eventName == eventName);
+                  buttonStatesProvider.removeButtonStateAndRefresh(eventName);
+                  widget.onRemoveMatch(eventName);
+                  //print('Removed in button: $eventName');
                 },
                 createBet: createBet,
               );
@@ -139,8 +140,11 @@ class _ButtonWithBetsState extends State<ButtonWithBets> {
       // await Globals.saveNewBet("$uri/$uid", response.body);
       debugPrint("Bet created successfully");
       Globals.hasNewBet = true;
+      //getting parent widgets eventName
+
       return true;
     }
+    //call onRemove
   }
 
   @override
