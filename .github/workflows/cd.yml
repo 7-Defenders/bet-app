@@ -86,6 +86,9 @@ jobs:
           name: app-release.ipa
           path: build/app/outputs/bundle/release/app-release.ipa
 
+      - name: Show contents
+        run: ls -al build/app/outputs/bundle/release/
+
   release:
     name: Create GitHub Release
     runs-on: ubuntu-latest
@@ -104,6 +107,9 @@ jobs:
         with:
           name: app-release.aab
           path: ./release
+      
+      - name: Show contents
+        run: ls -al ./release
 
       - name: Download IPA Artifact
         uses: actions/download-artifact@v3
