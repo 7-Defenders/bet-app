@@ -56,7 +56,7 @@ class FootballEvent {
         homeodds: double.parse(json["homeodds"].toString()),
         referee: json["referee"] as String?,
         tieodds: double.parse(json["tieodds"].toString()),
-        matchRef: json["matchRef"] as String,
+        matchRef: (json["matchRef"] ?? json["reference"]) as String,
       );
 
   Map<String, dynamic> toJson() => {

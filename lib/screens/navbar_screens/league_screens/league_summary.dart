@@ -181,7 +181,7 @@ class _LeagueSummaryState extends State<LeagueSummary> {
 
   Future<void> leaveLeague() async {
     final uid = FirebaseAuth.instance.currentUser!.uid;
-    await http.delete(Uri.parse('https://bet-app-e520a.ew.r.appspot.com/v1/users/$uid/leagues/${widget.leagueID}'));
+    await http.delete(Uri.parse('https://flask-vhn3gxevdq-ew.a.run.app/v1/users/$uid/leagues/${widget.leagueID}'));
   }
 
   Future<void> fetchLeagueData() async {
@@ -196,7 +196,7 @@ class _LeagueSummaryState extends State<LeagueSummary> {
       useRootNavigator: false,
     );
 
-    final uri = 'https://bet-app-e520a.ew.r.appspot.com/v1/leagues/${widget.leagueID}/users';
+    final uri = 'https://flask-vhn3gxevdq-ew.a.run.app/v1/leagues/${widget.leagueID}/users';
     final response = await Globals.performCall(uri);
     // debugPrint(response.body);
     setState((){
@@ -249,6 +249,9 @@ class _LeagueSummaryState extends State<LeagueSummary> {
 
     final scaffoldMessenger = ScaffoldMessenger.of(context);
 
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -270,67 +273,78 @@ class _LeagueSummaryState extends State<LeagueSummary> {
             },
           ),
         ],
-        title: nunitoText(leagueName == null ? 'League Name' : leagueName!, 24, FontWeight.bold, Colors.black),
+        title: nunitoText(leagueName == null ? 'League Name' : leagueName!, 26, FontWeight.bold, Colors.black),
         centerTitle: true,
       ),
-      body: Column(
-        children: 
-        [
-          const SizedBox(height: 20,),
-          GestureDetector(
-            onTap: () {
-              Clipboard.setData(
-                ClipboardData(
-                  text: leagueCode!,
-                ),
-              );
-              
-              final snackBar = SnackBar(
-                backgroundColor: const Color.fromARGB(255, 96, 179, 255),
-                content: nunitoText('Copied league code to clipboard.', 16, FontWeight.normal, Colors.white),
-              );
-
-              scaffoldMessenger.showSnackBar(snackBar)
-                .closed.then((value) => scaffoldMessenger.clearSnackBars());
-            },
-            child: Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  nunitoText(leagueCode == null ? 'League Name' : leagueCode!, 25, FontWeight.bold, Colors.black),
-                  const SizedBox(width: 10,),
-                  const Icon(Icons.copy),
-                ],
+      body: Center(
+        child: SizedBox(
+          height: height * 0.8,
+          child: Column(
+            children: 
+            [
+              SizedBox(height: height * 0.05,),
+              LeagueListWidget(
+                header: nunitoText("Standings", 20, FontWeight.bold, const Color.fromRGBO(30, 30, 27, 1)),
+                leadingWidgets: leadingWidgets,
+                titles: usernames,
+                // addons: points,
+                trailingWidgets: points.map((e) => Text(e.toString())).toList(),
+                onTap: (index) {moveToHistory(context, index);},
+                height: height * 0.5,
               ),
-            ),
-          ),
-          const SizedBox(height: 40,),
-          LeagueListWidget(
-            header: nunitoText("Standings", 20, FontWeight.bold, const Color.fromRGBO(30, 30, 27, 1)),
-            leadingWidgets: leadingWidgets,
-            titles: usernames,
-            // addons: points,
-            trailingWidgets: points.map((e) => Text(e.toString())).toList(),
-            onTap: (index) {moveToHistory(context, index);},
-            height: MediaQuery.of(context).size.height * 0.5,
-          ),
-          const Spacer(),
-          ElevatedButton(
-            onPressed: () async {
-              await showDialog<void>(
-                context: context,
-                builder: (context) => AlertDialog(
-                  content: confirmLeaving(),
+              const Spacer(),
+              GestureDetector(
+                onTap: () {
+                  Clipboard.setData(
+                    ClipboardData(
+                      text: leagueCode!,
+                    ),
+                  );
+                  
+                  final snackBar = SnackBar(
+                    backgroundColor: const Color.fromARGB(255, 96, 179, 255),
+                    content: nunitoText('Copied league code to clipboard.', 16, FontWeight.normal, Colors.white),
+                  );
+          
+                  scaffoldMessenger.showSnackBar(snackBar)
+                    .closed.then((value) => scaffoldMessenger.clearSnackBars());
+                },
+                child: SizedBox(
+                  width: width * 0.5,
+                  child: Card(
+                  elevation: 4, // Add elevation for shadow
+                  child: Center(
+                    child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      nunitoText(leagueCode == null ? 'Code' : leagueCode!, 25, FontWeight.bold, Colors.black),
+                      const SizedBox(width: 10,),
+                      const Icon(Icons.copy),
+                    ],
+                    ),
+                  ),
+                  ),
                 ),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-            ),
-            child: nunitoText('Leave the league', 14, FontWeight.bold, Colors.white),
+              ),
+              SizedBox(height: height * 0.025,),
+              ElevatedButton(
+                onPressed: () async {
+                  await showDialog<void>(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      content: confirmLeaving(),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                ),
+                child: nunitoText('Leave the league', 16, FontWeight.normal, Colors.white),
+              ),
+              SizedBox(height: height * 0.05,),
+            ],
           ),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.05,),
-        ],
+        ),
       ),
     );
   }

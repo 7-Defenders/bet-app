@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:app/components/other/nunito_text.dart';
 import 'package:app/globals.dart';
 import 'package:app/models/user_data.dart';
 import 'package:app/providers/user_data_provider.dart';
@@ -21,7 +22,7 @@ class JoinLeagueWidget extends StatefulWidget {
 Future<void> joinLeague(String leagueCode, String userID, Function() onJoined) async {
   debugPrint("joining league with code $leagueCode and userID $userID");
   final response = await http.post(
-    Uri.parse('https://bet-app-e520a.ew.r.appspot.com/v1/leagues/join'),
+    Uri.parse('https://flask-vhn3gxevdq-ew.a.run.app/v1/leagues/join'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     },
@@ -68,7 +69,7 @@ void showLeagueCodeInputDialog(BuildContext context, Function() onJoined) {
         ),
         actions: <Widget>[
           TextButton(
-            child: const Text('Join League'),
+            child: nunitoText("Join League", 16, FontWeight.normal, Colors.black),
             onPressed: () {
               if (formKey.currentState!.validate()) {
                 final uid = FirebaseAuth.instance.currentUser!.uid;
@@ -114,10 +115,13 @@ class _JoinLeagueWidgetState extends State<JoinLeagueWidget> {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
+      style: ButtonStyle(
+        backgroundColor: WidgetStateProperty.all(Theme.of(context).colorScheme.primary),
+      ),
       onPressed: () {
         showLeagueCodeInputDialog(context, widget.onJoined);
       },
-      child: const Text('Join League'),
+      child: nunitoText("Join a league", 16, FontWeight.normal, Colors.white),
     );
   }
 }

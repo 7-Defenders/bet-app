@@ -1,7 +1,10 @@
 import 'package:app/components/other/nunito_text.dart';
+import 'package:app/providers/button_states_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
+// ignore: must_be_immutable
 class BetPreviewWidget extends StatefulWidget {
   final String eventName;
   final String eventDetails;
@@ -10,8 +13,9 @@ class BetPreviewWidget extends StatefulWidget {
   final String? initialSelection;
   final String? matchRef;
   final String sportIconPath;
+  VoidCallback? onReset;
 
-  const BetPreviewWidget({
+  BetPreviewWidget({
     super.key,
     required this.eventName,
     required this.eventDetails,
@@ -20,6 +24,7 @@ class BetPreviewWidget extends StatefulWidget {
     this.initialSelection,
     this.matchRef,
     this.sportIconPath = 'lib/assets/images/futbol-regular.svg',
+    this.onReset,
   });
 
   @override
@@ -29,11 +34,29 @@ class BetPreviewWidget extends StatefulWidget {
 class _BetPreviewWidgetState extends State<BetPreviewWidget> {
   String? _selectedOption;
 
+  void resetChoice() {
+    setState(() {
+      debugPrint('resetting $_selectedOption' ' for ${widget.eventName}');
+      _selectedOption = null;
+      debugPrint('selected option: $_selectedOption');
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    debugPrint('initial selection: ${widget.initialSelection}');
+
+    widget.onReset = resetChoice;
     _selectedOption = widget.initialSelection;
+
     //debugPrint(widget.initialSelection);
+  }
+
+  @override
+  void didUpdateWidget(covariant BetPreviewWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    widget.onReset = resetChoice; // Ensure onReset is set on widget update
   }
 
   void onItemTapped(String? option) {
@@ -212,11 +235,23 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
     //final buttonStatesProvider = Provider.of<ButtonStatesProvider>(context);
     // final double containerWidth = panelWidth * 0.9;
     // const double padding = 8.0;
+    debugPrint('rebuilding bet preview widget with event: ${widget.eventName}'
+        ' and option: $_selectedOption');
 
-    return krzeminBetWidget(
-      context,
-      (p0) => onItemTapped(p0),
-      option: _selectedOption,
+    return Consumer<ButtonStatesProvider>(
+      builder: (context, buttonStatesProvider, child) {
+        return krzeminBetWidget(
+          context,
+          (p0) => onItemTapped(p0),
+          option: _selectedOption,
+        );
+      },
     );
+    //   krzeminBetWidget(
+    //     context,
+    //     (p0) => onItemTapped(p0),
+    //     option: _selectedOption,
+    //   );
+    // }
   }
 }

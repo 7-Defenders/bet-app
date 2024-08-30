@@ -164,14 +164,14 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
               Expanded(
                 child: buildOptionsList(profileOptions),
               ),
-              ElevatedButton(
-                onPressed: () {
-                  debugPrint('Name: ${userData.email}');
-                  debugPrint('balance: ${userData.balance}');
-                  debugPrint('leagues joined: ${userData.leaguesJoined}');
-                },
-                child: const Text('Print User Data'),
-              ),
+              // ElevatedButton(
+              //   onPressed: () {
+              //     debugPrint('Name: ${userData.email}');
+              //     debugPrint('balance: ${userData.balance}');
+              //     debugPrint('leagues joined: ${userData.leaguesJoined}');
+              //   },
+              //   child: const Text('Print User Data'),
+              // ),
             ],
           ),
         );

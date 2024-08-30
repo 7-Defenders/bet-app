@@ -10,7 +10,7 @@ class BetMaker extends StatefulWidget {
   final String date;
   final String matchRef;
   final TextEditingController amountController;
-  final VoidCallback onRemove;
+  final void Function(String gameName) onRemove;
   final Future<bool> Function(
     int amount,
     String betType,
@@ -34,6 +34,10 @@ class BetMaker extends StatefulWidget {
 }
 
 class _BetMakerState extends State<BetMaker> {
+  void _handleRemove() {
+    widget.onRemove(widget.gameName);
+  }
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -53,9 +57,9 @@ class _BetMakerState extends State<BetMaker> {
             Expanded(
               child: Container(
                 height: 100,
-                decoration: ShapeDecoration(
-                  color: Theme.of(context).colorScheme.secondary,
-                  shape: const RoundedRectangleBorder(
+                decoration: const ShapeDecoration(
+                  color: Colors.white,
+                  shape: RoundedRectangleBorder(
                     side: BorderSide(
                       width: 4,
                       color: Color(0xFFEFB566),
@@ -66,7 +70,7 @@ class _BetMakerState extends State<BetMaker> {
                       bottomRight: Radius.circular(15),
                     ),
                   ),
-                  shadows: const [
+                  shadows: [
                     BoxShadow(
                       color: Color(0x3F000000),
                       blurRadius: 4,
@@ -80,8 +84,12 @@ class _BetMakerState extends State<BetMaker> {
                     children: [
                       Container(
                         decoration: const ShapeDecoration(
-                          color: Color.fromRGBO(238, 238, 238,
-                              1,), //TODO: change color BECAUSE IM BLIND AND CANT SEE GREY ON WHITE BACKGROUND
+                          color: Color.fromRGBO(
+                            238,
+                            238,
+                            238,
+                            1,
+                          ), //TODO: change color BECAUSE IM BLIND AND CANT SEE GREY ON WHITE BACKGROUND
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(8),
@@ -119,7 +127,8 @@ class _BetMakerState extends State<BetMaker> {
                                     ),
                                   ),
                                   nunitoText(
-                                    widget.date, // TODO: Replace with actual date
+                                    widget
+                                        .date, // TODO: Replace with actual date
                                     12,
                                     FontWeight.w400,
                                     const Color(0xFF1E1E1B),
@@ -141,8 +150,7 @@ class _BetMakerState extends State<BetMaker> {
                             padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
                             decoration: BoxDecoration(
                               color: const Color.fromRGBO(238, 238, 238, 1),
-                              border:
-                                  Border.all(width: 0.5),
+                              border: Border.all(width: 0.5),
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: Stack(
@@ -199,15 +207,20 @@ class _BetMakerState extends State<BetMaker> {
                                     alignment: Alignment.centerRight,
                                     children: [
                                       Container(
-                                          height: 30,
-                                          width: 60,
-                                          // Change this as needed
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(4),
-                                            color: const Color.fromRGBO(
-                                                238, 238, 238, 1,),
-                                          ),),
+                                        height: 30,
+                                        width: 60,
+                                        // Change this as needed
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(4),
+                                          color: const Color.fromRGBO(
+                                            238,
+                                            238,
+                                            238,
+                                            1,
+                                          ),
+                                        ),
+                                      ),
                                       Positioned(
                                         right: 12,
                                         child: Container(
@@ -218,7 +231,11 @@ class _BetMakerState extends State<BetMaker> {
                                             15,
                                             FontWeight.w700,
                                             const Color.fromARGB(
-                                                255, 38, 32, 32,),
+                                              255,
+                                              38,
+                                              32,
+                                              32,
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -305,7 +322,7 @@ class _BetMakerState extends State<BetMaker> {
                                             if (success) {
                                               WidgetsBinding.instance
                                                   .addPostFrameCallback((_) {
-                                                widget.onRemove();
+                                                _handleRemove();
                                               });
                                             }
                                             return AlertDialog(
@@ -347,10 +364,7 @@ class _BetMakerState extends State<BetMaker> {
               ),
             ),
             InkWell(
-              onTap: () {
-                // Handle your button tap here
-                widget.onRemove();
-              },
+              onTap: _handleRemove,
               child: Container(
                 width: 25,
                 height: 60,
