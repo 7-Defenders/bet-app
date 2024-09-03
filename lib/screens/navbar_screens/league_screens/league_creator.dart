@@ -250,10 +250,12 @@ class _LeagueCreatorState extends State<LeagueCreator> {
               itemCount: sportsObject.length,
               itemBuilder: (BuildContext context, int index) {
                 return ExpansionTile(
+                  shape: const Border(),
                   title: nunitoText(sportsObject[index].name, 18,
                       FontWeight.bold, Colors.black,),
                   children: sportsObject[index].countries.map((country) {
                     return ExpansionTile(
+                      shape: const Border(),
                       title: nunitoText(
                           country.name, 16, FontWeight.w700, Colors.black,),
                       children: country.leagues.map((league) {
@@ -346,6 +348,41 @@ class _LeagueCreatorState extends State<LeagueCreator> {
           height: MediaQuery.of(context).size.height * 0.8,
           child: Column(
             children: [
+              SizedBox(
+                width: textFieldWidth,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        nunitoText("League type", 18, FontWeight.normal, Colors.black,),
+                        IconButton(
+                          icon: const Icon(Icons.help_outline),
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                content: nunitoText(
+                                  "Friend leagues let you see other players' bets as opposed to private leagues.\n\n"+
+                                  "Public leagues only allow you to see the immediate vicinity in the leaderboard to reduce internet usage - great for big leagues (more than 50 people).",
+                                  14,
+                                  FontWeight.normal,
+                                  Colors.black,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(
+                      height: 8,
+                    ),
+                  ],
+                ),
+              ),
+
               ToggleButtons(
                 onPressed: (int index) {
                   setState(() {
@@ -375,7 +412,7 @@ class _LeagueCreatorState extends State<LeagueCreator> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     nunitoText(
-                        "League Name", 18, FontWeight.normal, Colors.black,),
+                        "League name", 18, FontWeight.normal, Colors.black,),
                     nunitoText("This name will be visible in league overview",
                         14, FontWeight.normal, Colors.grey,),
                     const SizedBox(
