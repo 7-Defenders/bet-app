@@ -31,7 +31,7 @@ class LeagueSummaryModel{
     competitionsIncluded = [];
     for (final elem in json['competitionsIncluded'] as List) {
       // ignore: avoid_dynamic_calls
-      competitionsIncluded!.add(elem['competitionRef'].toString());
+      competitionsIncluded!.add(elem['competitionName'].toString());
     }
 
   }

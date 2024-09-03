@@ -250,10 +250,12 @@ class _LeagueCreatorState extends State<LeagueCreator> {
               itemCount: sportsObject.length,
               itemBuilder: (BuildContext context, int index) {
                 return ExpansionTile(
+                  shape: const Border(),
                   title: nunitoText(sportsObject[index].name, 18,
                       FontWeight.bold, Colors.black,),
                   children: sportsObject[index].countries.map((country) {
                     return ExpansionTile(
+                      shape: const Border(),
                       title: nunitoText(
                           country.name, 16, FontWeight.w700, Colors.black,),
                       children: country.leagues.map((league) {

@@ -27,7 +27,7 @@ class _LeagueSummaryState extends State<LeagueSummary> {
   List<int> points = [];
   List<String> usernames = [];
   List<String> ids = [];
-  List<String>? competitionRefs = [];
+  List<String>? competitionNames = [];
 
   String? leagueName;
   String? leagueCode;
@@ -106,6 +106,7 @@ class _LeagueSummaryState extends State<LeagueSummary> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               SizedBox(
+                height: height * 0.1,
                 width: subWidth,
                 child: Align(
                   alignment: Alignment.centerLeft,
@@ -114,6 +115,7 @@ class _LeagueSummaryState extends State<LeagueSummary> {
               ),
               
               SizedBox(
+                height: height * 0.1,
                 width: subWidth,
                 child: Align(
                   alignment: Alignment.centerRight,
@@ -128,6 +130,7 @@ class _LeagueSummaryState extends State<LeagueSummary> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               SizedBox(
+                height: height * 0.1,
                 width: subWidth,
                 child: Align(
                   alignment: Alignment.centerLeft,
@@ -136,6 +139,7 @@ class _LeagueSummaryState extends State<LeagueSummary> {
               ),
               
               SizedBox(
+                height: height * 0.1,
                 width: subWidth,
                 child: Align(
                   alignment: Alignment.centerRight,
@@ -146,25 +150,28 @@ class _LeagueSummaryState extends State<LeagueSummary> {
           ),
           const SizedBox(height: 8,),
 
-          SizedBox(
-            height: height * 0.5,
-            width: width,
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: competitionRefs == null ? 0 : competitionRefs!.length,
-              itemBuilder: (BuildContext context, int index) {
-                return ExpansionTile(
-                  title: nunitoText('Competitions included', 16, FontWeight.normal, Colors.black),
-                  children: competitionRefs!.map((league) {
-                    return ListTile(
-                      title: nunitoText(competitionRefs![index], 16, FontWeight.bold, Colors.black),
-                    );
-                  }).toList(),
-                );
-              },
-            ),
+          ExpansionTile(
+            shape: const Border(),
+            title: nunitoText('Competitions included', 16, FontWeight.normal, Colors.black),
+            children: [
+              SingleChildScrollView(
+                child: SizedBox(
+                  height: height * 0.3,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: competitionNames!.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Align(
+                        alignment: Alignment.centerRight,
+                        child: nunitoText(competitionNames![index], 16, FontWeight.bold, Colors.black),
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ],
           ),
-    
+   
           const Spacer(),
           
           ElevatedButton(
@@ -206,7 +213,7 @@ class _LeagueSummaryState extends State<LeagueSummary> {
       leagueName = body.leagueName;
       leagueCode = body.leagueCode;
       entryCost = body.entryCost;
-      competitionRefs = body.competitionsIncluded;
+      competitionNames = body.competitionsIncluded;
       private = body.private;
 
       final users = body.users!;
@@ -217,6 +224,8 @@ class _LeagueSummaryState extends State<LeagueSummary> {
         points.add(element.points!);
         ids.add(element.userID!);
       });
+
+      competitionNames!.sort((a,b) => a.compareTo(b));
 
       if (mounted){
         Navigator.of(context).pop();
