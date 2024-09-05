@@ -3,11 +3,11 @@ import 'package:app/models/user_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-Stack buildProfileArea(UserData userData, BuildContext context, {bool backArrow = false, bool isCurrentUser = true}) {
+Stack buildProfileArea(UserData userData, BuildContext context, {bool backArrow = false, bool isCurrentUser = true, Function(BuildContext) onBackArrowPressed = pop}) {
     return Stack(
       children: [
         buildProfileAreaBackground(userData),
-        buildProfileAreaForeground(userData, context, backArrow: backArrow, isCurrentUser: isCurrentUser),
+        buildProfileAreaForeground(userData, context, backArrow: backArrow, isCurrentUser: isCurrentUser, onBackArrowPressed: onBackArrowPressed),
       ],
     );
 }
@@ -35,10 +35,12 @@ Container buildProfileAreaBackground(UserData userData) {
     );
   }
 
-  Stack buildProfileAreaForeground(UserData userData, BuildContext context, {bool backArrow = false, bool isCurrentUser = true}) {
-    // align the profile area widgets accordingly to their parent (proifleArea's) height
+  void pop(BuildContext context){
+    Navigator.of(context).pop();
+  }
 
-    print(isCurrentUser);
+  Stack buildProfileAreaForeground(UserData userData, BuildContext context, {bool backArrow = false, bool isCurrentUser = true, Function(BuildContext) onBackArrowPressed = pop}) {
+    // align the profile area widgets accordingly to their parent (proifleArea's) height
     return Stack(
       children: [
         if (backArrow) Positioned(
@@ -47,7 +49,7 @@ Container buildProfileAreaBackground(UserData userData) {
             child: IconButton(
               icon: const Icon(Icons.arrow_back),
               onPressed: () {
-                Navigator.of(context).pop();
+                onBackArrowPressed(context);
               },
             ),
           ),

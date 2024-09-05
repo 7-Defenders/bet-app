@@ -1,9 +1,13 @@
+import 'package:app/components/history_screen/history_bet_widget.dart';
 import 'package:app/components/profile_screen/profile_area.dart';
+import 'package:app/globals.dart';
+import 'package:app/models/bet.dart';
 import 'package:app/models/user_data.dart';
 import 'package:app/providers/user_data_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 
 class ProfileScreenNew extends StatefulWidget {
@@ -21,6 +25,8 @@ class ProfileScreenNew extends StatefulWidget {
 
 class _ProfileScreenNewState extends State<ProfileScreenNew> {
   UserData? userData;
+  List<Bet> betList = [];
+  bool betsDisplayed = false;
   late bool isCurrentUser;
 
   late List<Widget> profileOptions = <Widget>[
@@ -34,7 +40,10 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
         "Your Bet history",
         style: Theme.of(context).textTheme.displayMedium,
       ),
-      onTap: () => {GoRouter.of(context).go('/profile/history')},
+      onTap: () {
+        // GoRouter.of(context).go('/profile/history')
+        setState(() => betsDisplayed = true);
+      },
     ),
     ListTile(
       leading: Icon(
@@ -125,28 +134,56 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
     }
   }
 
-  @override
-  void didChangeDependencies() {
-    // this is actually goated
-    // called right after initState - you cant listen to provider in initState
-    super.didChangeDependencies();
-    if (isCurrentUser) {
-      userData = Provider.of<UserDataProvider>(context).userData;
-    }
-  }
+  // @override
+  // void didChangeDependencies() {
+  //   // this is actually goated
+  //   // called right after initState - you cant listen to provider in initState
+  //   super.didChangeDependencies();
+  //   if (isCurrentUser) {
+  //     userData = Provider.of<UserDataProvider>(context).userData;
+  //   }
+  // }
 
-  Widget buildProfileScreen() {
+  Widget buildProfileScreen({bool backArrow = false}) {
     final UserData? userData = Provider.of<UserDataProvider>(context).userData;
     if (userData == null) {
       FirebaseAuth.instance.signOut();
     }
     return isCurrentUser
-        ? buildCurrentUserProfile(userData!)
+        ? buildCurrentUserProfile(userData!, backArrow: backArrow)
         : buildOtherUserProfile(userData!);
   }
 
-  Widget buildCurrentUserProfile(UserData userData) {
-  print("pfp");
+    Future<void> getUserHistory() async {
+    // debugPrint(widget.userID);
+    betList.clear();
+
+    final dateTime = DateTime.now().subtract(const Duration(days: 7)).toUtc();
+    final day = DateTime.now().subtract(const Duration(days: 1)).toUtc();
+    final uriWeek = 'https://flask-vhn3gxevdq-ew.a.run.app/v1/bets/${widget.uid}?startDate=${dateTime.year}/${dateTime.month}/${dateTime.day}/${dateTime.hour}';
+    final uriDay = 'https://flask-vhn3gxevdq-ew.a.run.app/v1/bets/${widget.uid}?startDate=${day.year}/${day.month}/${day.day}/${day.hour}';
+
+    final response = Globals.shouldCall(uriWeek) ? await Globals.performCall(uriWeek) : Globals.hasNewBet ? await Globals.loadMoreBets(uriDay) : Globals.getBets();
+
+    betList = betFromJson(response);
+    betList.sort(
+      (a,b) {
+        if (a.game == null){
+          return 1;
+        }
+        if (b.game == null){
+          return 0;
+        }
+
+        final aDate = a.game!.date??= DateTime(2000,);
+        final bDate = b.game!.date??= DateTime(2000,);
+
+        return bDate.compareTo(aDate);
+      }
+    );
+  }
+
+  Widget buildCurrentUserProfile(UserData userData,{bool backArrow = false}) {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return Scaffold(
@@ -154,10 +191,14 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
             children: [
               SizedBox(
                 height: constraints.maxHeight * 0.4,
-                child: buildProfileArea(userData, context),
+                child: buildProfileArea(userData, context, backArrow: backArrow, onBackArrowPressed: (context) => setState(() => betsDisplayed = false)),
               ),
               Expanded(
-                child: buildOptionsList(profileOptions),
+                child: betsDisplayed ? ListView(
+                  children: betList
+                      .map((bet) => HistoryBetWidget(bet: bet))
+                      .toList(),
+                ) : buildOptionsList(profileOptions),
               ),
             ],
           ),
@@ -224,6 +265,25 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
 
   @override
   Widget build(BuildContext context) {
-    return buildProfileScreen();
+    if (betsDisplayed) {
+      return FutureBuilder<void>(
+        future: getUserHistory(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return buildProfileScreen(backArrow: true);
+          } else {
+            return Center(
+              child: LoadingAnimationWidget.hexagonDots(
+                color: Theme.of(context).colorScheme.primary,
+                size: 55,
+              ),     
+            );
+          }
+        },
+      );
+    }
+    else {
+      return buildProfileScreen();
+    }
   }
 }
