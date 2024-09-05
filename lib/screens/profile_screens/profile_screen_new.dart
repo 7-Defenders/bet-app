@@ -1,9 +1,8 @@
-import 'package:app/components/other/appbar/balance_widget.dart';
+import 'package:app/components/profile_screen/profile_area.dart';
 import 'package:app/models/user_data.dart';
 import 'package:app/providers/user_data_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -115,19 +114,14 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
 
     if ((widget.uid != null) &&
         (widget.uid != FirebaseAuth.instance.currentUser!.uid)) {
-      // the page is not of the current user. set flag and fetch the user data.
       isCurrentUser = false;
       Provider.of<UserDataProvider>(context, listen: false)
           .requestUserData(widget.uid!)
           .then((value) => userData = value);
     } else {
       debugPrint('User IS current user');
-      // the page is of the current user. set flag and use the user data from the provider
       isCurrentUser = true;
       userData = Provider.of<UserDataProvider>(context, listen: false).userData;
-      // Provider.of<UserDataProvider>(context, listen: false)
-      //     .requestUserData(FirebaseAuth.instance.currentUser!.uid)
-      //     .then((value) => userData = value);
     }
   }
 
@@ -152,26 +146,19 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
   }
 
   Widget buildCurrentUserProfile(UserData userData) {
+  print("pfp");
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return Scaffold(
           body: Column(
             children: [
               SizedBox(
-                height: constraints.maxHeight * 0.5,
-                child: buildProfileArea(userData),
+                height: constraints.maxHeight * 0.4,
+                child: buildProfileArea(userData, context),
               ),
               Expanded(
                 child: buildOptionsList(profileOptions),
               ),
-              // ElevatedButton(
-              //   onPressed: () {
-              //     debugPrint('Name: ${userData.email}');
-              //     debugPrint('balance: ${userData.balance}');
-              //     debugPrint('leagues joined: ${userData.leaguesJoined}');
-              //   },
-              //   child: const Text('Print User Data'),
-              // ),
             ],
           ),
         );
@@ -200,89 +187,6 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
           children: widgets,
         );
       },
-    );
-  }
-
-  Stack buildProfileArea(UserData userData) {
-    return Stack(
-      children: [
-        buildProfileAreaBackground(userData),
-        buildProfileAreaForeground(userData),
-      ],
-    );
-  }
-
-  Container buildProfileAreaBackground(UserData userData) {
-    return Container(
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.5),
-            blurRadius: 10,
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: const BorderRadius.only(
-          bottomLeft: Radius.circular(20),
-          bottomRight: Radius.circular(20),
-        ),
-        child: SvgPicture.network(
-          userData.bgURL!,
-          fit: BoxFit.fill,
-        ),
-      ),
-    );
-  }
-
-  Stack buildProfileAreaForeground(UserData userData) {
-    // align the profile area widgets accordingly to their parent (proifleArea's) height
-    return Stack(
-      children: [
-        Positioned(
-          top: MediaQuery.of(context).padding.top + 10,
-          right: 10,
-          child: const BalanceWidget(
-            bgColor: Color.fromARGB(255, 255, 163, 21),
-          ),
-        ),
-        LayoutBuilder(
-          builder: (context, constraints) {
-            return Column(
-              children: [
-                SizedBox(height: constraints.maxHeight * 0.2),
-                Stack(
-                  children: [
-                    Column(
-                      children: [
-                        SizedBox(height: constraints.maxHeight * 0.1),
-                        Align(
-                          alignment: const Alignment(0, -0.5),
-                          child: SvgPicture.network(
-                            userData.tshirtURL!,
-                            height: constraints.maxHeight * 0.5,
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Align(
-                      alignment: const Alignment(0, 0.5),
-                      child: Image.network(
-                        userData.photoURL!,
-                        height: constraints.maxHeight * 0.25,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: constraints.maxHeight * 0.05),
-                buildUserFactsWidget(constraints, userData),
-                SizedBox(height: constraints.maxHeight * 0.05),
-              ],
-            );
-          },
-        ),
-      ],
     );
   }
 

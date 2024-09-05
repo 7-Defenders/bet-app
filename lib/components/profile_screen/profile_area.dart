@@ -1,0 +1,99 @@
+  import 'package:app/components/other/appbar/balance_widget.dart';
+import 'package:app/models/user_data.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
+Stack buildProfileArea(UserData userData, BuildContext context, {bool backArrow = false, bool isCurrentUser = true}) {
+    return Stack(
+      children: [
+        buildProfileAreaBackground(userData),
+        buildProfileAreaForeground(userData, context, backArrow: backArrow, isCurrentUser: isCurrentUser),
+      ],
+    );
+}
+
+Container buildProfileAreaBackground(UserData userData) {
+    return Container(
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.5),
+            blurRadius: 10,
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: const BorderRadius.only(
+          bottomLeft: Radius.circular(20),
+          bottomRight: Radius.circular(20),
+        ),
+        child: SvgPicture.network(
+          userData.bgURL!,
+          fit: BoxFit.fill,
+        ),
+      ),
+    );
+  }
+
+  Stack buildProfileAreaForeground(UserData userData, BuildContext context, {bool backArrow = false, bool isCurrentUser = true}) {
+    // align the profile area widgets accordingly to their parent (proifleArea's) height
+
+    print(isCurrentUser);
+    return Stack(
+      children: [
+        if (backArrow) Positioned(
+            top: MediaQuery.of(context).padding.top + 10,
+            left: 10,
+            child: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ),
+        if (isCurrentUser) Positioned(
+          top: MediaQuery.of(context).padding.top + 10,
+          right: 10,
+          child: const BalanceWidget(
+            bgColor: Color.fromARGB(255, 255, 163, 21),
+          ),
+        ),
+        LayoutBuilder(
+          builder: (context, constraints) {
+            return Column(
+              children: [
+                SizedBox(height: constraints.maxHeight * 0.2),
+                Stack(
+                  children: [
+                    Column(
+                      children: [
+                        SizedBox(height: constraints.maxHeight * 0.1),
+                        Align(
+                          alignment: const Alignment(0, -0.5),
+                          child: SvgPicture.network(
+                            userData.tshirtURL!,
+                            height: constraints.maxHeight * 0.6,
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Align(
+                      alignment: const Alignment(0, 0.5),
+                      child: Image.network(
+                        userData.photoURL!,
+                        height: constraints.maxHeight * 0.3,
+                      ),
+                    ),
+                  ],
+                ),
+                // SizedBox(height: constraints.maxHeight * 0.05),
+                // buildUserFactsWidget(constraints, userData),
+                // SizedBox(height: constraints.maxHeight * 0.05),
+              ],
+            );
+          },
+        ),
+      ],
+    );
+  }
