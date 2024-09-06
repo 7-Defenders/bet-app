@@ -41,6 +41,7 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
   }
 
   Future<void> fetchPlayersLeagues() async {
+
     showDialog(
       context: context,
       builder: (context) {
@@ -57,6 +58,10 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
 
     final uri = 'https://flask-vhn3gxevdq-ew.a.run.app/v1/users/$uid/leagues';
     final response = await Globals.performCall(uri);
+
+    rank = [];
+    names = [];
+    leagueIDs = [];
 
     // debugPrint(response.body);
     setState(() {
@@ -81,8 +86,13 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
     }
   }
 
-  void goToLeagueSummary(BuildContext context, int index) {
-    context.go("/leagues/summary", extra: leagueIDs[index]);
+  Future<void> goToLeagueSummary(BuildContext context, int index) async{
+    final shouldRefresh = await context.push<bool>("/leagues/summary", extra: leagueIDs[index]);
+    if (shouldRefresh ?? false) {
+      setState(() {
+        fetchPlayersLeagues();
+      });
+    }
   }
 
   @override
@@ -140,8 +150,8 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
                             Icons.arrow_forward_ios_rounded,
                             color: Colors.red,
                           ),),
-                  onTap: (int index) {
-                    goToLeagueSummary(context, index);
+                  onTap: (int index) async {
+                    await goToLeagueSummary(context, index);
                   },
                   height: height * 0.5,
                 ),

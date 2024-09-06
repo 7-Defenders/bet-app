@@ -2,12 +2,14 @@ import 'package:app/components/league_screen/league_widget.dart';
 import 'package:app/components/other/nunito_text.dart';
 import 'package:app/globals.dart';
 import 'package:app/models/player_league_summary.dart';
+import 'package:app/providers/user_data_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:provider/provider.dart';
 
 class LeagueSummary extends StatefulWidget {
   final String leagueID;
@@ -71,9 +73,9 @@ class _LeagueSummaryState extends State<LeagueSummary> {
               ElevatedButton(
                 onPressed: () async {
                   final scaffoldMessenger = ScaffoldMessenger.of(context);
-                  Navigator.of(context).pop();
-                  Navigator.of(context, rootNavigator: true).pop();
                   await leaveLeague();
+                  Navigator.of(context).pop(true);
+                  Navigator.of(context, rootNavigator: true).pop(true);
                   
                   final snackBar = SnackBar(
                     backgroundColor: const Color.fromARGB(255, 96, 179, 255),
@@ -189,6 +191,8 @@ class _LeagueSummaryState extends State<LeagueSummary> {
   Future<void> leaveLeague() async {
     final uid = FirebaseAuth.instance.currentUser!.uid;
     await http.delete(Uri.parse('https://flask-vhn3gxevdq-ew.a.run.app/v1/users/$uid/leagues/${widget.leagueID}'));
+    Globals.joinedNewLeague = true;
+    Provider.of<UserDataProvider>(context, listen: false).userData?.leaguesJoined++; 
   }
 
   Future<void> fetchLeagueData() async {
