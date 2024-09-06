@@ -23,8 +23,8 @@ class Globals {
   static const String callsSP = "calls";
   static final uid = FirebaseAuth.instance.currentUser!.uid;
 
-  static String getBets(){
-    return _callResponses["https://flask-vhn3gxevdq-ew.a.run.app/v1/bets/$uid"] ?? "[]";
+  static String getBets({String? userID}){
+    return _callResponses["https://flask-vhn3gxevdq-ew.a.run.app/v1/bets/${userID ?? uid}"] ?? "[]";
   }
 
   static Future<String> performCall(String uri, {bool forceCall=false}) async {

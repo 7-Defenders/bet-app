@@ -1,10 +1,13 @@
-import 'package:app/components/other/appbar/balance_widget.dart';
+import 'package:app/components/history_screen/history_bet_widget.dart';
+import 'package:app/components/profile_screen/profile_area.dart';
+import 'package:app/globals.dart';
+import 'package:app/models/bet.dart';
 import 'package:app/models/user_data.dart';
 import 'package:app/providers/user_data_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 
 class ProfileScreenNew extends StatefulWidget {
@@ -22,6 +25,8 @@ class ProfileScreenNew extends StatefulWidget {
 
 class _ProfileScreenNewState extends State<ProfileScreenNew> {
   UserData? userData;
+  List<Bet> betList = [];
+  bool betsDisplayed = false;
   late bool isCurrentUser;
 
   late List<Widget> profileOptions = <Widget>[
@@ -35,7 +40,10 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
         "Your Bet history",
         style: Theme.of(context).textTheme.displayMedium,
       ),
-      onTap: () => {GoRouter.of(context).go('/profile/history')},
+      onTap: () {
+        // GoRouter.of(context).go('/profile/history')
+        setState(() => betsDisplayed = true);
+      },
     ),
     ListTile(
       leading: Icon(
@@ -115,63 +123,108 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
 
     if ((widget.uid != null) &&
         (widget.uid != FirebaseAuth.instance.currentUser!.uid)) {
-      // the page is not of the current user. set flag and fetch the user data.
       isCurrentUser = false;
       Provider.of<UserDataProvider>(context, listen: false)
           .requestUserData(widget.uid!)
           .then((value) => userData = value);
     } else {
       debugPrint('User IS current user');
-      // the page is of the current user. set flag and use the user data from the provider
       isCurrentUser = true;
       userData = Provider.of<UserDataProvider>(context, listen: false).userData;
-      // Provider.of<UserDataProvider>(context, listen: false)
-      //     .requestUserData(FirebaseAuth.instance.currentUser!.uid)
-      //     .then((value) => userData = value);
     }
   }
 
-  @override
-  void didChangeDependencies() {
-    // this is actually goated
-    // called right after initState - you cant listen to provider in initState
-    super.didChangeDependencies();
-    if (isCurrentUser) {
-      userData = Provider.of<UserDataProvider>(context).userData;
-    }
-  }
+  // @override
+  // void didChangeDependencies() {
+  //   // this is actually goated
+  //   // called right after initState - you cant listen to provider in initState
+  //   super.didChangeDependencies();
+  //   if (isCurrentUser) {
+  //     userData = Provider.of<UserDataProvider>(context).userData;
+  //   }
+  // }
 
-  Widget buildProfileScreen() {
+  Widget buildProfileScreen({bool backArrow = false, bool loading = false}) {
     final UserData? userData = Provider.of<UserDataProvider>(context).userData;
     if (userData == null) {
       FirebaseAuth.instance.signOut();
     }
     return isCurrentUser
-        ? buildCurrentUserProfile(userData!)
+        ? loading ? buildCurrentUserProfileLoading(userData!) : buildCurrentUserProfile(userData!, backArrow: backArrow)
         : buildOtherUserProfile(userData!);
   }
 
-  Widget buildCurrentUserProfile(UserData userData) {
+    Future<void> getUserHistory() async {
+    // debugPrint(widget.userID);
+    betList.clear();
+
+    final dateTime = DateTime.now().subtract(const Duration(days: 7)).toUtc();
+    final day = DateTime.now().subtract(const Duration(days: 1)).toUtc();
+    final uriWeek = 'https://flask-vhn3gxevdq-ew.a.run.app/v1/bets/${widget.uid}?startDate=${dateTime.year}/${dateTime.month}/${dateTime.day}/${dateTime.hour}';
+    final uriDay = 'https://flask-vhn3gxevdq-ew.a.run.app/v1/bets/${widget.uid}?startDate=${day.year}/${day.month}/${day.day}/${day.hour}';
+
+    final response = Globals.shouldCall(uriWeek) ? await Globals.performCall(uriWeek) : Globals.hasNewBet ? await Globals.loadMoreBets(uriDay) : Globals.getBets();
+
+    betList = betFromJson(response);
+    betList.sort(
+      (a,b) {
+        if (a.game == null){
+          return 1;
+        }
+        if (b.game == null){
+          return 0;
+        }
+
+        final aDate = a.game!.date??= DateTime(2000,);
+        final bDate = b.game!.date??= DateTime(2000,);
+
+        return bDate.compareTo(aDate);
+      }
+    );
+  }
+
+    Widget buildCurrentUserProfileLoading(UserData userData) {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return Scaffold(
           body: Column(
             children: [
               SizedBox(
-                height: constraints.maxHeight * 0.5,
-                child: buildProfileArea(userData),
+                height: constraints.maxHeight * 0.4,
+                child: buildProfileArea(userData, context),
               ),
               Expanded(
-                child: buildOptionsList(profileOptions),
+                child: Center(
+                  child: LoadingAnimationWidget.hexagonDots(
+                    color: Theme.of(context).colorScheme.primary,
+                    size: 55,
+                  ),     
+                ),
               ),
-              // ElevatedButton(
-              //   onPressed: () {
-              //     debugPrint('Name: ${userData.email}');
-              //     debugPrint('balance: ${userData.balance}');
-              //     debugPrint('leagues joined: ${userData.leaguesJoined}');
-              //   },
-              //   child: const Text('Print User Data'),
-              // ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget buildCurrentUserProfile(UserData userData,{bool backArrow = false}) {
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        return Scaffold(
+          body: Column(
+            children: [
+              SizedBox(
+                height: constraints.maxHeight * 0.4,
+                child: buildProfileArea(userData, context, backArrow: backArrow, onBackArrowPressed: (context) => setState(() => betsDisplayed = false)),
+              ),
+              Expanded(
+                child: betsDisplayed ? ListView(
+                  children: betList
+                      .map((bet) => HistoryBetWidget(bet: bet))
+                      .toList(),
+                ) : buildOptionsList(profileOptions),
+              ),
             ],
           ),
         );
@@ -200,89 +253,6 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
           children: widgets,
         );
       },
-    );
-  }
-
-  Stack buildProfileArea(UserData userData) {
-    return Stack(
-      children: [
-        buildProfileAreaBackground(userData),
-        buildProfileAreaForeground(userData),
-      ],
-    );
-  }
-
-  Container buildProfileAreaBackground(UserData userData) {
-    return Container(
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.5),
-            blurRadius: 10,
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: const BorderRadius.only(
-          bottomLeft: Radius.circular(20),
-          bottomRight: Radius.circular(20),
-        ),
-        child: SvgPicture.network(
-          userData.bgURL!,
-          fit: BoxFit.fill,
-        ),
-      ),
-    );
-  }
-
-  Stack buildProfileAreaForeground(UserData userData) {
-    // align the profile area widgets accordingly to their parent (proifleArea's) height
-    return Stack(
-      children: [
-        Positioned(
-          top: MediaQuery.of(context).padding.top + 10,
-          right: 10,
-          child: const BalanceWidget(
-            bgColor: Color.fromARGB(255, 255, 163, 21),
-          ),
-        ),
-        LayoutBuilder(
-          builder: (context, constraints) {
-            return Column(
-              children: [
-                SizedBox(height: constraints.maxHeight * 0.2),
-                Stack(
-                  children: [
-                    Column(
-                      children: [
-                        SizedBox(height: constraints.maxHeight * 0.1),
-                        Align(
-                          alignment: const Alignment(0, -0.5),
-                          child: SvgPicture.network(
-                            userData.tshirtURL!,
-                            height: constraints.maxHeight * 0.5,
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Align(
-                      alignment: const Alignment(0, 0.5),
-                      child: Image.network(
-                        userData.photoURL!,
-                        height: constraints.maxHeight * 0.25,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: constraints.maxHeight * 0.05),
-                buildUserFactsWidget(constraints, userData),
-                SizedBox(height: constraints.maxHeight * 0.05),
-              ],
-            );
-          },
-        ),
-      ],
     );
   }
 
@@ -320,6 +290,20 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
 
   @override
   Widget build(BuildContext context) {
-    return buildProfileScreen();
+    if (betsDisplayed) {
+      return FutureBuilder<void>(
+        future: getUserHistory(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return buildProfileScreen(backArrow: true);
+          } else {
+            return buildProfileScreen(loading: true);
+          }
+        },
+      );
+    }
+    else {
+      return buildProfileScreen();
+    }
   }
 }
