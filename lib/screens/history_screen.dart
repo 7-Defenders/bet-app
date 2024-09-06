@@ -1,5 +1,4 @@
 import 'package:app/components/history_screen/history_bet_widget.dart';
-import 'package:app/components/other/appbar/custom_appbar.dart';
 import 'package:app/components/profile_screen/profile_area.dart';
 import 'package:app/globals.dart';
 import 'package:app/models/bet.dart';
