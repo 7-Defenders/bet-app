@@ -144,13 +144,13 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
   //   }
   // }
 
-  Widget buildProfileScreen({bool backArrow = false}) {
+  Widget buildProfileScreen({bool backArrow = false, bool loading = false}) {
     final UserData? userData = Provider.of<UserDataProvider>(context).userData;
     if (userData == null) {
       FirebaseAuth.instance.signOut();
     }
     return isCurrentUser
-        ? buildCurrentUserProfile(userData!, backArrow: backArrow)
+        ? loading ? buildCurrentUserProfileLoading(userData!) : buildCurrentUserProfile(userData!, backArrow: backArrow)
         : buildOtherUserProfile(userData!);
   }
 
@@ -180,6 +180,31 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
 
         return bDate.compareTo(aDate);
       }
+    );
+  }
+
+    Widget buildCurrentUserProfileLoading(UserData userData) {
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        return Scaffold(
+          body: Column(
+            children: [
+              SizedBox(
+                height: constraints.maxHeight * 0.4,
+                child: buildProfileArea(userData, context),
+              ),
+              Expanded(
+                child: Center(
+                  child: LoadingAnimationWidget.hexagonDots(
+                    color: Theme.of(context).colorScheme.primary,
+                    size: 55,
+                  ),     
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -272,12 +297,7 @@ class _ProfileScreenNewState extends State<ProfileScreenNew> {
           if (snapshot.connectionState == ConnectionState.done) {
             return buildProfileScreen(backArrow: true);
           } else {
-            return Center(
-              child: LoadingAnimationWidget.hexagonDots(
-                color: Theme.of(context).colorScheme.primary,
-                size: 55,
-              ),     
-            );
+            return buildProfileScreen(loading: true);
           }
         },
       );
