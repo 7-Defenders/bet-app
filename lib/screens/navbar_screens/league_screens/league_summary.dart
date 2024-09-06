@@ -44,7 +44,6 @@ class _LeagueSummaryState extends State<LeagueSummary> {
 
   void moveToHistory(BuildContext context, int index) {
     context.go("/leagues/summary/history", extra: ids[index]);
-    print("Moving to history page with id: ${ids[index]}");
   }
 
     Widget confirmLeaving(){
