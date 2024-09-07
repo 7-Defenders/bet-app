@@ -208,7 +208,7 @@ class _LeagueCreatorState extends State<LeagueCreator> {
         Navigator.of(context, rootNavigator: true).pop();
       },
       style: ElevatedButton.styleFrom(
-        backgroundColor: const Color.fromARGB(255, 96, 179, 255),
+        backgroundColor: Theme.of(context).colorScheme.primary,
       ),
       child: nunitoText('Close', 14, FontWeight.bold, Colors.white),
     );
@@ -295,7 +295,7 @@ class _LeagueCreatorState extends State<LeagueCreator> {
               Navigator.pop(context);
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color.fromARGB(255, 96, 179, 255),
+              backgroundColor: Theme.of(context).colorScheme.primary,
             ),
             child: nunitoText('Close', 14, FontWeight.bold, Colors.white),
           ),
@@ -390,7 +390,7 @@ class _LeagueCreatorState extends State<LeagueCreator> {
                   });
                 },
                 borderRadius: toggleButtonBorderRadius,
-                fillColor: const Color.fromARGB(255, 96, 179, 255),
+                fillColor: Theme.of(context).colorScheme.primary,
                 constraints: BoxConstraints.expand(
                     width: textFieldWidth / 3, height: 40,),
                 isSelected: _selected,

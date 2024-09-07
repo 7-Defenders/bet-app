@@ -78,7 +78,7 @@ class _LeagueSummaryState extends State<LeagueSummary> {
                   Navigator.of(context, rootNavigator: true).pop(true);
                   
                   final snackBar = SnackBar(
-                    backgroundColor: const Color.fromARGB(255, 96, 179, 255),
+                    backgroundColor: Theme.of(context).colorScheme.primary,
                     content: nunitoText('Successfully left $leagueName.', 16, FontWeight.normal, Colors.white),
                   );
                   
@@ -179,7 +179,7 @@ class _LeagueSummaryState extends State<LeagueSummary> {
           ElevatedButton(
             onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color.fromARGB(255, 96, 179, 255),
+              backgroundColor: Theme.of(context).colorScheme.primary,
             ),
             child: nunitoText('Close', 14, FontWeight.bold, Colors.white),
           ),
@@ -315,7 +315,7 @@ class _LeagueSummaryState extends State<LeagueSummary> {
                   );
                   
                   final snackBar = SnackBar(
-                    backgroundColor: const Color.fromARGB(255, 96, 179, 255),
+                    backgroundColor: Theme.of(context).colorScheme.primary,
                     content: nunitoText('Copied league code to clipboard.', 16, FontWeight.normal, Colors.white),
                   );
           
