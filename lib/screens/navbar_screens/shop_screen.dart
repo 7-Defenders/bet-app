@@ -29,6 +29,10 @@ class _ShopScreenState extends State<ShopScreen> {
   }
 
   void showRewardedAd() {
+    if (Globals.rewardedAd == null) {
+      Globals.loadRewardedAd();
+    }
+
     if (Globals.rewardedAd != null) {
       Globals.rewardedAd!.fullScreenContentCallback = FullScreenContentCallback(
         onAdDismissedFullScreenContent: (RewardedAd ad) {
@@ -48,7 +52,6 @@ class _ShopScreenState extends State<ShopScreen> {
         onUserEarnedReward: (ad, reward) async {
           // awarding coins
 
-          // displaying a snackbar
           // ignore: use_build_context_synchronously
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -56,15 +59,15 @@ class _ShopScreenState extends State<ShopScreen> {
                 '100 coins were awarded',
                 16,
                 FontWeight.bold,
-                Colors.black,
+                Theme.of(context).colorScheme.primary,
               ),
             ),
           );
+          Globals.rewardedAd = null;
+          Globals.loadRewardedAd();
         },
       );
 
-      Globals.rewardedAd = null;
-      Globals.loadRewardedAd();
     }
   }
 
@@ -229,7 +232,7 @@ class _ShopScreenState extends State<ShopScreen> {
                                 onPressed: () => showRewardedAd(),
                                 highlightColor:
                                     const Color.fromARGB(255, 255, 187, 85),
-                                color: const Color.fromARGB(255, 96, 179, 255),
+                                color: Theme.of(context).colorScheme.primary,
                                 icon: Icon(
                                   Icons.videocam,
                                   size: cardHeight * .5,

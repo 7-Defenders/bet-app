@@ -228,12 +228,16 @@ class Globals {
   }
 
   static void loadRewardedAd(){
+    debugPrint("Triggered");
     RewardedAd.load(
       adUnitId: rewardedAdUnit!,
       request: const AdRequest(),
       rewardedAdLoadCallback: RewardedAdLoadCallback(
-        onAdLoaded: (RewardedAd ad) => rewardedAd = ad,
-        onAdFailedToLoad: (LoadAdError error) => rewardedAd = null,
+        onAdLoaded: (RewardedAd ad) {
+          rewardedAd = ad;
+          debugPrint('Ad loaded.');
+        },
+        onAdFailedToLoad: (LoadAdError error) => debugPrint('Ad failed to load: $error'),
       ),
     );
   }
