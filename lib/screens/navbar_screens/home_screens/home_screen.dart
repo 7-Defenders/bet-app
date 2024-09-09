@@ -1,5 +1,8 @@
 import 'package:app/components/events_screen/bet_preview.dart';
 import 'package:app/components/events_screen/button_with_bets.dart';
+import 'package:app/components/game_modes/game_card.dart';
+import 'package:app/components/game_modes/invite_card.dart';
+import 'package:app/components/other/game_mode.dart';
 import 'package:app/components/other/nunito_text.dart';
 import 'package:app/globals.dart';
 import 'package:app/models/football_event.dart';
@@ -7,6 +10,7 @@ import 'package:app/providers/button_states_provider.dart';
 import 'package:app/providers/user_data_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -25,6 +29,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void goHome2(BuildContext context) {
     GoRouter.of(context).go('/home/2');
+  }
+
+  Future<void> fetchCurrentGames() async {
+
+  }
+
+  Future<void> goToDuelCreator(BuildContext context) async {
+    final shouldRefresh = await context.push<bool>('/home/duels_creator');
+    if (shouldRefresh ?? false) {
+      setState(() {
+        fetchCurrentGames();
+      });
+    }
   }
 
   void handleRemoveMatch(BuildContext context, String eventName) {
@@ -218,10 +235,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   cardHeight,
                   cardWidth,
                   [
-                    SizedBox(
-                      width: cardWidth,
-                      height: cardHeight,
-                      child: const Card(),
+                    InviteCard(
+                      player: "player",
+                      gameMode: GameMode.duel,
+                      details: "details",
+                      date: "date",
+                      stake: 100,
+                      cardHeight: cardHeight * 1.3,
+                      cardWidth: cardWidth * 1.3,
                     ),
                     SizedBox(
                       width: cardWidth,
@@ -234,7 +255,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: const Card(),
                     ),
                   ],
-                  hidden: true,
+                  // hidden: true,
                 ),
                 buildSection(
                   "Game modes",
@@ -245,7 +266,17 @@ class _HomeScreenState extends State<HomeScreen> {
                     SizedBox(
                       width: cardWidth,
                       height: cardHeight,
-                      child: const Card(),
+                      child: GameCard(
+                        title: "title",
+                        child: SvgPicture.asset(
+                          'lib/assets/images/futbol-regular.svg',
+                          height: cardHeight * 0.35,
+                          width: cardHeight * 0.35,
+                        ),
+                        onTap: () async {
+                          await goToDuelCreator(context);
+                        },
+                      ),
                     ),
                     SizedBox(
                       width: cardWidth,
@@ -258,7 +289,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: const Card(),
                     ),
                   ],
-                  hidden: true,
+                  // hidden: true,
                   description: "Checkout other game modes we have on offer",
                 ),
                 Consumer<ButtonStatesProvider>(
