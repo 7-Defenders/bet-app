@@ -102,6 +102,7 @@ flutter:
     - lib/assets/images/league_logos/
     - lib/assets/images/country_flags/
     - lib/assets/images/bet_widget/
+    - lib/assets/images/game_modes/
     - lib/assets/images/navbar/
     - lib/assets/images/appbar/
     - .env

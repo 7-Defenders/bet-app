@@ -7,6 +7,7 @@ import 'package:app/providers/button_states_provider.dart';
 import 'package:app/providers/theme_provider.dart';
 import 'package:app/providers/user_data_provider.dart';
 import 'package:app/screens/auth_screens/login_or_register_screen.dart';
+import 'package:app/screens/game_modes/duel_creator.dart';
 import 'package:app/screens/history_screen.dart';
 import 'package:app/screens/loading_screen.dart';
 import 'package:app/screens/navbar_screens/events_screen.dart';
@@ -199,10 +200,17 @@ final _router = GoRouter(
             null,
           ),
           routes: <RouteBase>[
+            // GoRoute(
+            //   path: '2',
+            //   pageBuilder: fadePageBuilder(
+            //     (context, state, _) => const HomeScreen2(),
+            //     null,
+            //   ),
+            // ),
             GoRoute(
-              path: '2',
+              path: 'duels_creator',
               pageBuilder: fadePageBuilder(
-                (context, state, _) => const HomeScreen2(),
+                (context, state, _) => const DuelCreator(),
                 null,
               ),
             ),
