@@ -54,7 +54,7 @@ class _ShopScreenState extends State<ShopScreen> {
       Globals.rewardedAd!.show(
         onUserEarnedReward: (ad, reward) async {
           // awarding coins locally
-          Provider.of<UserDataProvider>(context, listen: false).getCoins(100);
+          //Provider.of<UserDataProvider>(context, listen: false).getCoins(100);
 
           // ignore: use_build_context_synchronously
           ScaffoldMessenger.of(context).showSnackBar(
