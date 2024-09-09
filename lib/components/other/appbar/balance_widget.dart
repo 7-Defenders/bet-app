@@ -6,9 +6,14 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class BalanceWidget extends StatelessWidget {
-  const BalanceWidget({super.key, required this.bgColor});
+  const BalanceWidget({
+    super.key,
+    required this.bgColor,
+    required this.balance,
+  });
 
   final Color bgColor;
+  final int balance;
 
   void goToShop(BuildContext context) {
     context.go('/shop');
@@ -18,6 +23,8 @@ class BalanceWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final UserData? usrData =
         Provider.of<UserDataProvider>(context, listen: false).userData;
+
+    debugPrint('balance: ${usrData!.balance}');
 
     return GestureDetector(
       onTap: () {
@@ -53,7 +60,7 @@ class BalanceWidget extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 5),
                     child: Text(
-                      '${usrData!.balance} pts',
+                      '${usrData.balance} pts',
                       style: Theme.of(context).textTheme.displaySmall?.copyWith(
                             fontWeight: FontWeight.bold,
                             color: Colors.white,

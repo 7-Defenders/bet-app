@@ -1,7 +1,9 @@
 import 'package:app/components/other/nunito_text.dart';
+import 'package:app/providers/user_data_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 
 class BetMaker extends StatefulWidget {
   final String gameName;
@@ -323,6 +325,15 @@ class _BetMakerState extends State<BetMaker> {
                                               WidgetsBinding.instance
                                                   .addPostFrameCallback((_) {
                                                 _handleRemove();
+
+                                                // debugPrint(amount.toString());
+                                                // update local balance
+                                                Provider.of<UserDataProvider>(
+                                                  context,
+                                                  listen: false,
+                                                ).spendCoins(
+                                                  amount,
+                                                );
                                               });
                                             }
                                             return AlertDialog(

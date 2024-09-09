@@ -1,5 +1,6 @@
 import 'package:app/components/events_screen/bet_preview.dart';
 import 'package:app/components/events_screen/button_with_bets.dart';
+import 'package:app/components/other/appbar/balance_widget.dart';
 import 'package:app/components/other/nunito_text.dart';
 import 'package:app/globals.dart';
 import 'package:app/models/football_event.dart';
@@ -203,6 +204,20 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: nunitoText('Home', 26, FontWeight.bold, Colors.black),
         centerTitle: true,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: Consumer<UserDataProvider>(
+              builder: (context, userDataProvider, child) {
+                return const BalanceWidget(
+                  bgColor: Color.fromARGB(255, 255, 163, 21),
+                  //get balance from userdataprovider
+                  balance: 0,
+                );
+              },
+            ),
+          ),
+        ],
       ),
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: SingleChildScrollView(
