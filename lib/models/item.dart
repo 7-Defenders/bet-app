@@ -73,6 +73,12 @@ Future<void> purchase(Item item, BuildContext ctx) async {
     });
   });
 
+  ScaffoldMessenger.of(ctx).showSnackBar(
+    const SnackBar(
+      content: Text('Purchase successful.'),
+    ),
+  );
+
   userData.balance -= item.price;
   userDataProvider.userData = userData;
 }

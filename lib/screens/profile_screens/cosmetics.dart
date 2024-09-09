@@ -147,11 +147,17 @@ class _CosmeticsScreenState extends State<CosmeticsScreen> {
         56,
         buildBackButton(),
         'Cosmetics',
-        const [
+        [
           Padding(
-            padding: EdgeInsets.only(right: 40),
-            child: BalanceWidget(
-              bgColor: Color.fromARGB(255, 21, 70, 175),
+            padding: const EdgeInsets.only(right: 40),
+            child: Consumer<UserDataProvider>(
+              builder: (context, userDataProvider, child) {
+                return BalanceWidget(
+                  bgColor: const Color.fromARGB(255, 255, 163, 21),
+                  //get balance from userdataprovider
+                  balance: userDataProvider.userData!.balance.toInt(),
+                );
+              },
             ),
           ),
         ],

@@ -1,5 +1,6 @@
 import 'package:app/components/league_screen/join_league_widget.dart';
 import 'package:app/components/league_screen/league_widget.dart';
+import 'package:app/components/other/appbar/balance_widget.dart';
 import 'package:app/components/other/nunito_text.dart';
 import 'package:app/globals.dart';
 import 'package:app/models/league_preview.dart';
@@ -41,7 +42,6 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
   }
 
   Future<void> fetchPlayersLeagues() async {
-
     showDialog(
       context: context,
       builder: (context) {
@@ -86,8 +86,9 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
     }
   }
 
-  Future<void> goToLeagueSummary(BuildContext context, int index) async{
-    final shouldRefresh = await context.push<bool>("/leagues/summary", extra: leagueIDs[index]);
+  Future<void> goToLeagueSummary(BuildContext context, int index) async {
+    final shouldRefresh =
+        await context.push<bool>("/leagues/summary", extra: leagueIDs[index]);
     if (shouldRefresh ?? false) {
       setState(() {
         fetchPlayersLeagues();
@@ -126,6 +127,20 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
       appBar: AppBar(
         title: nunitoText('Leagues', 26, FontWeight.bold, Colors.black),
         centerTitle: true,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: Consumer<UserDataProvider>(
+              builder: (context, userDataProvider, child) {
+                return BalanceWidget(
+                  bgColor: const Color.fromARGB(255, 255, 163, 21),
+                  //get balance from userdataprovider
+                  balance: userDataProvider.userData!.balance.toInt(),
+                );
+              },
+            ),
+          ),
+        ],
       ),
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: SingleChildScrollView(
@@ -139,17 +154,22 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
                   height: height * 0.05,
                 ),
                 LeagueListWidget(
-                  header: nunitoText("Your leagues", 20, FontWeight.bold,
-                      const Color.fromRGBO(30, 30, 27, 1),),
+                  header: nunitoText(
+                    "Your leagues",
+                    20,
+                    FontWeight.bold,
+                    const Color.fromRGBO(30, 30, 27, 1),
+                  ),
                   leadingWidgets: leadingWidgets,
                   titles: names,
                   // addons: null,
                   trailingWidgets: List.generate(
-                      rank.length,
-                      (index) => const Icon(
-                            Icons.arrow_forward_ios_rounded,
-                            color: Colors.red,
-                          ),),
+                    rank.length,
+                    (index) => const Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      color: Colors.red,
+                    ),
+                  ),
                   onTap: (int index) async {
                     await goToLeagueSummary(context, index);
                   },
@@ -164,8 +184,15 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 5, 160, 221),
                   ),
-                  onPressed: () async {await goToLeagueCreator(context);},
-                  child: nunitoText("Create a league", 16, FontWeight.normal, Colors.white),
+                  onPressed: () async {
+                    await goToLeagueCreator(context);
+                  },
+                  child: nunitoText(
+                    "Create a league",
+                    16,
+                    FontWeight.normal,
+                    Colors.white,
+                  ),
                 ),
                 SizedBox(
                   height: height * 0.05,
@@ -185,5 +212,4 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
       ),
     );
   }
-
 }

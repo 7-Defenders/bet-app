@@ -4,11 +4,13 @@ import 'dart:async';
 
 import 'package:app/components/events_screen/bet_preview.dart';
 import 'package:app/components/events_screen/button_with_bets.dart';
+import 'package:app/components/other/appbar/balance_widget.dart';
 import 'package:app/components/other/nunito_text.dart';
 import 'package:app/globals.dart';
 import 'package:app/models/football_event.dart';
 import 'package:app/models/structure.dart';
 import 'package:app/providers/button_states_provider.dart';
+import 'package:app/providers/user_data_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_svg/svg.dart';
@@ -384,6 +386,19 @@ class EventsScreenState extends State<EventsScreen> {
                   },
                 ),
               ],
+            ),
+          ),
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 3,
+            right: 16,
+            child: Consumer<UserDataProvider>(
+              builder: (context, userDataProvider, child) {
+                return BalanceWidget(
+                  bgColor: const Color.fromARGB(255, 255, 163, 21),
+                  //get balance from userdataprovider
+                  balance: userDataProvider.userData!.balance.toInt(),
+                );
+              },
             ),
           ),
         ],

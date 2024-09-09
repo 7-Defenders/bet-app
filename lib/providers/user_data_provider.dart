@@ -58,7 +58,7 @@ class UserDataProvider extends ChangeNotifier {
         });
 
         notifyListeners();
-      // ignore: invalid_return_type_for_catch_error
+        // ignore: invalid_return_type_for_catch_error
       }).catchError((error) => debugPrint('Failed to update user data'));
     }
   }
@@ -84,6 +84,20 @@ class UserDataProvider extends ChangeNotifier {
     }
   }
 
+  void getCoins(int value) {
+    _userData?.balance = _userData!.balance + value;
+    notifyListeners();
+  }
+
+  void spendCoins(int value) {
+    _userData?.balance = _userData!.balance - value;
+    notifyListeners();
+  }
+
+  num getBalance() {
+    return _userData!.balance;
+  }
+
   Future<UserData?> requestUserData(String uid) async {
     final response = await http
         .get(Uri.parse('https://flask-vhn3gxevdq-ew.a.run.app/v1/users/$uid'));
@@ -93,4 +107,6 @@ class UserDataProvider extends ChangeNotifier {
       throw Exception('Failed to load user data');
     }
   }
+
+  void awardCoins(num amount) {}
 }

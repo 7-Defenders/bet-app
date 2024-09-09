@@ -1,13 +1,16 @@
 import 'dart:io';
 
+import 'package:app/components/other/appbar/balance_widget.dart';
 import 'package:app/components/other/nunito_text.dart';
 import 'package:app/globals.dart';
 import 'package:app/models/item.dart';
+import 'package:app/providers/user_data_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:provider/provider.dart';
 
 class ShopScreen extends StatefulWidget {
   const ShopScreen({super.key});
@@ -50,7 +53,8 @@ class _ShopScreenState extends State<ShopScreen> {
       }
       Globals.rewardedAd!.show(
         onUserEarnedReward: (ad, reward) async {
-          // awarding coins
+          // awarding coins locally
+          //Provider.of<UserDataProvider>(context, listen: false).getCoins(100);
 
           // ignore: use_build_context_synchronously
           ScaffoldMessenger.of(context).showSnackBar(
@@ -67,7 +71,6 @@ class _ShopScreenState extends State<ShopScreen> {
           Globals.loadRewardedAd();
         },
       );
-
     }
   }
 
@@ -179,6 +182,20 @@ class _ShopScreenState extends State<ShopScreen> {
       appBar: AppBar(
         title: nunitoText('Shop', 26, FontWeight.bold, Colors.black),
         centerTitle: true,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: Consumer<UserDataProvider>(
+              builder: (context, userDataProvider, child) {
+                return BalanceWidget(
+                  bgColor: const Color.fromARGB(255, 255, 163, 21),
+                  //get balance from userdataprovider
+                  balance: userDataProvider.userData!.balance.toInt(),
+                );
+              },
+            ),
+          ),
+        ],
       ),
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: SingleChildScrollView(
@@ -195,8 +212,12 @@ class _ShopScreenState extends State<ShopScreen> {
                       height: 8,
                     ),
                     nunitoText("Bet coins", 18, FontWeight.bold, Colors.black),
-                    nunitoText("Get free coins or buy coin multipliers", 14,
-                        FontWeight.normal, Colors.grey,),
+                    nunitoText(
+                      "Get free coins or buy coin multipliers",
+                      14,
+                      FontWeight.normal,
+                      Colors.grey,
+                    ),
                     const SizedBox(
                       height: 8,
                     ),
@@ -222,11 +243,12 @@ class _ShopScreenState extends State<ShopScreen> {
                               SizedBox(
                                 width: cardWidth * 0.8,
                                 child: nunitoText(
-                                    'Watch an ad to get 100 coins',
-                                    14,
-                                    FontWeight.normal,
-                                    Colors.black,
-                                    textAlign: TextAlign.center,),
+                                  'Watch an ad to get 100 coins',
+                                  14,
+                                  FontWeight.normal,
+                                  Colors.black,
+                                  textAlign: TextAlign.center,
+                                ),
                               ),
                               IconButton(
                                 onPressed: () => showRewardedAd(),
