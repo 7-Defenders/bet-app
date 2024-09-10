@@ -1,4 +1,5 @@
 import 'package:app/components/other/appbar/balance_widget.dart';
+import 'package:app/components/other/nunito_text.dart';
 import 'package:app/models/user_data.dart';
 import 'package:app/providers/user_data_provider.dart';
 import 'package:flutter/material.dart';
@@ -98,24 +99,53 @@ Stack buildProfileAreaForeground(
                   Column(
                     children: [
                       SizedBox(height: constraints.maxHeight * 0.1),
+                      Stack(
+                        children: [
+                          Align(
+                            alignment: const Alignment(0, -0.5),
+                            child: SvgPicture.network(
+                              userData.tshirtURL!,
+                              height: constraints.maxHeight * 0.6,
+                              fit: BoxFit.fill,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Stack(
+                    children: [
                       Align(
-                        alignment: const Alignment(0, -0.5),
+                        alignment: const Alignment(0, 0.5),
+                        child: Image.network(
+                          userData.photoURL!,
+                          height: constraints.maxHeight * 0.3,
+                        ),
+                      ),
+                      Align(
+                        alignment: const Alignment(0, 0.5),
                         child: SvgPicture.network(
-                          userData.tshirtURL!,
-                          height: constraints.maxHeight * 0.6,
-                          fit: BoxFit.fill,
+                          userData.frameURL!,
+                          height: constraints.maxHeight * 0.3,
                         ),
                       ),
                     ],
                   ),
-                  Align(
-                    alignment: const Alignment(0, 0.5),
-                    child: Image.network(
-                      userData.photoURL!,
-                      height: constraints.maxHeight * 0.3,
-                    ),
-                  ),
                 ],
+              ),
+              Container(
+                padding: EdgeInsets.zero,
+                height: constraints.maxHeight * 0.1,
+                alignment: Alignment.bottomCenter,
+                child: nunitoText(
+                  userData.displayName!,
+                  20,
+                  FontWeight.bold,
+                  //TODO: Set to correct theme color
+                  //Theme.of(context),
+                  const Color.fromARGB(255, 255, 255, 255),
+                  textAlign: TextAlign.center,
+                ),
               ),
               // SizedBox(height: constraints.maxHeight * 0.05),
               // buildUserFactsWidget(constraints, userData),
