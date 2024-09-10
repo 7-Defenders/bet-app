@@ -6,14 +6,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 class InviteCard extends StatelessWidget {
 
   final String player;
-  final String date;
+  final String timeLeft;
   final String details;
   final int stake;
   final double cardWidth;
   final double cardHeight;
   final GameMode gameMode;
 
-  const InviteCard({required this.player, required this.gameMode, required this.details, required this.date, required this.stake, required this.cardHeight, required this.cardWidth,});
+  const InviteCard({required this.player, required this.gameMode, required this.details, required this.timeLeft, required this.stake, required this.cardHeight, required this.cardWidth,});
 
   Future<void> duelReject() async {
     debugPrint('Rejecting duel invite');
@@ -47,6 +47,8 @@ class InviteCard extends StatelessWidget {
         reject = () {};
     }
 
+    const inviteBorderRadius = 15.0;
+
     return SizedBox(
       width: cardWidth,
       height: cardHeight, 
@@ -54,15 +56,53 @@ class InviteCard extends StatelessWidget {
         onTap: viewDetails,
         child: Card(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20.0),
+            borderRadius: BorderRadius.circular(inviteBorderRadius),
+            side: BorderSide(color: Theme.of(context).colorScheme.primary, width: 4.0),
           ),
           elevation: 5,
           child: Stack(
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(8, 8, 0, 0),
+                padding: const EdgeInsets.fromLTRB(16, 12, 0, 0),
                 child: nunitoText(title, 16, FontWeight.normal, Colors.black),
               ),
+
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 8, 8, 0),
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.tertiary.withOpacity(0.5),
+                      borderRadius: BorderRadius.circular(inviteBorderRadius - 4),
+                    ),
+                    padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
+                    child: nunitoText(timeLeft, 16, FontWeight.normal, Colors.black,),
+                  ),
+                ),
+              ),
+
+              Align(
+                child: Wrap(
+                  alignment: WrapAlignment.center,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(0.5),
+                        borderRadius: BorderRadius.circular(inviteBorderRadius - 4),
+                      ),
+                      padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
+                      child: nunitoText(player, 14, FontWeight.bold, Colors.black,),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
+                      child: nunitoText("has challenged you", 14, FontWeight.normal, Colors.black),
+                    ),
+                  ],
+                ),
+              ),
+
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Stack(

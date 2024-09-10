@@ -239,7 +239,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       player: "player",
                       gameMode: GameMode.duel,
                       details: "details",
-                      date: "date",
+                      timeLeft: "3h",
                       stake: 100,
                       cardHeight: cardHeight * 1.3,
                       cardWidth: cardWidth * 1.3,
