@@ -129,6 +129,7 @@ class Globals {
 
     final RegExp usersInLeague = RegExp(r'https:\/\/flask-vhn3gxevdq-ew\.a\.run\.app\/v1\/leagues\/.+\/users');
     final RegExp popular = RegExp(r'https:\/\/flask-vhn3gxevdq-ew\.a\.run\.app\/v1\/popular_bets');
+    final RegExp invites = RegExp(r'https:\/\/flask-vhn3gxevdq-ew\.a\.run\.app\/v1\/invites\/*');
     final RegExp eventsInCompetition = RegExp(r'https:\/\/flask-vhn3gxevdq-ew\.a\.run\.app\/v1\/competitions\/.');
     final RegExp leaguesOfUser = RegExp(r'https:\/\/flask-vhn3gxevdq-ew\.a\.run\.app\/v1\/users\/.+\/leagues');
     final RegExp betsOfUser = RegExp(r'https:\/\/flask-vhn3gxevdq-ew\.a\.run\.app\/v1\/bets\/.*');
@@ -152,6 +153,19 @@ class Globals {
     } 
     
     else if (isUriMatching(baseUri, popular)){
+      // if has never made this call -> should call
+      if (!_callTimes.containsKey(baseUri))
+      {
+        return true;
+      }
+
+      final callTime = _callTimes[baseUri]!;
+
+      // if has made this call more than hour ago -> should call
+      return callTime.add(const Duration(hours: 1)).isBefore(DateTime.now());
+    } 
+
+    else if (isUriMatching(baseUri, invites)){
       // if has never made this call -> should call
       if (!_callTimes.containsKey(baseUri))
       {

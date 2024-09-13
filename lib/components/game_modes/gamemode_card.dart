@@ -1,14 +1,13 @@
 import 'package:app/components/other/nunito_text.dart';
 import 'package:flutter/material.dart';
 
-class GameCard extends StatelessWidget {
+class GamemodeCard extends StatelessWidget {
 
   final String title;
-  final String opponent;
   final Widget child;
   final Function() onTap;
 
-  const GameCard({required this.title, required this.opponent, required this.child, required this.onTap});
+  const GamemodeCard({required this.title, required this.child, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -20,8 +19,7 @@ class GameCard extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              nunitoText(title, 16, FontWeight.normal, Colors.black),
-              nunitoText(opponent, 20, FontWeight.bold, Colors.black),
+              nunitoText(title, 20, FontWeight.bold, Colors.black),
               child,
             ],
           ),

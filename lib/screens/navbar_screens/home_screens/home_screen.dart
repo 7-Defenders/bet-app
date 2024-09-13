@@ -1,11 +1,18 @@
+// ignore_for_file: avoid_dynamic_calls
+
+import 'dart:convert';
+
 import 'package:app/components/events_screen/bet_preview.dart';
 import 'package:app/components/events_screen/button_with_bets.dart';
 import 'package:app/components/game_modes/game_card.dart';
+import 'package:app/components/game_modes/gamemode_card.dart';
 import 'package:app/components/game_modes/invite_card.dart';
 import 'package:app/components/other/game_mode.dart';
 import 'package:app/components/other/nunito_text.dart';
 import 'package:app/globals.dart';
+import 'package:app/models/duel.dart';
 import 'package:app/models/football_event.dart';
+import 'package:app/models/invite.dart';
 import 'package:app/providers/button_states_provider.dart';
 import 'package:app/providers/user_data_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -26,13 +33,29 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   ButtonStatesProvider? buttonStatesProvider;
   List<Widget> displayedMatches = [];
+  Invites displayedInvites = Invites();
 
   void goHome2(BuildContext context) {
     GoRouter.of(context).go('/home/2');
   }
 
   Future<void> fetchCurrentGames() async {
+    final uriInvites = 'https://flask-vhn3gxevdq-ew.a.run.app/v1/invites/${Globals.uid}';
+    final uriGames = 'https://flask-vhn3gxevdq-ew.a.run.app/v1/games/${Globals.uid}';
+    final responseInvites = await Globals.performCall(uriInvites, forceCall: true);
+    final responseGames = await Globals.performCall(uriGames, forceCall: true);
+    
+    debugPrint("responseInvites: $responseInvites");
+    debugPrint("responseGames: $responseGames");
+    displayedInvites = Invites();
+    final List<Duel> ongoingGames = [];
 
+    setState((){
+      displayedInvites = Invites.fromJson(responseInvites);
+      for (final game in jsonDecode(responseGames)["duels"] as List) {
+       ongoingGames.add(Duel.fromJson(game as Map<String, dynamic>));
+      }
+    });
   }
 
   Future<void> goToDuelCreator(BuildContext context) async {
@@ -208,6 +231,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     getPopularMatches();
+    fetchCurrentGames();
   }
 
   @override
@@ -229,33 +253,52 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                buildSection(
+                if (displayedInvites.duels?.isEmpty ?? true) const SizedBox() else buildSection(
                   "Invites",
                   usableWidth, //this has no impact?
                   cardHeight,
                   cardWidth,
-                  [
-                    InviteCard(
-                      player: "player",
-                      gameMode: GameMode.duel,
-                      details: "details",
-                      timeLeft: "3h",
-                      stake: 100,
-                      cardHeight: cardHeight * 1.3,
-                      cardWidth: cardWidth * 1.3,
-                    ),
-                    SizedBox(
-                      width: cardWidth,
-                      height: cardHeight,
-                      child: const Card(),
-                    ),
-                    SizedBox(
-                      width: cardWidth,
-                      height: cardHeight,
-                      child: const Card(),
-                    ),
-                  ],
-                  // hidden: true,
+                  List.generate(
+                    displayedInvites.duels?.length ?? 0,
+                    (index) {
+                      final duel = displayedInvites.duels![index];
+                      return InviteCard(
+                        player: duel.hostNickname ?? 'Unknown',
+                        gameMode: GameMode.duel,
+                        details: <String, dynamic>{"gameCount": duel.gameCount, "competitions": duel.competitions},
+                        timeLeft: '3h',
+                        stake: duel.entryCost ?? 0,
+                        cardHeight: cardHeight * 1.3,
+                        cardWidth: cardWidth * 1.3,
+                        inviteID: duel.duelID!,
+                        refresh: () async {
+                          await fetchCurrentGames();
+                        },
+                      );
+                    },
+                  ),
+                ),
+                if (displayedInvites.duels?.isEmpty ?? true) const SizedBox() else buildSection(
+                  "Ongoing games",
+                  usableWidth, //this has no impact?
+                  cardHeight,
+                  cardWidth,
+                  List.generate(
+                    displayedInvites.duels?.length ?? 0,
+                    (index) {
+                      final duel = displayedInvites.duels![index];
+                      return GameCard(
+                        title: 'DUEL',
+                        opponent: duel.hostNickname ?? 'Unknown',
+                        child: SvgPicture.asset(
+                          'lib/assets/images/futbol-regular.svg',
+                          height: cardHeight * 0.35,
+                          width: cardHeight * 0.35,
+                        ),
+                        onTap: () => debugPrint('tapped'),
+                      );
+                    },
+                  ),
                 ),
                 buildSection(
                   "Game modes",
@@ -266,7 +309,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     SizedBox(
                       width: cardWidth,
                       height: cardHeight,
-                      child: GameCard(
+                      child: GamemodeCard(
                         title: "title",
                         child: SvgPicture.asset(
                           'lib/assets/images/futbol-regular.svg',

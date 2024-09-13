@@ -22,10 +22,10 @@ class _DuelCreatorState extends State<DuelCreator> {
   Set<String> selectedLeagues = {};
   int entryCost = 0;
   int gameCount = 5;
-  String inviteeID = '';
+  String inviteeCode = '';
 
   final entryCostController = TextEditingController();
-  final inviteeIDController = TextEditingController();
+  final inviteeCodeController = TextEditingController();
   final gameCountController = TextEditingController();
 
   final List<bool> _selected = [true, false, false];
@@ -70,7 +70,7 @@ class _DuelCreatorState extends State<DuelCreator> {
       },
     );
 
-    if (inviteeIDController.text.length != 6) {
+    if (inviteeCodeController.text.length != 6) {
       if (mounted) {
         Navigator.of(context, rootNavigator: true).pop();
       }
@@ -160,7 +160,7 @@ class _DuelCreatorState extends State<DuelCreator> {
 
     final body = jsonEncode(<String, dynamic>{
       'hostID': uid,
-      'inviteeID': inviteeIDController.text,
+      'inviteeCode': inviteeCodeController.text,
       'entryCost': int.parse(entryCostController.text),
       'competitionRefs': competitions,
       'type': _selected[0] ? null : _selected[1],
@@ -430,7 +430,7 @@ class _DuelCreatorState extends State<DuelCreator> {
               child: SizedBox(
                 width: textFieldWidth,
                 child: TextField(
-                  controller: inviteeIDController,
+                  controller: inviteeCodeController,
                   decoration: const InputDecoration(
                     enabledBorder: borderStyle,
                     focusedBorder: borderStyle,
