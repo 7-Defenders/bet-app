@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:app/components/other/nunito_text.dart';
-import 'package:app/globals.dart';
 import 'package:app/models/structure.dart';
 import 'package:app/providers/user_data_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -77,8 +76,10 @@ class _DuelCreatorState extends State<DuelCreator> {
       await showDialog<void>(
         context: context,
         builder: (context) => AlertDialog(
-          content: resultPopup("Invalid invite code",
-            subtext: "Invite code must be exactly 6 characters long",),
+          content: resultPopup(
+            "Invalid invite code",
+            subtext: "Invite code must be exactly 6 characters long",
+          ),
         ),
       );
 
@@ -92,8 +93,10 @@ class _DuelCreatorState extends State<DuelCreator> {
       await showDialog<void>(
         context: context,
         builder: (context) => AlertDialog(
-          content: resultPopup("No selected competitions",
-              subtext: "You have selected no competitions",),
+          content: resultPopup(
+            "No selected competitions",
+            subtext: "You have selected no competitions",
+          ),
         ),
       );
       return;
@@ -108,8 +111,10 @@ class _DuelCreatorState extends State<DuelCreator> {
         await showDialog<void>(
           context: context,
           builder: (context) => AlertDialog(
-            content: resultPopup("Invalid game count",
-                subtext: "Game count cannot be lower than 1",),
+            content: resultPopup(
+              "Invalid game count",
+              subtext: "Game count cannot be lower than 1",
+            ),
           ),
         );
         return;
@@ -124,8 +129,10 @@ class _DuelCreatorState extends State<DuelCreator> {
         await showDialog<void>(
           context: context,
           builder: (context) => AlertDialog(
-            content: resultPopup("Invalid stake",
-                subtext: "Wager cannot be lower than $minEntryCost",),
+            content: resultPopup(
+              "Invalid stake",
+              subtext: "Wager cannot be lower than $minEntryCost",
+            ),
           ),
         );
         return;
@@ -137,8 +144,10 @@ class _DuelCreatorState extends State<DuelCreator> {
       await showDialog<void>(
         context: context,
         builder: (context) => AlertDialog(
-          content: resultPopup("Invalid entry fee",
-              subtext: "Entry fee has to be an integer value",),
+          content: resultPopup(
+            "Invalid entry fee",
+            subtext: "Entry fee has to be an integer value",
+          ),
         ),
       );
       return;
@@ -190,24 +199,32 @@ class _DuelCreatorState extends State<DuelCreator> {
         await showDialog<void>(
           context: context,
           builder: (context) => AlertDialog(
-            content: resultPopup("Server error",
-                subtext: "There was an error on our side. Sorry!",),
+            content: resultPopup(
+              "Server error",
+              subtext: "There was an error on our side. Sorry!",
+            ),
           ),
         );
       case 2:
         {
           // Globals.joinedNewDuel = true;
-          Provider.of<UserDataProvider>(context, listen: false).userData?.leaguesJoined++; 
+          Provider.of<UserDataProvider>(context, listen: false)
+              .userData
+              ?.leaguesJoined++;
           if (mounted) {
             Navigator.of(context).pop(true);
           }
-          Navigator.of(context, rootNavigator: true).pop(true);     
+          Navigator.of(context, rootNavigator: true).pop(true);
         }
     }
   }
 
-  Widget resultPopup(String text,
-      {String? subtext, double height = 120.0, double width = 300.0,}) {
+  Widget resultPopup(
+    String text, {
+    String? subtext,
+    double height = 120.0,
+    double width = 300.0,
+  }) {
     final closePopupButton = ElevatedButton(
       onPressed: () {
         setState(() {});
@@ -257,13 +274,21 @@ class _DuelCreatorState extends State<DuelCreator> {
               itemBuilder: (BuildContext context, int index) {
                 return ExpansionTile(
                   shape: const Border(),
-                  title: nunitoText(sportsObject[index].name, 18,
-                      FontWeight.bold, Colors.black,),
+                  title: nunitoText(
+                    sportsObject[index].name,
+                    18,
+                    FontWeight.bold,
+                    Colors.black,
+                  ),
                   children: sportsObject[index].countries.map((country) {
                     return ExpansionTile(
                       shape: const Border(),
                       title: nunitoText(
-                          country.name, 16, FontWeight.w700, Colors.black,),
+                        country.name,
+                        16,
+                        FontWeight.w700,
+                        Colors.black,
+                      ),
                       children: country.leagues.map((league) {
                         final path =
                             '${sportsObject[index].name}/${country.name}/${league.name}';
@@ -271,8 +296,12 @@ class _DuelCreatorState extends State<DuelCreator> {
                           builder:
                               (BuildContext context, StateSetter setState) {
                             return CheckboxListTile(
-                              title: nunitoText(league.name, 14,
-                                  FontWeight.normal, Colors.black,),
+                              title: nunitoText(
+                                league.name,
+                                14,
+                                FontWeight.normal,
+                                Colors.black,
+                              ),
                               value: selectedLeagues.contains(path),
                               onChanged: (val) {
                                 setState(() {
@@ -311,7 +340,11 @@ class _DuelCreatorState extends State<DuelCreator> {
   }
 
   Widget getTabWidget(
-      String title, double padding, bool isTabSelected, Color backgroundColor,) {
+    String title,
+    double padding,
+    bool isTabSelected,
+    Color backgroundColor,
+  ) {
     return isTabSelected
         ? Center(child: nunitoText(title, 16, FontWeight.bold, Colors.white))
         : Container(
@@ -319,7 +352,9 @@ class _DuelCreatorState extends State<DuelCreator> {
             height: double.infinity,
             color: backgroundColor,
             child: Center(
-                child: nunitoText(title, 16, FontWeight.bold, Colors.white),),);
+              child: nunitoText(title, 16, FontWeight.bold, Colors.white),
+            ),
+          );
   }
 
   @override
@@ -359,7 +394,12 @@ class _DuelCreatorState extends State<DuelCreator> {
                 children: [
                   Row(
                     children: [
-                      nunitoText("Duel type", 18, FontWeight.normal, Colors.black,),
+                      nunitoText(
+                        "Duel type",
+                        18,
+                        FontWeight.normal,
+                        Colors.black,
+                      ),
                       IconButton(
                         icon: const Icon(Icons.help_outline),
                         onPressed: () {
@@ -367,9 +407,9 @@ class _DuelCreatorState extends State<DuelCreator> {
                             context: context,
                             builder: (context) => AlertDialog(
                               content: nunitoText(
-                                "Weighted duels mean you place standard bets with predeclared amount of coins to split among the games.\n\n"+
-                                "Prediction duels do not require you to split coins. Simply place your bets and wait for the result. Beware - 1X and X2 bets are not allowed in prediction duels.\n\n"+
-                                "Bravery duels are a high risk, high reward type of duel. You place a single bet and if you gather more points than your rival, you take it all.",
+                                "Weighted duels mean you place standard bets with predeclared amount of coins to split among the games.\n\n" +
+                                    "Prediction duels do not require you to split coins. Simply place your bets and wait for the result. Beware - 1X and X2 bets are not allowed in prediction duels.\n\n" +
+                                    "Bravery duels are a high risk, high reward type of duel. You place a single bet and if you gather more points than your rival, you take it all.",
                                 14,
                                 FontWeight.normal,
                                 Colors.black,
@@ -380,14 +420,12 @@ class _DuelCreatorState extends State<DuelCreator> {
                       ),
                     ],
                   ),
-        
                   const SizedBox(
                     height: 8,
                   ),
                 ],
               ),
             ),
-        
             ToggleButtons(
               onPressed: (int index) {
                 setState(() {
@@ -397,15 +435,29 @@ class _DuelCreatorState extends State<DuelCreator> {
               borderRadius: toggleButtonBorderRadius,
               fillColor: Theme.of(context).colorScheme.tertiary,
               constraints: BoxConstraints.expand(
-                  width: textFieldWidth / 3, height: 40,),
+                width: textFieldWidth / 3,
+                height: 40,
+              ),
               isSelected: _selected,
               children: [
-                getTabWidget("Weighted", 5, _selected[0],
-                    Theme.of(context).colorScheme.primary,),
-                getTabWidget("Prediction", 5, _selected[1],
-                    Theme.of(context).colorScheme.primary,),
-                getTabWidget("Bravery", 5, _selected[2],
-                    Theme.of(context).colorScheme.primary,),
+                getTabWidget(
+                  "Weighted",
+                  5,
+                  _selected[0],
+                  Theme.of(context).colorScheme.primary,
+                ),
+                getTabWidget(
+                  "Prediction",
+                  5,
+                  _selected[1],
+                  Theme.of(context).colorScheme.primary,
+                ),
+                getTabWidget(
+                  "Bravery",
+                  5,
+                  _selected[2],
+                  Theme.of(context).colorScheme.primary,
+                ),
               ],
             ),
             const SizedBox(
@@ -417,9 +469,17 @@ class _DuelCreatorState extends State<DuelCreator> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   nunitoText(
-                      "Invite code", 18, FontWeight.normal, Colors.black,),
-                  nunitoText("Your opponent's invite code. You can find it in their profile tab",
-                      14, FontWeight.normal, Colors.grey,),
+                    "Invite code",
+                    18,
+                    FontWeight.normal,
+                    Colors.black,
+                  ),
+                  nunitoText(
+                    "Your opponent's invite code. You can find it in their profile tab",
+                    14,
+                    FontWeight.normal,
+                    Colors.grey,
+                  ),
                   const SizedBox(
                     height: 8,
                   ),
@@ -450,9 +510,17 @@ class _DuelCreatorState extends State<DuelCreator> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   nunitoText(
-                      "Wager", 18, FontWeight.normal, Colors.black,),
-                  nunitoText("The coin amount you are willing to put at stake", 14,
-                      FontWeight.normal, Colors.grey,),
+                    "Wager",
+                    18,
+                    FontWeight.normal,
+                    Colors.black,
+                  ),
+                  nunitoText(
+                    "The coin amount you are willing to put at stake",
+                    14,
+                    FontWeight.normal,
+                    Colors.grey,
+                  ),
                   const SizedBox(
                     height: 8,
                   ),
@@ -484,9 +552,17 @@ class _DuelCreatorState extends State<DuelCreator> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   nunitoText(
-                      "Game count", 18, FontWeight.normal, Colors.black,),
-                  nunitoText("The maximum amount of games that will be chosen for the duel", 14,
-                      FontWeight.normal, Colors.grey,),
+                    "Game count",
+                    18,
+                    FontWeight.normal,
+                    Colors.black,
+                  ),
+                  nunitoText(
+                    "The maximum amount of games that will be chosen for the duel",
+                    14,
+                    FontWeight.normal,
+                    Colors.grey,
+                  ),
                   const SizedBox(
                     height: 8,
                   ),
@@ -517,13 +593,18 @@ class _DuelCreatorState extends State<DuelCreator> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  nunitoText("Competitions included", 18, FontWeight.normal,
-                      Colors.black,),
                   nunitoText(
-                      "Duel will consist of matches from these competitions",
-                      14,
-                      FontWeight.normal,
-                      Colors.grey,),
+                    "Competitions included",
+                    18,
+                    FontWeight.normal,
+                    Colors.black,
+                  ),
+                  nunitoText(
+                    "Duel will consist of matches from these competitions",
+                    14,
+                    FontWeight.normal,
+                    Colors.grey,
+                  ),
                   const SizedBox(
                     height: 8,
                   ),
@@ -567,7 +648,8 @@ class _DuelCreatorState extends State<DuelCreator> {
                   elevation: 10,
                   backgroundColor: const Color.fromARGB(255, 5, 160, 221),
                   shape: const RoundedRectangleBorder(
-                      borderRadius: buttonBorderRadius15,),
+                    borderRadius: buttonBorderRadius15,
+                  ),
                 ),
                 onPressed: () async {
                   await createDuel();

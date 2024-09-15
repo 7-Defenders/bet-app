@@ -34,26 +34,29 @@ class _HomeScreenState extends State<HomeScreen> {
   ButtonStatesProvider? buttonStatesProvider;
   List<Widget> displayedMatches = [];
   Invites displayedInvites = Invites();
+  List<Duel> ongoingGames = [];
 
   void goHome2(BuildContext context) {
     GoRouter.of(context).go('/home/2');
   }
 
   Future<void> fetchCurrentGames() async {
-    final uriInvites = 'https://flask-vhn3gxevdq-ew.a.run.app/v1/invites/${Globals.uid}';
-    final uriGames = 'https://flask-vhn3gxevdq-ew.a.run.app/v1/games/${Globals.uid}';
-    final responseInvites = await Globals.performCall(uriInvites, forceCall: true);
+    final uriInvites =
+        'https://flask-vhn3gxevdq-ew.a.run.app/v1/invites/${Globals.uid}';
+    final uriGames =
+        'https://flask-vhn3gxevdq-ew.a.run.app/v1/games/${Globals.uid}';
+    final responseInvites =
+        await Globals.performCall(uriInvites, forceCall: true);
     final responseGames = await Globals.performCall(uriGames, forceCall: true);
-    
+
     debugPrint("responseInvites: $responseInvites");
     debugPrint("responseGames: $responseGames");
     displayedInvites = Invites();
-    final List<Duel> ongoingGames = [];
 
-    setState((){
+    setState(() {
       displayedInvites = Invites.fromJson(responseInvites);
       for (final game in jsonDecode(responseGames)["duels"] as List) {
-       ongoingGames.add(Duel.fromJson(game as Map<String, dynamic>));
+        ongoingGames.add(Duel.fromJson(game as Map<String, dynamic>));
       }
     });
   }
@@ -227,6 +230,79 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Future<void> showDuelMatches(BuildContext context, Duel duel) async {
+    //make copy of buttonStatesProvider
+    final ButtonStatesProvider buttonStatesProvider =
+        Provider.of(context, listen: false);
+    final List<FootballEvent>? matches = duel.games;
+    final List<BetPreviewWidget> matchCards = [];
+    // convert matches to bet preview widgets
+    for (final match in matches!) {
+      matchCards.add(
+        BetPreviewWidget(
+          eventName: '${match.homename} - ${match.awayname}',
+          eventDetails: match.date.toString(),
+          bets: {
+            '1': match.homeodds,
+            '1X': match.homedrawodds,
+            'X': match.tieodds,
+            'X2': match.drawawayodds,
+            '2': match.awayodds,
+          },
+          onOptionSelected: (String? selectedOption) {
+            final String key = '${match.homename} - ${match.awayname}';
+            final double odds;
+            final String matchRef = match.matchRef;
+            final String date = match.date.toString();
+
+            switch (selectedOption) {
+              case '1':
+                odds = match.homeodds;
+              case 'X':
+                odds = match.tieodds;
+              case '2':
+                odds = match.awayodds;
+              case '1X':
+                odds = match.homedrawodds;
+              case 'X2':
+                odds = match.drawawayodds;
+              default:
+                odds = 0;
+            }
+
+            final currentOptionAndOdds =
+                buttonStatesProvider.buttonStates[key]?.split(',');
+            final currentOption =
+                currentOptionAndOdds != null ? currentOptionAndOdds[0] : null;
+
+            if (buttonStatesProvider.buttonStates.containsKey(key) == true &&
+                selectedOption == currentOption) {
+              buttonStatesProvider.removeButtonState(key);
+            } else {
+              buttonStatesProvider.updateButtonState(
+                key,
+                '$selectedOption,$odds,$matchRef,$date',
+              );
+            }
+          },
+          initialSelection: buttonStatesProvider
+              .buttonStates['${match.homename} - ${match.awayname}']
+              ?.split(',')[0],
+        ),
+      );
+    }
+    debugPrint('matchCards: $matchCards');
+    //go to another screen to display the matches
+    final shouldRefresh = await context.push<bool>(
+      '/home/duel_matches',
+      extra: {
+        'betPreviewWidgets': matchCards,
+        'buttonStatesProvider': buttonStatesProvider,
+        'duelID': duel.duelID!,
+      },
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -236,6 +312,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('displayedInvites: $displayedInvites');
     final usableWidth = MediaQuery.of(context).size.width * 0.95;
     final cardWidth = usableWidth * 0.45;
     final cardHeight = MediaQuery.of(context).size.height * 0.15;
@@ -253,53 +330,63 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (displayedInvites.duels?.isEmpty ?? true) const SizedBox() else buildSection(
-                  "Invites",
-                  usableWidth, //this has no impact?
-                  cardHeight,
-                  cardWidth,
-                  List.generate(
-                    displayedInvites.duels?.length ?? 0,
-                    (index) {
-                      final duel = displayedInvites.duels![index];
-                      return InviteCard(
-                        player: duel.hostNickname ?? 'Unknown',
-                        gameMode: GameMode.duel,
-                        details: <String, dynamic>{"gameCount": duel.gameCount, "competitions": duel.competitions},
-                        timeLeft: '3h',
-                        stake: duel.entryCost ?? 0,
-                        cardHeight: cardHeight * 1.3,
-                        cardWidth: cardWidth * 1.3,
-                        inviteID: duel.duelID!,
-                        refresh: () async {
-                          await fetchCurrentGames();
-                        },
-                      );
-                    },
+                if (displayedInvites.duels?.isEmpty ?? true)
+                  const SizedBox()
+                else
+                  buildSection(
+                    "Invites",
+                    usableWidth, //this has no impact?
+                    cardHeight,
+                    cardWidth,
+                    List.generate(
+                      displayedInvites.duels?.length ?? 0,
+                      (index) {
+                        final duel = displayedInvites.duels![index];
+                        return InviteCard(
+                          player: duel.hostNickname ?? 'Unknown',
+                          gameMode: GameMode.duel,
+                          details: <String, dynamic>{
+                            "gameCount": duel.gameCount,
+                            "competitions": duel.competitions,
+                          },
+                          timeLeft: '3h',
+                          stake: duel.entryCost ?? 0,
+                          cardHeight: cardHeight * 1.3,
+                          cardWidth: cardWidth * 1.3,
+                          inviteID: duel.duelID!,
+                          refresh: () async {
+                            await fetchCurrentGames();
+                          },
+                        );
+                      },
+                    ),
                   ),
-                ),
-                if (displayedInvites.duels?.isEmpty ?? true) const SizedBox() else buildSection(
-                  "Ongoing games",
-                  usableWidth, //this has no impact?
-                  cardHeight,
-                  cardWidth,
-                  List.generate(
-                    displayedInvites.duels?.length ?? 0,
-                    (index) {
-                      final duel = displayedInvites.duels![index];
-                      return GameCard(
-                        title: 'DUEL',
-                        opponent: duel.hostNickname ?? 'Unknown',
-                        child: SvgPicture.asset(
-                          'lib/assets/images/futbol-regular.svg',
-                          height: cardHeight * 0.35,
-                          width: cardHeight * 0.35,
-                        ),
-                        onTap: () => debugPrint('tapped'),
-                      );
-                    },
+                if (ongoingGames.isEmpty)
+                  const SizedBox()
+                else
+                  buildSection(
+                    "Ongoing games",
+                    usableWidth, //this has no impact?
+                    cardHeight,
+                    cardWidth,
+                    List.generate(
+                      ongoingGames.length,
+                      (index) {
+                        final duel = ongoingGames[index];
+                        return GameCard(
+                          title: 'DUEL',
+                          opponent: duel.hostNickname ?? 'Unknown',
+                          child: SvgPicture.asset(
+                            'lib/assets/images/futbol-regular.svg',
+                            height: cardHeight * 0.35,
+                            width: cardHeight * 0.35,
+                          ),
+                          // onTap: () => debugPrint('tapped'),
+                          onTap: () => showDuelMatches(context, duel),
+                        );
+                      },
+                    ),
                   ),
-                ),
                 buildSection(
                   "Game modes",
                   usableWidth,

@@ -62,7 +62,9 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
   void onItemTapped(String? option) {
     setState(() {
       _selectedOption = option == _selectedOption ? null : option;
-      widget.onOptionSelected!(option!);
+      if (widget.onOptionSelected != null) {
+        widget.onOptionSelected?.call(option!);
+      }
     });
   }
 
@@ -235,11 +237,15 @@ class _BetPreviewWidgetState extends State<BetPreviewWidget> {
     //final buttonStatesProvider = Provider.of<ButtonStatesProvider>(context);
     // final double containerWidth = panelWidth * 0.9;
     // const double padding = 8.0;
-    debugPrint('rebuilding bet preview widget with event: ${widget.eventName}'
-        ' and option: $_selectedOption');
+    //debugPrint('rebuilding bet preview widget with event: ${widget.eventName}'
+    //    ' and option: $_selectedOption');
 
     return Consumer<ButtonStatesProvider>(
       builder: (context, buttonStatesProvider, child) {
+        debugPrint(
+            'rebuilding bet preview widget with event: ${widget.eventName}'
+            ' and option: $_selectedOption'
+            ' and ${buttonStatesProvider.buttonStates}');
         return krzeminBetWidget(
           context,
           (p0) => onItemTapped(p0),

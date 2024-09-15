@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:app/components/events_screen/bet_preview.dart';
 import 'package:app/globals.dart';
 import 'package:app/other/firebase_options.dart';
 import 'package:app/other/scaffold_with_navbar.dart';
@@ -8,6 +9,7 @@ import 'package:app/providers/theme_provider.dart';
 import 'package:app/providers/user_data_provider.dart';
 import 'package:app/screens/auth_screens/login_or_register_screen.dart';
 import 'package:app/screens/game_modes/duel_creator.dart';
+import 'package:app/screens/game_modes/duels_matches.dart';
 import 'package:app/screens/history_screen.dart';
 import 'package:app/screens/loading_screen.dart';
 import 'package:app/screens/navbar_screens/events_screen.dart';
@@ -214,6 +216,22 @@ final _router = GoRouter(
                 null,
               ),
             ),
+            GoRoute(
+              path: 'duel_matches',
+              pageBuilder: fadePageBuilder(
+                (context, state, _) {
+                  final extra = state.extra! as Map<String, dynamic>;
+                  return DuelsMatches(
+                    duelID: extra['duelID'] as String,
+                    buttonStatesProvider:
+                        extra['buttonStatesProvider'] as ButtonStatesProvider,
+                    betPreviewWidgets:
+                        extra['betPreviewWidgets'] as List<BetPreviewWidget>,
+                  );
+                },
+                null,
+              ),
+            ),
           ],
         ),
 
@@ -321,7 +339,9 @@ final _router = GoRouter(
         GoRoute(
           path: '/events',
           pageBuilder: fadePageBuilder(
-              (context, state, _) => const EventsScreen(), null,),
+            (context, state, _) => const EventsScreen(),
+            null,
+          ),
         ),
 
         GoRoute(
@@ -332,7 +352,9 @@ final _router = GoRouter(
             GoRoute(
               path: '2',
               pageBuilder: fadePageBuilder(
-                  (context, state, _) => const HomeScreen2(), null,),
+                (context, state, _) => const HomeScreen2(),
+                null,
+              ),
             ),
           ],
         ),
