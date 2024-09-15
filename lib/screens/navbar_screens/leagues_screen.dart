@@ -13,7 +13,8 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 
 class LeaguesScreen extends StatefulWidget {
-  const LeaguesScreen({super.key});
+  final bool? shouldForceFetchData;
+  const LeaguesScreen({super.key, this.shouldForceFetchData});
 
   @override
   State<LeaguesScreen> createState() => _LeaguesScreenState();
@@ -57,7 +58,8 @@ class _LeaguesScreenState extends State<LeaguesScreen> {
     );
 
     final uri = 'https://flask-vhn3gxevdq-ew.a.run.app/v1/users/$uid/leagues';
-    final response = await Globals.performCall(uri);
+    final shouldForce = widget.shouldForceFetchData ?? false;
+    final response = await Globals.performCall(uri, forceCall: shouldForce);
 
     rank = [];
     names = [];

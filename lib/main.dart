@@ -313,7 +313,9 @@ final _router = GoRouter(
         GoRoute(
           path: '/events',
           pageBuilder: fadePageBuilder(
-              (context, state, _) => const EventsScreen(), null,),
+            (context, state, _) => const EventsScreen(),
+            null,
+          ),
         ),
 
         GoRoute(
@@ -324,7 +326,9 @@ final _router = GoRouter(
             GoRoute(
               path: '2',
               pageBuilder: fadePageBuilder(
-                  (context, state, _) => const HomeScreen2(), null,),
+                (context, state, _) => const HomeScreen2(),
+                null,
+              ),
             ),
           ],
         ),
